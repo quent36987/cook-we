@@ -1,0 +1,16 @@
+### GET All Posts
+GET http://localhost:9001/api/recipe
+Accept: application/json
+
+### GET Post by ID
+GET http://localhost:9001/api/recipe/1
+Accept: application/json
+
+### POST Create a new Post
+POST http://localhost:9001/api/recipe
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "New Post"
+}

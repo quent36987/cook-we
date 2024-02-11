@@ -9,6 +9,7 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -18,9 +19,19 @@ public class RecipeService {
     @Autowired
     private RecipeRepository recipeRepository;
 
-//    @Transactional
+    //    @Transactional
     public List<RecipeEntity> getRecipes() {
         Iterable<RecipeModel> recipes = recipeRepository.findAll();
         return RecipeModelToRecipeEntity.convertList(recipes);
+    }
+
+    public RecipeEntity createRecipe(String name, Long time) {
+        RecipeModel recipe = new RecipeModel();
+        recipe.setName(name);
+        recipe.setTime(time);
+        recipe.setCreatedAt(LocalDateTime.now());
+        RecipeModel savedRecipe = recipeRepository.save(recipe);
+
+        return RecipeModelToRecipeEntity.convert(savedRecipe);
     }
 }

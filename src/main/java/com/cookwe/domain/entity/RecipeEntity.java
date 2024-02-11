@@ -17,7 +17,7 @@ public class RecipeEntity {
 
     public String name;
 
-    public String time;
+    public Long time;
 
     public String user_id;
 
