@@ -1,14 +1,14 @@
 package com.cookwe.data.repository;
 
-import com.example.demo.model.User;
+import com.cookwe.data.model.UserModel;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, Long> {
-    Optional<User> findByUsername(String username);
+public interface UserRepository extends CrudRepository<UserModel, Long> {
+    Optional<UserModel> findByUsername(String username);
 
     Boolean existsByUsername(String username);
 

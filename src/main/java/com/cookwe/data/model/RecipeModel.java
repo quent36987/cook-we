@@ -7,7 +7,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import jakarta.validation.constraints.NotBlank;
 
-@Table(name = "recipe")
+@Table(name = "recipes")
 @Entity
 @Getter
 @Data

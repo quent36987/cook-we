@@ -1,7 +1,7 @@
 name: cook-we
 
 services:
-  mongo:
+  postgres:
     image: postgres:12.1-alpine
     container_name: postgres
     environment:

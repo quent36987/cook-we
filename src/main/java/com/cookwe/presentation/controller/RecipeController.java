@@ -9,6 +9,7 @@ import com.cookwe.presentation.response.RecipeResponse;
 import com.cookwe.utils.converters.RecipeEntityToRecipeResponse;
 import com.cookwe.utils.errors.RestError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class RecipeController {
      * @return - An object recipe full filled
      */
     @PostMapping("")
+    @PreAuthorize("hasRole('USER')")
     public RecipeResponse createRecipe(@RequestBody CreateRecipeRequest request) {
         if (request.name == null || request.time == null || request.name.isEmpty() || request.time <= 0) {
             throw RestError.MISSING_FIELD.get("name or time");

@@ -5,8 +5,11 @@ public enum RestError {
     BAD_REQUEST(400, "Invalid request"),
     INTERNAL_SERVER_ERROR(500, "Internal server error"),
     MISSING_FIELD(400, "missing field: %s"), // FIXME
-    MISSING_USER_ID(400, "User id (X-user-id header) can not be null.");
+    MISSING_USER_ID(400, "User id (X-user-id header) can not be null."),
 
+    USERNAME_ALREADY_EXISTS(400, "Username %s already exists"),
+    EMAIL_ALREADY_EXISTS(400, "Email %s already exists"),
+    ROLE_NOT_FOUND(404, "Role with ID %s not found");
 
     private final int code;
     private final String message;

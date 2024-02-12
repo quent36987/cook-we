@@ -1,7 +1,7 @@
 package com.cookwe.utils.security.jwt;
 
 
-import com.example.demo.security.services.UserDetailsImpl;
+import com.cookwe.utils.security.services.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

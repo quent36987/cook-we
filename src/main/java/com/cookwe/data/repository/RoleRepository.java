@@ -1,14 +1,14 @@
 package com.cookwe.data.repository;
 
 
-import com.example.demo.model.ERole;
-import com.example.demo.model.Role;
+import com.cookwe.data.model.ERole;
+import com.cookwe.data.model.RoleModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Long> {
-  Optional<Role> findByName(ERole name);
+public interface RoleRepository extends JpaRepository<RoleModel, Long> {
+  Optional<RoleModel> findByName(ERole name);
 }

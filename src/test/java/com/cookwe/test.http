@@ -14,3 +14,27 @@ Accept: application/json
 {
   "name": "New Post"
 }
+
+
+###
+POST http://localhost:9001/api/auth/signup
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "quentin3",
+  "email": "quentin3@quentin.fr",
+  "password": "quentin3",
+  "role": ["USER"]
+}
+
+###
+POST http://localhost:9001/api/auth/signin
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "quentin3",
+  "password": "quentin3"
+}
+
