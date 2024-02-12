@@ -19,4 +19,5 @@ public interface RecipeRepository extends CrudRepository<RecipeModel, Long> {
 
 
 
+
 }

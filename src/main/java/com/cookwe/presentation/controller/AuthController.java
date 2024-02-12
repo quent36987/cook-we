@@ -65,14 +65,17 @@ public class AuthController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                .body(new UserResponse(
-                        userDetails.getUsername(),
-                        userDetails.getEmail(),
-                        roles));
+                .body(new UserResponse(userDetails.getUsername()));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+        if (signUpRequest.getUsername().isEmpty() || signUpRequest.getEmail().isEmpty() || signUpRequest.getPassword().isEmpty()) {
+            throw RestError.BAD_REQUEST.get();
+        }
+
+        System.out.println("signUpRequest: " + signUpRequest.getUsername() + " " + signUpRequest.getEmail() + " " + signUpRequest.getPassword());
+
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             throw RestError.USERNAME_ALREADY_EXISTS.get(signUpRequest.getUsername());
         }
@@ -119,6 +122,8 @@ public class AuthController {
         user.setRoles(roles);
         userRepository.save(user);
 
+        System.out.println("user: " + user + " " + user.getId());
+
         return ResponseEntity.ok("User registered successfully!");
     }
 
@@ -138,9 +143,6 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new UserResponse(
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles));
+        return ResponseEntity.ok(new UserResponse(userDetails.getUsername()));
     }
 }

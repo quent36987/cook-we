@@ -1,17 +1,15 @@
 package com.cookwe.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@With
 public class RecipeStepEntity {
-
     private Long id;
     private Long recipeId;
+    private Long stepNumber;
     private String text;
 }

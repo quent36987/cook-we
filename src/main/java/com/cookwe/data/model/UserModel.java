@@ -1,5 +1,6 @@
 package com.cookwe.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -50,17 +51,23 @@ public class UserModel {
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JsonIgnore
     private Set<RoleModel> roles = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "user_favorite_recipes",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "recipe_id"))
+    @JsonIgnore
     private Set<RecipeModel> favoriteRecipes = new HashSet<>();
 
     public UserModel(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
+    }
+
+    public UserModel(Long id) {
+        this.id = id;
     }
 }

@@ -13,10 +13,10 @@ public class RecipeEntityToRecipeResponse {
                 recipeEntity.name,
                 recipeEntity.time,
                 recipeEntity.season,
-                recipeEntity.user,
+                UserEntityToUserResponse.convert(recipeEntity.user),
                 recipeEntity.createdAt,
-                recipeEntity.steps,
-                recipeEntity.favoritedBy
+                RecipeStepEntityTpRecipeStepResponse.convertList(recipeEntity.steps),
+                UserEntityToUserResponse.convertList(recipeEntity.favoritedBy)
         );
     }
 

@@ -3,9 +3,11 @@ package com.cookwe.domain.service;
 import com.cookwe.data.model.*;
 import com.cookwe.data.repository.RecipeRepository;
 import com.cookwe.data.repository.RecipeStepRepository;
+import com.cookwe.data.repository.UserRepository;
 import com.cookwe.domain.entity.RecipeEntity;
 import com.cookwe.domain.entity.RecipeStepEntity;
 import com.cookwe.utils.converters.RecipeModelToRecipeEntity;
+import com.cookwe.utils.errors.RestError;
 import lombok.Data;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Data
@@ -27,30 +27,46 @@ public class RecipeService {
     @Autowired
     private RecipeStepRepository recipeStepRepository;
 
-    //    @Transactional
-    public List<RecipeModel> getRecipes() {
+    @Autowired
+    private UserRepository userRepository;
+
+    @Transactional
+    public List<RecipeEntity> getRecipes() {
         Iterable<RecipeModel> recipes = recipeRepository.findAll();
 
-        List<RecipeModel> recipesList = new ArrayList<>();
-        recipes.forEach(recipesList::add);
-        return recipesList;
-        //return RecipeModelToRecipeEntity.convertList(recipes);
+        return RecipeModelToRecipeEntity.convertList(recipes);
     }
 
     @Transactional
-    public Optional<RecipeModel> getRecipeById(Long id) {
+    public RecipeEntity getRecipeById(Long id) {
         Optional<RecipeModel> optionalRecipe = recipeRepository.findById(id);
-        optionalRecipe.ifPresent(recipe -> Hibernate.initialize(recipe.getSteps()));
-        return optionalRecipe;
+
+        if (optionalRecipe.isEmpty()) {
+            throw RestError.EMAIL_ALREADY_EXISTS.get(id);
+        }
+
+        RecipeModel recipe = optionalRecipe.get();
+
+        System.out.println("recipe: " + recipe);
+        System.out.println("recipe.user: " + recipe.getUser());
+        System.out.println("recipe.steps: " + recipe.getUser().getUsername());
+
+        System.out.println("recipe.steps: " + userRepository.findByUsername("test-username"));
+
+
+        List<RecipeStepModel> steps = new ArrayList<>();
+        recipeStepRepository.findByRecipeId(id).forEach(steps::add);
+        recipe.setSteps(steps);
+
+        return RecipeModelToRecipeEntity.convert(recipe);
     }
 
-    public RecipeModel createRecipe(String name, Long time, String season, List<String> steps) {
+    public RecipeEntity createRecipe(Long UserId, String name, Long time, String season, List<String> steps) {
         RecipeModel recipe = new RecipeModel();
         recipe.setName(name);
         recipe.setTime(time);
         recipe.setCreatedAt(LocalDateTime.now());
-
-
+        recipe.setUser(new UserModel(UserId));
 
         switch (season) {
             case "spring":
@@ -67,11 +83,11 @@ public class RecipeService {
         RecipeModel savedRecipe = recipeRepository.save(recipe);
 
         for (String step : steps) {
-            RecipeStepModel recipeStep = new RecipeStepModel(savedRecipe,step);
+            RecipeStepModel recipeStep = new RecipeStepModel(savedRecipe, step);
             recipeStepRepository.save(recipeStep);
         }
 
 
-        return savedRecipe;
+        return RecipeModelToRecipeEntity.convert(savedRecipe);
     }
 }

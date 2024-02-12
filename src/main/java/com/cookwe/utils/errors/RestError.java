@@ -8,7 +8,9 @@ public enum RestError {
     MISSING_USER_ID(400, "User id (X-user-id header) can not be null."),
 
     USERNAME_ALREADY_EXISTS(400, "Username %s already exists"),
-    EMAIL_ALREADY_EXISTS(400, "Email %s already exists"),
+    EMAIL_ALREADY_EXISTS(400, "Email %d already exists"),
+    RECIPE_NOT_FOUND(404, "Recipe with ID %s not found"),
+    USER_NOT_FOUND(404, "User not found"),
     ROLE_NOT_FOUND(404, "Role with ID %s not found");
 
     private final int code;

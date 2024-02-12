@@ -6,6 +6,7 @@ import com.cookwe.domain.entity.RecipeStepEntity;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 public class RecipeResponse {
@@ -17,11 +18,11 @@ public class RecipeResponse {
 
     public ESeason season;
 
-    public UserModel user;
+    public UserResponse user;
 
     public LocalDateTime createdAt;
 
-    public RecipeStepEntity[] steps;
+    public List<RecipeStepResponse> steps;
 
-    public UserModel[] favoritedBy;
+    public List<UserResponse> favoritedBy;
 }

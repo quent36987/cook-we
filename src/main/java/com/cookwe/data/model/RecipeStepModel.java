@@ -24,6 +24,9 @@ public class RecipeStepModel {
 
     private String text;
 
+    @Column(name = "step_number")
+    private Long stepNumber;
+
     public RecipeStepModel(RecipeModel recipe, String text) {
         this.recipe = recipe;
         this.text = text;

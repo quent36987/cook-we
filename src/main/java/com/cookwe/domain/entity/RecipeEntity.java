@@ -7,6 +7,8 @@ import jakarta.persistence.Id;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,11 +25,11 @@ public class RecipeEntity {
 
     public ESeason season;
 
-    public UserModel user;
+    public UserEntity user;
 
     public LocalDateTime createdAt;
 
-    public RecipeStepEntity[] steps;
+    public List<RecipeStepEntity> steps;
 
-    public UserModel[] favoritedBy;
+    public List<UserEntity> favoritedBy;
 }

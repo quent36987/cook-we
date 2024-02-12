@@ -3,10 +3,7 @@ package com.cookwe.presentation.request;
 import com.cookwe.data.model.ESeason;
 import com.cookwe.data.model.UserModel;
 import com.cookwe.domain.entity.RecipeStepEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@With
 public class CreateRecipeRequest {
     public String name;
 
