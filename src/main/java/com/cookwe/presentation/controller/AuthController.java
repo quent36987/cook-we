@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 // @CrossOrigin(origins = "*", maxAge = 3600)
-//@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -52,12 +52,20 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
+        System.out.println("Login request: " + loginRequest);
+
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
+        System.out.println("Authentication: ");
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        System.out.println("SecurityContextHolder: " + SecurityContextHolder.getContext());
+
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        System.out.println("UserDetails: " + userDetails);
 
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
@@ -67,8 +75,6 @@ public class AuthController {
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                 .body(new UserResponse(
-                        userDetails.getFirstName(),
-                        userDetails.getLastName(),
                         userDetails.getUsername(),
                         userDetails.getEmail(),
                         roles));
@@ -142,8 +148,6 @@ public class AuthController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(new UserResponse(
-                userDetails.getFirstName(),
-                userDetails.getLastName(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
                 roles));

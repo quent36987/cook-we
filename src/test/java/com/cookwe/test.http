@@ -22,10 +22,10 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "username": "quentin3",
-  "email": "quentin3@quentin.fr",
-  "password": "quentin3",
-  "role": ["USER"]
+  "username": "quentin2",
+  "email": "quentin2@quentin.fr",
+  "password": "quentin2",
+  "role": ["ROLE_USER"]
 }
 
 ###
@@ -34,7 +34,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "username": "quentin3",
-  "password": "quentin3"
+  "username": "quentin2",
+  "password": "quentin2"
 }
 

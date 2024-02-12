@@ -21,13 +21,13 @@ import java.util.Date;
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    @Value("${example.demo.app.jwtSecret}")
+    @Value("${cook-we.jwtSecret}")
     private String jwtSecret;
 
-    @Value("${example.demo.app.jwtExpirationMs}")
+    @Value("${cook-we.jwtExpirationMs}")
     private int jwtExpirationMs;
 
-    @Value("${example.demo.app.jwtCookieName}")
+    @Value("${cook-we.jwtCookieName}")
     private String jwtCookie;
 
     public String getJwtFromCookies(HttpServletRequest request) {
