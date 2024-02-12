@@ -51,21 +51,12 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
-        System.out.println("Login request: " + loginRequest);
-
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-        System.out.println("Authentication: ");
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        System.out.println("SecurityContextHolder: " + SecurityContextHolder.getContext());
-
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        System.out.println("UserDetails: " + userDetails);
 
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 

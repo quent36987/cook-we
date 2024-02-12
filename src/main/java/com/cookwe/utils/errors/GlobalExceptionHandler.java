@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
         }
 
         if (exception instanceof AccessDeniedException) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(exception.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception.getMessage());
         }
 
         if (exception instanceof AuthenticationException) {

@@ -1,5 +1,6 @@
 package com.cookwe.presentation.controller;
 
+import com.cookwe.data.model.RecipeModel;
 import com.cookwe.domain.entity.RecipeEntity;
 import com.cookwe.domain.service.RecipeService;
 
@@ -28,10 +29,16 @@ public class RecipeController {
      * @return - An List object of Recipe full filled
      */
     @GetMapping("")
-    public List<RecipeResponse> getRecipes() {
-        List<RecipeEntity> recipes = recipeService.getRecipes();
+    public List<RecipeModel> getRecipes() {
+        return recipeService.getRecipes();
+        //  List<RecipeEntity> recipes = recipeService.getRecipes();
 
-        return RecipeEntityToRecipeResponse.convertList(recipes);
+        //return RecipeEntityToRecipeResponse.convertList(recipes);
+    }
+
+    @GetMapping("/{id}")
+    public RecipeModel getRecipeById(@PathVariable Long id) {
+        return recipeService.getRecipeById(id).orElseThrow(() -> RestError.POST_NOT_FOUND.get(id));
     }
 
     /**
@@ -41,15 +48,18 @@ public class RecipeController {
      * @return - An object recipe full filled
      */
     @PostMapping("")
-    @PreAuthorize("hasRole('USER')")
-    public RecipeResponse createRecipe(@RequestBody CreateRecipeRequest request) {
+    //@PreAuthorize("hasRole('USER')")
+    public RecipeModel createRecipe(@RequestBody CreateRecipeRequest request) {
         if (request.name == null || request.time == null || request.name.isEmpty() || request.time <= 0) {
             throw RestError.MISSING_FIELD.get("name or time");
         }
 
-        RecipeEntity savedRecipe = recipeService.createRecipe(request.name, request.time);
+        System.out.println("request.name: " + request.name);
 
-        return RecipeEntityToRecipeResponse.convert(savedRecipe);
+        RecipeModel savedRecipe = recipeService.createRecipe(request.name, request.time, request.season, request.steps);
+
+        return savedRecipe;
+        //return RecipeEntityToRecipeResponse.convert(savedRecipe);
     }
 
 

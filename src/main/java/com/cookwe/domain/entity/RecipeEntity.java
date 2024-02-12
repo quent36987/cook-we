@@ -1,5 +1,7 @@
 package com.cookwe.domain.entity;
 
+import com.cookwe.data.model.ESeason;
+import com.cookwe.data.model.UserModel;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
@@ -19,7 +21,13 @@ public class RecipeEntity {
 
     public Long time;
 
-    public String user_id;
+    public ESeason season;
+
+    public UserModel user;
 
     public LocalDateTime createdAt;
+
+    public RecipeStepEntity[] steps;
+
+    public UserModel[] favoritedBy;
 }

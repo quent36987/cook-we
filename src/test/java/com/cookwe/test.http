@@ -3,16 +3,23 @@ GET http://localhost:9001/api/recipe
 Accept: application/json
 
 ### GET Post by ID
-GET http://localhost:9001/api/recipe/1
+GET http://localhost:9001/api/recipe/6
 Accept: application/json
 
-### POST Create a new Post
+
+
+Cookie: bezkoder-jwt=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJxdWVudGluMiIsImlhdCI6MTcwNzc0OTEwOCwiZXhwIjoxNzA4MDQ5MTA4fQ.x_g9ML0-CBdov2Upz7esQt0gG8rvKeESPNwgbK76uLM
+
+### POST Create a new recipe
 POST http://localhost:9001/api/recipe
 Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "New Post"
+  "name": "New Post@",
+  "time": 10,
+  "season": "summer",
+  "steps": ["step1", "step2"]
 }
 
 

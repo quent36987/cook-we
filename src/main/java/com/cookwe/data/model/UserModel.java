@@ -52,6 +52,12 @@ public class UserModel {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleModel> roles = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(name = "user_favorite_recipes",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "recipe_id"))
+    private Set<RecipeModel> favoriteRecipes = new HashSet<>();
+
     public UserModel(String username, String email, String password) {
         this.username = username;
         this.email = email;
