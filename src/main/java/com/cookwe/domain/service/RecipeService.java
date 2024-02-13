@@ -62,10 +62,11 @@ public class RecipeService {
         return RecipeModelToRecipeEntity.convert(recipe);
     }
 
-    public RecipeEntity createRecipe(Long UserId, String name, Long time, String season, List<String> steps) {
+    public RecipeEntity createRecipe(Long UserId, String name, Long time, Long portions, String season, List<String> steps) {
         RecipeModel recipe = new RecipeModel();
         recipe.setName(name);
         recipe.setTime(time);
+        recipe.setPortions(portions);
         recipe.setCreatedAt(LocalDateTime.now());
         recipe.setUser(new UserModel(UserId));
 

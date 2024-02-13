@@ -32,6 +32,8 @@ public class RecipeModel {
 
     private Long time;
 
+    private Long portions;
+
     @Enumerated(EnumType.STRING)
     private ESeason season;
 

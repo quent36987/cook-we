@@ -64,14 +64,15 @@ public class RecipeController {
     @PostMapping("")
     @PreAuthorize("hasRole('USER')")
     public RecipeResponse createRecipe(@RequestBody CreateRecipeRequest request) {
-        if (request.name == null || request.time == null || request.name.isEmpty() || request.time <= 0) {
-            throw RestError.MISSING_FIELD.get("name or time");
+        if (request.name == null || request.time == null || request.portions == null || request.name.isEmpty() || request.time <= 0 || request.portions <= 0) {
+            throw RestError.MISSING_FIELD.get("name, time, portions");
         }
 
         RecipeEntity savedRecipe = recipeService.createRecipe(
                 this.getUserId(),
                 request.name,
                 request.time,
+                request.portions,
                 request.season,
                 request.steps
         );

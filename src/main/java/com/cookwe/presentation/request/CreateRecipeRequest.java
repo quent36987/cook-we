@@ -18,6 +18,8 @@ public class CreateRecipeRequest {
 
     public Long time;
 
+    public Long portions;
+
     public String season;
 
     public List<String> steps;

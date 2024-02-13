@@ -16,12 +16,13 @@ import java.util.Set;
 @NoArgsConstructor
 @With
 public class RecipeEntity {
-
     public Long id;
 
     public String name;
 
     public Long time;
+
+    public Long portions;
 
     public ESeason season;
 

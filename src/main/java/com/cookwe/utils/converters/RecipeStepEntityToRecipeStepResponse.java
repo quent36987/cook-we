@@ -6,7 +6,7 @@ import com.cookwe.presentation.response.RecipeStepResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeStepEntityTpRecipeStepResponse {
+public class RecipeStepEntityToRecipeStepResponse {
     public static RecipeStepResponse convert(RecipeStepEntity recipeStepEntity) {
         return new RecipeStepResponse()
                 .withStepNumber(recipeStepEntity.getStepNumber())

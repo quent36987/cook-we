@@ -112,6 +112,7 @@ public class RecipeEndpointTest {
                 .withName("test")
                 .withTime(10L)
                 .withSeason("spring")
+                .withPortions(2L)
                 .withSteps(Arrays.asList("step1", "step2"));
 
 
@@ -127,6 +128,7 @@ public class RecipeEndpointTest {
                 .withName("test")
                 .withTime(10L)
                 .withSeason("spring")
+                .withPortions(2L)
                 .withSteps(Arrays.asList("step1", "step2"));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/recipe")
@@ -146,6 +148,7 @@ public class RecipeEndpointTest {
                 .withName("test")
                 .withTime(10L)
                 .withSeason("spring")
+                .withPortions(2L)
                 .withSteps(Arrays.asList("step1", "step2"));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/recipe")
@@ -171,6 +174,7 @@ public class RecipeEndpointTest {
                 .withName("test")
                 .withTime(10L)
                 .withSeason("spring")
+                .withPortions(2L)
                 .withSteps(Arrays.asList("step1", "step2"));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/recipe")

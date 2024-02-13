@@ -98,6 +98,7 @@ public class CommentEndpointTest {
         CreateRecipeRequest createRecipeRequest = new CreateRecipeRequest();
         createRecipeRequest.setName("test-recipe");
         createRecipeRequest.setTime(10L);
+        createRecipeRequest.setPortions(2L);
         createRecipeRequest.setSeason("spring");
         createRecipeRequest.setSteps(Arrays.asList("step1", "step2"));
 
@@ -164,6 +165,7 @@ public class CommentEndpointTest {
         CreateRecipeRequest createRecipeRequest = new CreateRecipeRequest();
         createRecipeRequest.setName("test-recipe");
         createRecipeRequest.setTime(10L);
+        createRecipeRequest.setPortions(2L);
         createRecipeRequest.setSeason("spring");
         createRecipeRequest.setSteps(Arrays.asList("step1", "step2"));
 
@@ -227,6 +229,7 @@ public class CommentEndpointTest {
         CreateRecipeRequest createRecipeRequest = new CreateRecipeRequest();
         createRecipeRequest.setName("test-recipe");
         createRecipeRequest.setTime(10L);
+        createRecipeRequest.setPortions(2L);
         createRecipeRequest.setSeason("spring");
         createRecipeRequest.setSteps(Arrays.asList("step1", "step2"));
 
@@ -283,6 +286,7 @@ public class CommentEndpointTest {
         CreateRecipeRequest createRecipeRequest = new CreateRecipeRequest();
         createRecipeRequest.setName("test-recipe");
         createRecipeRequest.setTime(10L);
+        createRecipeRequest.setPortions(2L);
         createRecipeRequest.setSeason("spring");
         createRecipeRequest.setSteps(Arrays.asList("step1", "step2"));
 

@@ -8,16 +8,17 @@ import java.util.List;
 
 public class RecipeEntityToRecipeResponse {
     public static RecipeResponse convert(RecipeEntity recipeEntity) {
-        return new RecipeResponse(
-                recipeEntity.id,
-                recipeEntity.name,
-                recipeEntity.time,
-                recipeEntity.season,
-                UserEntityToUserResponse.convert(recipeEntity.user),
-                recipeEntity.createdAt,
-                RecipeStepEntityTpRecipeStepResponse.convertList(recipeEntity.steps),
-                UserEntityToUserResponse.convertList(recipeEntity.favoritedBy)
-        );
+        return new RecipeResponse()
+                .withId(recipeEntity.getId())
+                .withName(recipeEntity.getName())
+                .withTime(recipeEntity.getTime())
+                .withPortions(recipeEntity.getPortions())
+                .withSeason(recipeEntity.getSeason())
+                .withUser(UserEntityToUserResponse.convert(recipeEntity.getUser()))
+                .withCreatedAt(recipeEntity.getCreatedAt())
+                .withSteps(RecipeStepEntityToRecipeStepResponse.convertList(recipeEntity.getSteps()))
+                .withFavoritedBy(UserEntityToUserResponse.convertList(recipeEntity.getFavoritedBy())
+                );
     }
 
     public static List<RecipeResponse> convertList(List<RecipeEntity> recipeEntities) {

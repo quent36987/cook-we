@@ -12,6 +12,7 @@ public class RecipeModelToRecipeEntity {
         return new RecipeEntity().withId(recipeModel.getId())
                 .withName(recipeModel.getName())
                 .withTime(recipeModel.getTime())
+                .withPortions(recipeModel.getPortions())
                 .withSeason(recipeModel.getSeason())
                 .withUser(UserModelToUserEntity.convert(recipeModel.getUser()))
                 .withCreatedAt(recipeModel.getCreatedAt())
