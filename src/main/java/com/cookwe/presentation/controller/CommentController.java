@@ -38,7 +38,7 @@ public class CommentController {
      * @param recipeId - The id of the recipe
      * @return - An List object of Comment full filled
      */
-    @GetMapping("/recipe/{recipeId}")
+    @GetMapping("/recipes/{recipeId}")
     public List<CommentResponse> getCommentsByRecipeId(@PathVariable Long recipeId) {
         List<CommentEntity> comments = commentService.getCommentsByRecipeId(recipeId);
 
@@ -52,7 +52,7 @@ public class CommentController {
      * @param request  - A CreateCommentRequest object
      * @return - A Comment object
      */
-    @PostMapping("/recipe/{recipeId}")
+    @PostMapping("/recipes/{recipeId}")
     public CommentResponse createComment(
             @PathVariable Long recipeId,
             @RequestBody CreateCommentRequest request) {
@@ -99,7 +99,7 @@ public class CommentController {
      * @param username - The username of the user
      * @return - An List object of Comment full filled
      */
-    @GetMapping("/user/{username}")
+    @GetMapping("/users/{username}")
     public List<CommentResponse> getCommentsByUserId(@PathVariable String username) {
         List<CommentEntity> comments = commentService.getCommentsByUsername(username);
 

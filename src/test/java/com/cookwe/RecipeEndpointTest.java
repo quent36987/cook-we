@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -111,12 +112,13 @@ public class RecipeEndpointTest {
         CreateRecipeRequest recipe = new CreateRecipeRequest()
                 .withName("test")
                 .withTime(10L)
-                .withSeason("spring")
+                .withSeason("SPRING")
                 .withPortions(2L)
+                .withIngredients(new ArrayList<>())
                 .withSteps(Arrays.asList("step1", "step2"));
 
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/recipe")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(recipe)))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
@@ -127,11 +129,12 @@ public class RecipeEndpointTest {
         CreateRecipeRequest recipe = new CreateRecipeRequest()
                 .withName("test")
                 .withTime(10L)
-                .withSeason("spring")
+                .withSeason("SPRING")
                 .withPortions(2L)
+                .withIngredients(new ArrayList<>())
                 .withSteps(Arrays.asList("step1", "step2"));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/recipe")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(recipe))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
@@ -147,11 +150,12 @@ public class RecipeEndpointTest {
         CreateRecipeRequest recipe = new CreateRecipeRequest()
                 .withName("test")
                 .withTime(10L)
-                .withSeason("spring")
+                .withSeason("SPRING")
                 .withPortions(2L)
+                .withIngredients(new ArrayList<>())
                 .withSteps(Arrays.asList("step1", "step2"));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/recipe")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(recipe))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
@@ -160,7 +164,7 @@ public class RecipeEndpointTest {
                 .andExpect(jsonPath("$.time").value(10))
                 .andExpect(jsonPath("$.season").value("SPRING"));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipe")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -173,11 +177,12 @@ public class RecipeEndpointTest {
         CreateRecipeRequest recipe = new CreateRecipeRequest()
                 .withName("test")
                 .withTime(10L)
-                .withSeason("spring")
+                .withSeason("SPRING")
                 .withPortions(2L)
+                .withIngredients(new ArrayList<>())
                 .withSteps(Arrays.asList("step1", "step2"));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/recipe")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(recipe))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
@@ -191,7 +196,7 @@ public class RecipeEndpointTest {
 
         RecipeResponse response = objectMapper.readValue(contentAsString, RecipeResponse.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipe/" + response.id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes/" + response.id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())

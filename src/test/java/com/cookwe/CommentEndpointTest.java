@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -59,6 +60,7 @@ public class CommentEndpointTest {
     @Autowired
     private UserService userService;
 
+
     private static final String USERNAME_1 = "username";
     private static final String PASSWORD_1 = "test-password";
     private static final String EMAIL_1 = "test@test.fr";
@@ -90,19 +92,26 @@ public class CommentEndpointTest {
                 .getValue();
     }
 
+    public CreateRecipeRequest createSimpleRecipeRequest() {
+        CreateRecipeRequest createRecipeRequest = new CreateRecipeRequest();
+        createRecipeRequest.setName("test-recipe");
+        createRecipeRequest.setTime(10L);
+        createRecipeRequest.setPortions(4L);
+        createRecipeRequest.setSeason("SUMMER");
+        createRecipeRequest.setIngredients(new ArrayList<>());
+        createRecipeRequest.setSteps(new ArrayList<>());
+
+        return createRecipeRequest;
+    }
+
     @Test
     public void testCreateComment() throws Exception {
         createuser(USERNAME_1, EMAIL_1, PASSWORD_1);
         SetUpSecurity(USERNAME_1, PASSWORD_1);
 
-        CreateRecipeRequest createRecipeRequest = new CreateRecipeRequest();
-        createRecipeRequest.setName("test-recipe");
-        createRecipeRequest.setTime(10L);
-        createRecipeRequest.setPortions(2L);
-        createRecipeRequest.setSeason("spring");
-        createRecipeRequest.setSteps(Arrays.asList("step1", "step2"));
+        CreateRecipeRequest createRecipeRequest = createSimpleRecipeRequest();
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/recipe")
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createRecipeRequest))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
@@ -113,14 +122,14 @@ public class CommentEndpointTest {
 
         CreateCommentRequest createCommentRequest = new CreateCommentRequest("ceci est un commenatire");
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/comments/recipe/" + recipeResponse.id)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/comments/recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createCommentRequest))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         // try to get the comment
-        result = mockMvc.perform(MockMvcRequestBuilders.get("/api/comments/recipe/" + recipeResponse.id)
+        result = mockMvc.perform(MockMvcRequestBuilders.get("/api/comments/recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -136,7 +145,7 @@ public class CommentEndpointTest {
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         // try to get the comment
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/comments/recipe/" + recipeResponse.id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/comments/recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -150,7 +159,7 @@ public class CommentEndpointTest {
 
         CreateCommentRequest createCommentRequest = new CreateCommentRequest("ceci est un commenatire");
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/comments/recipe/123324232")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/comments/recipes/123324232")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createCommentRequest))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
@@ -166,10 +175,12 @@ public class CommentEndpointTest {
         createRecipeRequest.setName("test-recipe");
         createRecipeRequest.setTime(10L);
         createRecipeRequest.setPortions(2L);
-        createRecipeRequest.setSeason("spring");
+        createRecipeRequest.setSeason("SPRING");
         createRecipeRequest.setSteps(Arrays.asList("step1", "step2"));
+        createRecipeRequest.setIngredients(new ArrayList<>());
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/recipe")
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createRecipeRequest))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
@@ -180,14 +191,14 @@ public class CommentEndpointTest {
 
         CreateCommentRequest createCommentRequest = new CreateCommentRequest("ceci est un commenatire");
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/comments/recipe/" + recipeResponse.id)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/comments/recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createCommentRequest))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         // try to get the comment
-        result = mockMvc.perform(MockMvcRequestBuilders.get("/api/comments/recipe/" + recipeResponse.id)
+        result = mockMvc.perform(MockMvcRequestBuilders.get("/api/comments/recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -214,7 +225,7 @@ public class CommentEndpointTest {
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         // try to get the comment
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/comments/recipe/" + recipeResponse.id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/comments/recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -230,10 +241,12 @@ public class CommentEndpointTest {
         createRecipeRequest.setName("test-recipe");
         createRecipeRequest.setTime(10L);
         createRecipeRequest.setPortions(2L);
-        createRecipeRequest.setSeason("spring");
+        createRecipeRequest.setSeason("SPRING");
         createRecipeRequest.setSteps(Arrays.asList("step1", "step2"));
+        createRecipeRequest.setIngredients(new ArrayList<>());
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/recipe")
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createRecipeRequest))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
@@ -244,14 +257,14 @@ public class CommentEndpointTest {
 
         CreateCommentRequest createCommentRequest = new CreateCommentRequest("ceci est un commenatire");
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/comments/recipe/" + recipeResponse.id)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/comments/recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createCommentRequest))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         // try to get the comment
-        result = mockMvc.perform(MockMvcRequestBuilders.get("/api/comments/recipe/" + recipeResponse.id)
+        result = mockMvc.perform(MockMvcRequestBuilders.get("/api/comments/recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -270,7 +283,7 @@ public class CommentEndpointTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/comments/recipe/" + recipeResponse.id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/comments/recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -287,10 +300,12 @@ public class CommentEndpointTest {
         createRecipeRequest.setName("test-recipe");
         createRecipeRequest.setTime(10L);
         createRecipeRequest.setPortions(2L);
-        createRecipeRequest.setSeason("spring");
+        createRecipeRequest.setSeason("SPRING");
         createRecipeRequest.setSteps(Arrays.asList("step1", "step2"));
+        createRecipeRequest.setIngredients(new ArrayList<>());
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/recipe")
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createRecipeRequest))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
@@ -301,7 +316,7 @@ public class CommentEndpointTest {
 
         CreateCommentRequest createCommentRequest = new CreateCommentRequest("");
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/comments/recipe/" + recipeResponse.id)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/comments/recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createCommentRequest))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))

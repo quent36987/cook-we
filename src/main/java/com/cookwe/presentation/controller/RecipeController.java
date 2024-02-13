@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/recipe")
+@RequestMapping("/api/recipes")
 public class RecipeController {
 
 
@@ -64,9 +64,26 @@ public class RecipeController {
     @PostMapping("")
     @PreAuthorize("hasRole('USER')")
     public RecipeResponse createRecipe(@RequestBody CreateRecipeRequest request) {
-        if (request.name == null || request.time == null || request.portions == null || request.name.isEmpty() || request.time <= 0 || request.portions <= 0) {
-            throw RestError.MISSING_FIELD.get("name, time, portions");
+//        if (request == null) {
+//            throw RestError.MISSING_FIELD.get("request");
+//        } //FIXME need ?
+
+        if (request.name == null || request.name.isEmpty()) {
+            throw RestError.MISSING_FIELD.get("name");
         }
+
+        if (request.time == null || request.time <= 0) {
+            throw RestError.MISSING_FIELD.get("time");
+        }
+
+        if (request.portions == null || request.portions <= 0) {
+            throw RestError.MISSING_FIELD.get("portions");
+        }
+
+        if (request.ingredients == null) {
+            throw RestError.MISSING_FIELD.get("ingredients");
+        }
+
 
         RecipeEntity savedRecipe = recipeService.createRecipe(
                 this.getUserId(),
@@ -74,8 +91,11 @@ public class RecipeController {
                 request.time,
                 request.portions,
                 request.season,
-                request.steps
+                request.steps,
+                request.ingredients
         );
+
+        System.out.println("savedRecipe: " + savedRecipe);
 
         return RecipeEntityToRecipeResponse.convert(savedRecipe);
     }

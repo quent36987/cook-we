@@ -1,11 +1,9 @@
 package com.cookwe.presentation.request;
 
-import com.cookwe.data.model.ESeason;
-import com.cookwe.data.model.UserModel;
-import com.cookwe.domain.entity.RecipeStepEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -23,4 +21,6 @@ public class CreateRecipeRequest {
     public String season;
 
     public List<String> steps;
+
+    public List<CreateIngredientRequest> ingredients;
 }

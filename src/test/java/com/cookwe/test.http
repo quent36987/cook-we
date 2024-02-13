@@ -11,7 +11,20 @@ GET http://localhost:9001/api/comments/user/quentin2
 Accept: application/json
 
 
-Cookie: bezkoder-jwt=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJxdWVudGluMiIsImlhdCI6MTcwNzc2NDUxNCwiZXhwIjoxNzA4MDY0NTE0fQ.rEoc4mYWJL1cRhQkckQxtRfS8-bUKUW1WRBxdfZBFVI
+### GET All Comments of a user
+GET http://localhost:9001/api/ingredients/recipe/4
+Accept: application/json
+
+### sdf
+PUT http://localhost:9001/api/ingredients/recipes/4
+Content-Type: application/json
+Accept: application/json
+Cookie: bezkoder-jwt=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJxdWVudGluMiIsImlhdCI6MTcwNzg0NDg1MSwiZXhwIjoxNzA4MTQ0ODUxfQ.Q7WmUGf_mhmMBSo3pZub3mkgBEM9ZpCgeCn6X2wokpA
+
+{
+  "quantity": 1,
+  "unit": "MILLILITER"
+}
 
 ### POST Create a new recipe
 POST http://localhost:9001/api/recipe
@@ -21,8 +34,41 @@ Accept: application/json
 {
   "name": "New Post@",
   "time": 10,
-  "season": "summer",
-  "steps": ["step1", "step2"]
+  "season": "SUMMER",
+  "portions": 4,
+  "steps": [
+    "step1",
+    "step2"
+  ],
+  "ingredients": [
+    {
+      "name": "ingredient1",
+      "quantity": 1,
+      "unit": "MILLILITER"
+    },
+    {
+      "name": "ingredient2",
+      "quantity": 2.5,
+      "unit": "GRAM"
+    }
+  ]
+}
+
+
+### POST Create a new recipe
+POST http://localhost:9001/api/recipe
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "New Post@",
+  "time": 10,
+  "season": "SUMMER",
+  "portions": 4,
+  "steps": [
+    "step1",
+    "step2"
+  ]
 }
 
 
@@ -42,7 +88,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "username": "quentin2ml",
+  "username": "quentin2",
   "email": "quentin2@quentin.fr",
   "password": "quentin2",
   "role": ["ROLE_USER"]

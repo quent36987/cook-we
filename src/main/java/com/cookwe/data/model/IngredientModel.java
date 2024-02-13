@@ -3,6 +3,7 @@ package com.cookwe.data.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Data
@@ -21,14 +22,14 @@ public class IngredientModel {
     @NotBlank
     private String name;
 
-    @NotBlank
+    @NotNull(message = "Quantity is required")
     private Float quantity;
 
     @Enumerated(EnumType.STRING)
     private EUnit unit;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipe_id")
+    @JoinColumn(name = "recipe_id", referencedColumnName = "id")
     @JsonIgnore
     private RecipeModel recipe;
 }
