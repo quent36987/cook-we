@@ -7,6 +7,9 @@ import com.cookwe.presentation.response.CommentResponse;
 import com.cookwe.utils.converters.CommentEntityToCommentResponse;
 import com.cookwe.utils.errors.RestError;
 import com.cookwe.utils.security.services.UserDetailsImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/comments")
+@Tag(name = "Comment", description = "Comment operations")
 public class CommentController {
 
     @Autowired
@@ -32,12 +36,8 @@ public class CommentController {
         throw RestError.USER_NOT_FOUND.get();
     }
 
-    /**
-     * Get all comments
-     *
-     * @param recipeId - The id of the recipe
-     * @return - An List object of Comment full filled
-     */
+    @Operation(summary = "Get all comments")
+    @Parameter(name = "recipeId", description = "The id of the recipe")
     @GetMapping("/recipes/{recipeId}")
     public List<CommentResponse> getCommentsByRecipeId(@PathVariable Long recipeId) {
         List<CommentEntity> comments = commentService.getCommentsByRecipeId(recipeId);
@@ -45,13 +45,8 @@ public class CommentController {
         return CommentEntityToCommentResponse.convertList(comments);
     }
 
-    /**
-     * Create a new comment
-     *
-     * @param recipeId - The id of the recipe
-     * @param request  - A CreateCommentRequest object
-     * @return - A Comment object
-     */
+    @Operation(summary = "Create a comment")
+    @Parameter(name = "recipeId", description = "The id of the recipe")
     @PostMapping("/recipes/{recipeId}")
     public CommentResponse createComment(
             @PathVariable Long recipeId,
@@ -65,11 +60,8 @@ public class CommentController {
         return CommentEntityToCommentResponse.convert(createdComment);
     }
 
-    /**
-     * Delete a comment
-     *
-     * @param commentId - The id of the comment
-     */
+    @Operation(summary = "Delete a comment")
+    @Parameter(name = "commentId", description = "The id of the comment")
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
         commentService.deleteComment(getUserId(), commentId);
@@ -77,13 +69,8 @@ public class CommentController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Update a comment
-     *
-     * @param commentId - The id of the comment
-     * @param request   - A UpdateCommentRequest object
-     * @return - A Comment object
-     */
+    @Operation(summary = "Update a comment")
+    @Parameter(name = "commentId", description = "The id of the comment")
     @PutMapping("/{commentId}")
     public CommentResponse updateComment(
             @PathVariable Long commentId,
@@ -93,12 +80,8 @@ public class CommentController {
         return CommentEntityToCommentResponse.convert(updatedComment);
     }
 
-    /**
-     * Get all comments by user id
-     *
-     * @param username - The username of the user
-     * @return - An List object of Comment full filled
-     */
+    @Operation(summary = "Get all comments by user")
+    @Parameter(name = "username", description = "The username of the user")
     @GetMapping("/users/{username}")
     public List<CommentResponse> getCommentsByUserId(@PathVariable String username) {
         List<CommentEntity> comments = commentService.getCommentsByUsername(username);

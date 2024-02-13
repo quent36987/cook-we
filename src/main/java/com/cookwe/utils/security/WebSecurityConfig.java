@@ -79,6 +79,8 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                                 .requestMatchers("/api/recipes/**").permitAll()
                                 .requestMatchers("/api/comments/**").permitAll()
                                 .requestMatchers("/api/ingredients/**").permitAll()
+                                .requestMatchers("/swagger-ui/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**").permitAll()
                                 .requestMatchers("/api/users/**").authenticated()
                                 .anyRequest().authenticated()
 

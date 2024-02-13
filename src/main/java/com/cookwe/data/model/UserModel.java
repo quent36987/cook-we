@@ -61,6 +61,11 @@ public class UserModel {
     @JsonIgnore
     private Set<RecipeModel> favoriteRecipes = new HashSet<>();
 
+    public void addFavoriteRecipe(RecipeModel recipe) {
+        favoriteRecipes.add(recipe);
+        recipe.getFavoritedBy().add(this);
+    }
+
     public UserModel(String username, String email, String password) {
         this.username = username;
         this.email = email;

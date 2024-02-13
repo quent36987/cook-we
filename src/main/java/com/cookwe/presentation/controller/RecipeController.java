@@ -1,15 +1,15 @@
 package com.cookwe.presentation.controller;
 
-import com.cookwe.data.model.RecipeModel;
 import com.cookwe.domain.entity.RecipeEntity;
 import com.cookwe.domain.service.RecipeService;
-
-
 import com.cookwe.presentation.request.CreateRecipeRequest;
 import com.cookwe.presentation.response.RecipeResponse;
 import com.cookwe.utils.converters.RecipeEntityToRecipeResponse;
 import com.cookwe.utils.errors.RestError;
 import com.cookwe.utils.security.services.UserDetailsImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -20,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/recipes")
+@Tag(name = "Recipe", description = "Recipe operations")
 public class RecipeController {
 
 
@@ -35,12 +36,8 @@ public class RecipeController {
         throw RestError.USER_NOT_FOUND.get();
     }
 
-    /**
-     * Read - Get all recipes
-     *
-     * @return - An List object of Recipe full filled
-     */
     @GetMapping("")
+    @Operation(summary = "Get all recipes")
     public List<RecipeResponse> getRecipes() {
         List<RecipeEntity> recipes = recipeService.getRecipes();
 
@@ -48,6 +45,8 @@ public class RecipeController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get a recipe by id")
+    @Parameter(name = "id", description = "The id of the recipe")
     public RecipeResponse getRecipeById(@PathVariable Long id) {
         RecipeEntity recipe = recipeService.getRecipeById(id);
 
@@ -55,19 +54,10 @@ public class RecipeController {
         return RecipeEntityToRecipeResponse.convert(recipe);
     }
 
-    /**
-     * Create - Add a new recipe
-     *
-     * @param request An object recipe (name, time)
-     * @return - An object recipe full filled
-     */
     @PostMapping("")
     @PreAuthorize("hasRole('USER')")
+    @Operation(summary = "Create a recipe")
     public RecipeResponse createRecipe(@RequestBody CreateRecipeRequest request) {
-//        if (request == null) {
-//            throw RestError.MISSING_FIELD.get("request");
-//        } //FIXME need ?
-
         if (request.name == null || request.name.isEmpty()) {
             throw RestError.MISSING_FIELD.get("name");
         }
