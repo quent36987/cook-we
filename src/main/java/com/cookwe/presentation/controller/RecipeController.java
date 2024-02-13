@@ -26,7 +26,6 @@ public class RecipeController {
     @Autowired
     private RecipeService recipeService;
 
-
     public Long getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
@@ -35,7 +34,6 @@ public class RecipeController {
 
         throw RestError.USER_NOT_FOUND.get();
     }
-
 
     /**
      * Read - Get all recipes

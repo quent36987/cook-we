@@ -1,21 +1,19 @@
 package com.cookwe.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@With
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentEntity {
 
     private Long id;
     private String text;
-    private String userId;
+    private UserEntity user;
     private Long recipeId;
     private LocalDateTime createdAt;
 }

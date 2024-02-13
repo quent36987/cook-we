@@ -1,6 +1,7 @@
 package com.cookwe.data.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -40,12 +41,12 @@ public class RecipeModel {
 
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RecipeStepModel> steps = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "favoriteRecipes")
+    @ManyToMany(mappedBy = "favoriteRecipes", fetch = FetchType.LAZY)
     @JsonIgnore
-    private Set<UserModel> favoritedBy = new HashSet<>();
+    public List<UserModel> favoritedBy = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     @JsonIgnore

@@ -6,7 +6,10 @@ Accept: application/json
 GET http://localhost:9001/api/recipe/1
 Accept: application/json
 
-###
+### GET All Comments of a user
+GET http://localhost:9001/api/comments/user/quentin2
+Accept: application/json
+
 
 Cookie: bezkoder-jwt=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJxdWVudGluMiIsImlhdCI6MTcwNzc2NDUxNCwiZXhwIjoxNzA4MDY0NTE0fQ.rEoc4mYWJL1cRhQkckQxtRfS8-bUKUW1WRBxdfZBFVI
 
@@ -23,13 +26,23 @@ Accept: application/json
 }
 
 
+### POST Create a comment
+POST http://localhost:9001/api/comments/recipe/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "New Comment"
+}
+
+
 ###
 POST http://localhost:9001/api/auth/signup
 Accept: application/json
 Content-Type: application/json
 
 {
-  "username": "quentin2",
+  "username": "quentin2ml",
   "email": "quentin2@quentin.fr",
   "password": "quentin2",
   "role": ["ROLE_USER"]

@@ -84,6 +84,8 @@ public class AuthController {
             throw RestError.EMAIL_ALREADY_EXISTS.get(signUpRequest.getEmail());
         }
 
+        System.out.println("userRepository.existsByEmail(signUpRequest.getEmail()): ");
+
         // Create new user's account
         UserModel user = new UserModel(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),

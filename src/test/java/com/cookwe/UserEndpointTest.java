@@ -36,18 +36,12 @@ public class UserEndpointTest {
     @Autowired
     private RecipeRepository recipeRepository;
 
-    private static final String USERNAME_1 = "test-username";
+    private static final String USERNAME_1 = "username";
     private static final String PASSWORD_1 = "test-password";
     private static final String EMAIL_1 = "test@test.fr";
-    private static final String USERNAME_2 = "test-username2";
+    private static final String USERNAME_2 = "username2";
     private static final String PASSWORD_2 = "test-password2";
     private static final String EMAIL_2 = "test@test.fr2";
-
-    @AfterEach
-    public void cleanup() {
-        userRepository.deleteAll();
-        recipeRepository.deleteAll();
-    }
 
     @Test
     public void testRegistration() throws Exception {

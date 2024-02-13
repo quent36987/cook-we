@@ -16,7 +16,7 @@ public class RecipeModelToRecipeEntity {
                 .withUser(UserModelToUserEntity.convert(recipeModel.getUser()))
                 .withCreatedAt(recipeModel.getCreatedAt())
                 .withSteps(RecipeStepModelToRecipeStepEntity.convertList(recipeModel.getSteps()))
-                .withFavoritedBy(UserModelToUserEntity.convertSet(recipeModel.getFavoritedBy()));
+                .withFavoritedBy(UserModelToUserEntity.convertList(recipeModel.getFavoritedBy()));
     }
 
     public static List<RecipeEntity> convertList(Iterable<RecipeModel> recipeModels) {

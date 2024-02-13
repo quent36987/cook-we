@@ -30,9 +30,11 @@ public class RecipeService {
     @Autowired
     private UserRepository userRepository;
 
-    @Transactional
+    // @Transactional
     public List<RecipeEntity> getRecipes() {
         Iterable<RecipeModel> recipes = recipeRepository.findAll();
+
+        //System.out.println("recipes: " + recipes.toString());
 
         return RecipeModelToRecipeEntity.convertList(recipes);
     }
@@ -42,21 +44,20 @@ public class RecipeService {
         Optional<RecipeModel> optionalRecipe = recipeRepository.findById(id);
 
         if (optionalRecipe.isEmpty()) {
-            throw RestError.EMAIL_ALREADY_EXISTS.get(id);
+            throw RestError.RECIPE_NOT_FOUND.get(id);
         }
 
         RecipeModel recipe = optionalRecipe.get();
 
-        System.out.println("recipe: " + recipe);
-        System.out.println("recipe.user: " + recipe.getUser());
-        System.out.println("recipe.steps: " + recipe.getUser().getUsername());
-
-        System.out.println("recipe.steps: " + userRepository.findByUsername("test-username"));
-
-
-        List<RecipeStepModel> steps = new ArrayList<>();
-        recipeStepRepository.findByRecipeId(id).forEach(steps::add);
-        recipe.setSteps(steps);
+        // FIXME WHYYYY
+//          List<UserModel> users = new ArrayList<>();
+//          // get user who liked the recipe
+//            recipe.getFavoritedBy().forEach(user -> {
+//                UserModel userModel = userRepository.findById(user.getId()).get();
+//                users.add(userModel);
+//            });
+//
+//            recipe.setFavoritedBy(users);
 
         return RecipeModelToRecipeEntity.convert(recipe);
     }

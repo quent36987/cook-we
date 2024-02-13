@@ -14,22 +14,11 @@ public class UserModelToUserEntity {
                 .withEmail(userModel.getEmail());
     }
 
-    public static List<UserEntity> convertList(List<UserModel> userModels) {
+    public static List<UserEntity> convertList(Iterable<UserModel> userModels) {
         List<UserEntity> responses = new ArrayList<>();
         for (UserModel userModel : userModels) {
             responses.add(convert(userModel));
         }
         return responses;
     }
-
-    public static List<UserEntity> convertSet(Set<UserModel> userModels) {
-        List<UserEntity> responses = new ArrayList<>();
-        for (UserModel userModel : userModels) {
-            responses.add(convert(userModel));
-        }
-        return responses;
-    }
-
-
-    
 }
