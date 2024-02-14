@@ -1,10 +1,13 @@
 package com.cookwe.presentation.controller;
 
 import com.cookwe.domain.entity.RecipeEntity;
+import com.cookwe.domain.entity.RecipeStepEntity;
 import com.cookwe.domain.service.RecipeService;
 import com.cookwe.presentation.request.CreateRecipeRequest;
 import com.cookwe.presentation.response.RecipeResponse;
+import com.cookwe.presentation.response.RecipeStepResponse;
 import com.cookwe.utils.converters.RecipeEntityToRecipeResponse;
+import com.cookwe.utils.converters.RecipeStepEntityToRecipeStepResponse;
 import com.cookwe.utils.errors.RestError;
 import com.cookwe.utils.security.services.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,10 +51,19 @@ public class RecipeController {
     @Operation(summary = "Get a recipe by id")
     @Parameter(name = "id", description = "The id of the recipe")
     public RecipeResponse getRecipeById(@PathVariable Long id) {
-        RecipeEntity recipe = recipeService.getRecipeById(id);
+        RecipeEntity recipe = recipeService.getRecipeEntityById(id);
 
         System.out.println("recipe: " + recipe);
         return RecipeEntityToRecipeResponse.convert(recipe);
+    }
+
+    @GetMapping("/{recipeId}/steps")
+    @Operation(summary = "Get all steps of a recipe")
+    @Parameter(name = "recipeId", description = "The id of the recipe")
+    public List<RecipeStepResponse> getStepsByRecipeId(@PathVariable Long recipeId) {
+        Iterable<RecipeStepEntity> steps = recipeService.getStepsByRecipeId(recipeId);
+
+        return RecipeStepEntityToRecipeStepResponse.convertList(steps);
     }
 
     @PostMapping("")
@@ -88,5 +100,50 @@ public class RecipeController {
         System.out.println("savedRecipe: " + savedRecipe);
 
         return RecipeEntityToRecipeResponse.convert(savedRecipe);
+    }
+
+    @PutMapping("/{recipeId}")
+    @PreAuthorize("hasRole('USER')")
+    @Operation(summary = "Update a recipe")
+    @Parameter(name = "id", description = "The id of the recipe")
+    public RecipeResponse updateRecipe(@PathVariable Long recipeId, @RequestBody CreateRecipeRequest request) {
+        if (request.name == null || request.name.isEmpty()) {
+            throw RestError.MISSING_FIELD.get("name");
+        }
+
+        if (request.time == null || request.time <= 0) {
+            throw RestError.MISSING_FIELD.get("time");
+        }
+
+        if (request.portions == null || request.portions <= 0) {
+            throw RestError.MISSING_FIELD.get("portions");
+        }
+
+        if (request.ingredients == null) {
+            throw RestError.MISSING_FIELD.get("ingredients");
+        }
+
+        RecipeEntity updatedRecipe = recipeService.updateRecipe(
+                getUserId(),
+                recipeId,
+                request.name,
+                request.time,
+                request.portions,
+                request.season,
+                request.steps,
+                request.ingredients
+        );
+
+        return RecipeEntityToRecipeResponse.convert(updatedRecipe);
+    }
+
+    @DeleteMapping("/{recipeId}")
+    @PreAuthorize("hasRole('USER')")
+    @Operation(summary = "Delete a recipe")
+    @Parameter(name = "id", description = "The id of the recipe")
+    public String deleteRecipe(@PathVariable Long recipeId) {
+        recipeService.deleteRecipe(getUserId(), recipeId);
+
+        return "Recipe deleted";
     }
 }

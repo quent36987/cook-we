@@ -14,7 +14,7 @@ public class RecipeStepModelToRecipeStepEntity {
                 .withRecipeId(recipeStepModel.getRecipe().getId());
     }
 
-    public static List<RecipeStepEntity> convertList(List<RecipeStepModel> recipeStepModels) {
+    public static List<RecipeStepEntity> convertList(Iterable<RecipeStepModel> recipeStepModels) {
         List<RecipeStepEntity> responses = new ArrayList<>();
         for (RecipeStepModel recipeStepModel : recipeStepModels) {
             responses.add(convert(recipeStepModel));

@@ -13,7 +13,7 @@ public class RecipeStepEntityToRecipeStepResponse {
                 .withText(recipeStepEntity.getText());
     }
 
-    public static List<RecipeStepResponse> convertList(List<RecipeStepEntity> recipeStepEntities) {
+    public static List<RecipeStepResponse> convertList(Iterable<RecipeStepEntity> recipeStepEntities) {
         List<RecipeStepResponse> responses = new ArrayList<>();
         for (RecipeStepEntity recipeStepEntity : recipeStepEntities) {
             responses.add(convert(recipeStepEntity));

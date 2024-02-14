@@ -1,5 +1,5 @@
 ### GET All Posts
-GET http://localhost:9001/api/recipes
+GET http://localhost:9001/api/recipes/72
 Accept: application/json
 
 ### GET All Posts
@@ -23,7 +23,8 @@ GET http://localhost:9001/api/comments/user/quentin2
 Accept: application/json
 
 ### GET All Comments of a user
-GET http://localhost:9001/api/roles/username/quentin2
+GET http://localhost:9001/api/roles/users/
+quentin2
 Accept: application/json
 
 ### GET All Comments of a user
@@ -31,7 +32,7 @@ DELETE http://localhost:9001/api/roles/ROLE_ADMIN/users/1
 Accept: application/json
 
 ### GET All Comments of a user
-GET http://localhost:9001/api/ingredients/recipe/4
+GET http://localhost:9001/api/ingredients/recipes/1
 Accept: application/json
 
 ### sdf
@@ -73,9 +74,37 @@ Accept: application/json
   ]
 }
 
+### PUT Update a new recipe
+PUT http://localhost:9001/api/recipes/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "New Post@alias",
+  "time": 11,
+  "season": "SUMMER",
+  "portions": 5,
+  "steps": [
+    "step1alias",
+    "step2alis"
+  ],
+  "ingredients": [
+    {
+      "name": "ingredient1alias",
+      "quantity": 1.01,
+      "unit": "CUP"
+    },
+    {
+      "name": "ingredient2alias",
+      "quantity": 2.01,
+      "unit": "GRAM"
+    }
+  ]
+}
+
 
 ### POST Create a new recipe
-POST http://localhost:9001/api/recipe
+POST http://localhost:9001/api/recipes
 Content-Type: application/json
 Accept: application/json
 
@@ -87,7 +116,19 @@ Accept: application/json
   "steps": [
     "step1",
     "step2"
-  ]
+  ],
+    "ingredients": [
+        {
+        "name": "ingredient1",
+        "quantity": 1,
+        "unit": "MILLILITER"
+        },
+        {
+        "name": "ingredient2",
+        "quantity": 2.5,
+        "unit": "GRAM"
+        }
+    ]
 }
 
 

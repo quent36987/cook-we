@@ -4,8 +4,10 @@ import com.cookwe.domain.entity.RecipeEntity;
 import com.cookwe.domain.entity.UserEntity;
 import com.cookwe.domain.service.UserService;
 import com.cookwe.presentation.response.RecipeResponse;
+import com.cookwe.presentation.response.UserDetailResponse;
 import com.cookwe.presentation.response.UserResponse;
 import com.cookwe.utils.converters.RecipeEntityToRecipeResponse;
+import com.cookwe.utils.converters.UserEntityToUserDetailResponse;
 import com.cookwe.utils.converters.UserEntityToUserResponse;
 import com.cookwe.utils.errors.RestError;
 import com.cookwe.utils.security.services.UserDetailsImpl;
@@ -54,7 +56,7 @@ public class UserController {
 
     @Operation(summary = "Get user by username")
     @Parameter(name = "username", description = "The username of the user")
-    @GetMapping("/username/{username}")
+    @GetMapping("/{username}")
     public UserResponse getUserByUsername(@PathVariable String username) {
         UserEntity userEntity = userService.getUserByUsername(username);
 
@@ -81,13 +83,36 @@ public class UserController {
 
     @Operation(summary = "Get user recipes with username")
     @Parameter(name = "username", description = "The username of the user")
-    @GetMapping("/username/{username}/recipes")
+    @GetMapping("/{username}/recipes")
     public List<RecipeResponse> getRecipesByUsername(@PathVariable String username) {
         List<RecipeEntity> recipeEntities = userService.getRecipesByUsername(username);
 
         return RecipeEntityToRecipeResponse.convertList(recipeEntities);
     }
 
+    @Operation(summary = "Get my user details")
+    @GetMapping("/details")
+    public UserDetailResponse getMyUserDetails() {
+        UserEntity userEntity = userService.getUserById(getUserId());
 
+        return UserEntityToUserDetailResponse.convert(userEntity);
+    }
 
+    @Operation(summary = "Get user details (need ADMIN role)")
+    @GetMapping("/{username}/details")
+    @Parameter(name = "username", description = "The username of the user")
+    public UserDetailResponse getUserDetails(@PathVariable String username) {
+        UserEntity userEntity = userService.getUserByUsername(username);
+
+        return UserEntityToUserDetailResponse.convert(userEntity);
+    }
+
+    @Operation(summary = "Update user details (first name, last name)")
+    @PutMapping("/details")
+    @Parameter(name = "username", description = "The username of the user")
+    public UserDetailResponse updateUserDetails(@RequestBody UserDetailResponse request) {
+        UserEntity userEntity = userService.updateUserDetails(getUserId(), request.firstName, request.lastName);
+
+        return UserEntityToUserDetailResponse.convert(userEntity);
+    }
 }

@@ -7,7 +7,6 @@ import com.cookwe.data.repository.UserRepository;
 import com.cookwe.domain.entity.RecipeEntity;
 import com.cookwe.domain.entity.UserEntity;
 import com.cookwe.utils.converters.RecipeModelToRecipeEntity;
-import com.cookwe.utils.converters.UserEntityToUserResponse;
 import com.cookwe.utils.converters.UserModelToUserEntity;
 import com.cookwe.utils.errors.RestError;
 import lombok.Data;
@@ -48,7 +47,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserModel getUserById(Long id) {
+    public UserModel getUserModelById(Long id) {
         Optional<UserModel> user = userRepository.findById(id);
 
         if (user.isEmpty()) {
@@ -59,7 +58,12 @@ public class UserService {
     }
 
     @Transactional
-    public RecipeModel getRecipeById(Long id) {
+    public UserEntity getUserById(Long id) {
+        return UserModelToUserEntity.convert(getUserModelById(id));
+    }
+
+    @Transactional
+    public RecipeModel getRecipeModelById(Long id) {
         Optional<RecipeModel> recipe = recipeRepository.findById(id);
 
         if (recipe.isEmpty()) {
@@ -71,8 +75,8 @@ public class UserService {
 
     @Transactional
     public void addFavoriteRecipe(Long userId, Long recipeId) {
-        UserModel user = getUserById(userId);
-        RecipeModel favoriteRecipe = getRecipeById(recipeId);
+        UserModel user = getUserModelById(userId);
+        RecipeModel favoriteRecipe = getRecipeModelById(recipeId);
 
         List<RecipeModel> favoriteRecipes = userRepository.findFavoriteRecipesByUserId(userId);
 
@@ -86,8 +90,8 @@ public class UserService {
 
     @Transactional
     public void removeFavoriteRecipe(Long userId, Long recipeId) {
-        UserModel user = getUserById(userId);
-        RecipeModel favoriteRecipe = getRecipeById(recipeId);
+        UserModel user = getUserModelById(userId);
+        RecipeModel favoriteRecipe = getRecipeModelById(recipeId);
 
         List<RecipeModel> favoriteRecipes = userRepository.findFavoriteRecipesByUserId(userId);
 
@@ -135,5 +139,17 @@ public class UserService {
         List<RecipeModel> recipes = recipeRepository.findByUserId(user.getId());
 
         return RecipeModelToRecipeEntity.convertList(recipes);
+    }
+
+    @Transactional
+    public UserEntity updateUserDetails(Long id, String firstName, String lastName) {
+        UserModel user = getUserModelById(id);
+
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+
+        userRepository.save(user);
+
+        return UserModelToUserEntity.convert(user);
     }
 }

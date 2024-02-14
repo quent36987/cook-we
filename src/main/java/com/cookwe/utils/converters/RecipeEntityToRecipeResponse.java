@@ -21,7 +21,7 @@ public class RecipeEntityToRecipeResponse {
 
     }
 
-    public static List<RecipeResponse> convertList(List<RecipeEntity> recipeEntities) {
+    public static List<RecipeResponse> convertList(Iterable<RecipeEntity> recipeEntities) {
         List<RecipeResponse> responses = new ArrayList<>();
         for (RecipeEntity recipeEntity : recipeEntities) {
             responses.add(convert(recipeEntity));

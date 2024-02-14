@@ -11,6 +11,7 @@ import com.cookwe.utils.errors.RestError;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,13 +28,15 @@ public class CommentService {
     @Autowired
     private RecipeRepository recipeRepository;
 
+    @Transactional
     public List<CommentEntity> getCommentsByRecipeId(Long recipeId) {
         Iterable<CommentModel> comments = commentRepository.findByRecipeId(recipeId);
 
         return CommentModelToCommentEntity.convertList(comments);
     }
 
-    private CommentModel getCommentById(Long commentId) {
+    @Transactional
+    public CommentModel getCommentById(Long commentId) {
         Optional<CommentModel> comment = commentRepository.findById(commentId);
 
         if (comment.isEmpty()) {
@@ -43,6 +46,7 @@ public class CommentService {
         return comment.get();
     }
 
+    @Transactional
     public CommentEntity createComment(Long userId, Long recipeId, String text) {
         Optional<RecipeModel> recipe = recipeRepository.findById(recipeId);
 
@@ -58,6 +62,7 @@ public class CommentService {
         return CommentModelToCommentEntity.convert(commentRepository.save(commentModel));
     }
 
+    @Transactional
     public void deleteComment(Long UserId, Long commentId) {
         CommentModel comment = getCommentById(commentId);
 
@@ -68,6 +73,7 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
+    @Transactional
     public CommentEntity updateComment(Long userId, Long commentId, String text) {
         CommentModel comment = getCommentById(commentId);
 
@@ -80,6 +86,7 @@ public class CommentService {
         return CommentModelToCommentEntity.convert(commentRepository.save(comment));
     }
 
+    @Transactional
     public List<CommentEntity> getCommentsByUsername(String username) {
         Iterable<CommentModel> comments = commentRepository.findByUsername(username);
 

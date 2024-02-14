@@ -36,7 +36,7 @@ public class CommentController {
         throw RestError.USER_NOT_FOUND.get();
     }
 
-    @Operation(summary = "Get all comments")
+    @Operation(summary = "Get all comments of a recipe")
     @Parameter(name = "recipeId", description = "The id of the recipe")
     @GetMapping("/recipes/{recipeId}")
     public List<CommentResponse> getCommentsByRecipeId(@PathVariable Long recipeId) {
@@ -45,7 +45,7 @@ public class CommentController {
         return CommentEntityToCommentResponse.convertList(comments);
     }
 
-    @Operation(summary = "Create a comment")
+    @Operation(summary = "Create a comment for a recipe")
     @Parameter(name = "recipeId", description = "The id of the recipe")
     @PostMapping("/recipes/{recipeId}")
     public CommentResponse createComment(

@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class UtilsTest {
@@ -64,6 +65,18 @@ public class UtilsTest {
         return createRecipeRequest;
     }
 
+    public static CreateRecipeRequest createSimpleRecipeRequestBis() {
+        CreateRecipeRequest createRecipeRequest = new CreateRecipeRequest();
+        createRecipeRequest.setName("test-bis");
+        createRecipeRequest.setTime(1L);
+        createRecipeRequest.setPortions(40L);
+        createRecipeRequest.setSeason("WINTER");
+        createRecipeRequest.setIngredients(new ArrayList<>());
+        createRecipeRequest.setSteps(new ArrayList<>());
+
+        return createRecipeRequest;
+    }
+
 
     public static String STRING_INGREDIENTS = "[{\"name\":\"test-ingredient\",\"quantity\":10.0,\"unit\":\"MILLILITER\"},{\"name\":\"test-ingredient2\",\"quantity\":20.0,\"unit\":\"GRAM\"}]";
 
@@ -74,6 +87,37 @@ public class UtilsTest {
 
         return createRecipeRequest;
     }
+
+    public static String STRING_INGREDIENTS_BIS = "[{\"name\":\"test-bis\",\"quantity\":1.5,\"unit\":\"PIECE\"},{\"name\":\"test-bis2\",\"quantity\":2.0,\"unit\":\"CUP\"}]";
+
+    public static CreateRecipeRequest createRecipeRequestWithIngredientsBis() {
+        CreateRecipeRequest createRecipeRequest = createSimpleRecipeRequestBis();
+        createRecipeRequest.getIngredients().add(new CreateIngredientRequest("test-bis", 1.5F, "PIECE"));
+        createRecipeRequest.getIngredients().add(new CreateIngredientRequest("test-bis2", 2F, "CUP"));
+
+        return createRecipeRequest;
+    }
+
+    public static String STRING_STEPS = "[{\"stepNumber\":0,\"text\":\"step 1\"},{\"stepNumber\":1,\"text\":\"step 2\"}]";
+
+    public static List<String> getRecipeSteps() {
+        List<String> steps = new ArrayList<>();
+        steps.add("step 1");
+        steps.add("step 2");
+
+        return steps;
+    }
+
+    public static String STRING_STEPS_BIS = "[{\"stepNumber\":0,\"text\":\"step 1 bis\"},{\"stepNumber\":1,\"text\":\"step 2 bis\"}]";
+
+    public static List<String> getRecipeStepsBis() {
+        List<String> steps = new ArrayList<>();
+        steps.add("step 1 bis");
+        steps.add("step 2 bis");
+
+        return steps;
+    }
+
 
     public static RecipeResponse createRecipe(MockMvc mockMvc, ObjectMapper objectMapper, String cookie, CreateRecipeRequest recipe) throws Exception {
         return objectMapper.readValue(mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")

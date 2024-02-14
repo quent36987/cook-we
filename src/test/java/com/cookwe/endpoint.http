@@ -130,14 +130,14 @@ Content-Type: application/json
 
 
 ###Get user by username
-GET http://localhost:9001/api/users/username/johndoe
+GET http://localhost:9001/api/users/johndoe
 Accept: application/json
 
 
 
 
 ###Get user recipes with username
-GET http://localhost:9001/api/users/username/johndoe/recipes
+GET http://localhost:9001/api/users/johndoe/recipes
 Accept: application/json
 
 
