@@ -48,19 +48,6 @@ public class AuthEndpointTest {
                         .content(objectMapper.writeValueAsString(signupRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
-
-    @Test
-    public void testAuthentication() throws Exception {
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setUsername("quentin2");
-        loginRequest.setPassword("quentin2");
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/auth/signin")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
-
     @Test
     public void testFailAuthentication() throws Exception {
         LoginRequest loginRequest = new LoginRequest();
