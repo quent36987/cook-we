@@ -16,9 +16,9 @@ public class RecipeEntityToRecipeResponse {
                 .withSeason(recipeEntity.getSeason())
                 .withUser(UserEntityToUserResponse.convert(recipeEntity.getUser()))
                 .withCreatedAt(recipeEntity.getCreatedAt())
-                .withSteps(RecipeStepEntityToRecipeStepResponse.convertList(recipeEntity.getSteps()))
-                .withFavoritedBy(UserEntityToUserResponse.convertList(recipeEntity.getFavoritedBy())
-                );
+                .withSteps(RecipeStepEntityToRecipeStepResponse.convertList(recipeEntity.getSteps()));
+//                .withFavoritedBy(UserEntityToUserResponse.convertList(recipeEntity.getFavoritedBy())
+
     }
 
     public static List<RecipeResponse> convertList(List<RecipeEntity> recipeEntities) {

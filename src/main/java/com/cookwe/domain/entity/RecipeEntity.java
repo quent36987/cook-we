@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -32,5 +33,5 @@ public class RecipeEntity {
 
     public List<RecipeStepEntity> steps;
 
-    public List<UserEntity> favoritedBy;
+//    public List<UserEntity> favoritedBy = new ArrayList<>();
 }

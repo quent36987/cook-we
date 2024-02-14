@@ -7,7 +7,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -52,19 +54,15 @@ public class UserModel {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     @JsonIgnore
-    private Set<RoleModel> roles = new HashSet<>();
+    private List<RoleModel> roles = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_favorite_recipes",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "recipe_id"))
     @JsonIgnore
-    private Set<RecipeModel> favoriteRecipes = new HashSet<>();
+    private List<RecipeModel> favoriteRecipes = new ArrayList<>();
 
-    public void addFavoriteRecipe(RecipeModel recipe) {
-        favoriteRecipes.add(recipe);
-        recipe.getFavoritedBy().add(this);
-    }
 
     public UserModel(String username, String email, String password) {
         this.username = username;

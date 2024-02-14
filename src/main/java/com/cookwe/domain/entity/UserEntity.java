@@ -1,9 +1,12 @@
 package com.cookwe.domain.entity;
+
 import com.cookwe.data.model.RecipeModel;
 import com.cookwe.data.model.RoleModel;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -17,7 +20,7 @@ public class UserEntity {
     public String lastName;
     public String username;
     public String email;
-    public Set<RoleModel> roles = new HashSet<>();
-    public Set<RecipeModel> favoriteRecipes = new HashSet<>();
+    public List<RoleEntity> roles;
+    public List<RecipeEntity> favoriteRecipes = new ArrayList<>();
 }
 

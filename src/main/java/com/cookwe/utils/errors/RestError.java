@@ -23,7 +23,8 @@ public enum RestError {
     MISSING_USER_ID(400, "User id (X-user-id header) can not be null."),
     USERNAME_ALREADY_EXISTS(400, "Username %s already exists"),
     EMAIL_ALREADY_EXISTS(400, "Email %s already exists"),
-
+    ROLE_ALREADY_EXISTS(400, "Role %s already exists"),
+    ROLE_NOT_PRESENT(400, "Role %s not present"),
     // INTERNAL SERVER ERROR
     INTERNAL_SERVER_ERROR(500, "Internal server error"),
 

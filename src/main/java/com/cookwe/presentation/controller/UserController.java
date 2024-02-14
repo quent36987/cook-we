@@ -44,7 +44,7 @@ public class UserController {
         return RecipeEntityToRecipeResponse.convertList(recipeEntities);
     }
 
-    @Operation(summary = "Get user recipes")
+    @Operation(summary = "Get my recipes")
     @GetMapping("/recipes")
     public List<RecipeResponse> getRecipes() {
         List<RecipeEntity> recipeEntities = userService.getRecipes(getUserId());
@@ -78,6 +78,16 @@ public class UserController {
 
         return "Recipe deleted from favorites";
     }
+
+    @Operation(summary = "Get user recipes with username")
+    @Parameter(name = "username", description = "The username of the user")
+    @GetMapping("/username/{username}/recipes")
+    public List<RecipeResponse> getRecipesByUsername(@PathVariable String username) {
+        List<RecipeEntity> recipeEntities = userService.getRecipesByUsername(username);
+
+        return RecipeEntityToRecipeResponse.convertList(recipeEntities);
+    }
+
 
 
 }

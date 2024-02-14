@@ -1,0 +1,197 @@
+### Get all ingredients
+GET http://localhost:9001/api/ingredients/recipes/12345
+Accept: application/json
+
+
+
+
+### Add or update a new ingredient to a recipe
+PUT http://localhost:9001/api/ingredients/recipes/12345
+Accept: application/json
+Content-Type: application/json
+
+{ 
+  "name": "Carrot",
+  "quantity": 2,
+  "unit": "pieces"
+}
+
+
+
+
+###Update a comment
+PUT http://localhost:9001/api/comments/54321
+Accept: application/json
+Content-Type: application/json
+
+{ 
+  "text": "Updated comment text."
+}
+
+
+
+
+###Delete a comment
+DELETE http://localhost:9001/api/comments/54321
+
+
+
+
+###Add recipe to user favorites recipes
+POST http://localhost:9001/api/users/favorites-recipes/67890
+Accept: application/json
+
+
+
+
+###Delete recipe from user favorites recipes
+DELETE http://localhost:9001/api/users/favorites-recipes/67890
+Accept: application/json
+
+
+
+
+###Get all recipes
+GET http://localhost:9001/api/recipes
+Accept: application/json
+
+
+
+
+###Create a recipe
+POST http://localhost:9001/api/recipes
+Accept: application/json
+Content-Type: application/json
+
+{ 
+  "name": "Vegetable Soup",
+  "time": 45,
+  "portions": 4,
+  "season": "Winter",
+  "steps": ["Chop vegetables", "Boil water", "Add vegetables to water", "Simmer for 30 minutes"],
+  "ingredients": [{"name": "Carrot", "quantity": 2, "unit": "pieces"}, {"name": "Potato", "quantity": 3, "unit": "pieces"}]
+}
+
+
+
+
+###Get all comments
+GET http://localhost:9001/api/comments/recipes/12345
+Accept: application/json
+
+
+
+
+###Create a comment
+POST http://localhost:9001/api/comments/recipes/12345
+Accept: application/json
+Content-Type: application/json
+
+{ 
+  "text": "This recipe looks delicious!"
+}
+
+
+
+
+###Register a new user
+POST http://localhost:9001/api/auth/signup
+Accept: application/json
+Content-Type: application/json
+
+{ 
+  "username": "new_user",
+  "email": "new_user@example.com",
+  "password": "securepassword",
+  "role": ["user"]
+}
+
+
+
+
+###Sign out a user
+POST http://localhost:9001/api/auth/signout
+Accept: application/json
+
+
+
+
+###Authenticate a user
+POST http://localhost:9001/api/auth/signin
+Accept: application/json
+Content-Type: application/json
+
+{ 
+  "username": "new_user",
+  "password": "securepassword"
+}
+
+
+
+
+###Get user by username
+GET http://localhost:9001/api/users/username/johndoe
+Accept: application/json
+
+
+
+
+###Get user recipes with username
+GET http://localhost:9001/api/users/username/johndoe/recipes
+Accept: application/json
+
+
+
+
+###Get my recipes
+GET http://localhost:9001/api/users/recipes
+Accept: application/json
+
+
+
+
+###Get user favorite recipes
+GET http://localhost:9001/api/users/favorites-recipes
+Accept: application/json
+
+
+
+
+###my roles
+GET http://localhost:9001/api/roles/users
+Accept: application/json
+
+
+
+
+###Get roles by username
+GET http://localhost:9001/api/roles/username/johndoe
+Accept: application/json
+
+
+
+
+###Get all roles
+GET http://localhost:9001/api/roles/all
+Accept: application/json
+
+
+
+
+###Get a recipe by id
+GET http://localhost:9001/api/recipes/12345
+Accept: application/json
+
+
+
+
+###Get all comments by user
+GET http://localhost:9001/api/comments/users/johndoe
+Accept: application/json
+
+
+
+
+###Get the current user
+GET http://localhost:9001/api/auth/me
+Accept: application/json

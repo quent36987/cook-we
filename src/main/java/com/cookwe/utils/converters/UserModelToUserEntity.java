@@ -5,12 +5,15 @@ import com.cookwe.domain.entity.UserEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class UserModelToUserEntity {
     public static UserEntity convert(UserModel userModel) {
         return new UserEntity().withId(userModel.getId())
                 .withUsername(userModel.getUsername())
+                .withFirstName(userModel.getFirstName())
+                .withLastName(userModel.getLastName())
+                .withEmail(userModel.getEmail())
+                .withRoles(RoleModelToRoleEntity.convertList(userModel.getRoles()))
                 .withEmail(userModel.getEmail());
     }
 

@@ -1,5 +1,17 @@
 ### GET All Posts
-GET http://localhost:9001/api/recipe
+GET http://localhost:9001/api/recipes
+Accept: application/json
+
+### GET All Posts
+POST http://localhost:9001/api/users/favorites-recipes/6
+Accept: application/json
+
+### GET All Posts
+DELETE http://localhost:9001/api/users/favorites-recipes/6
+Accept: application/json
+
+### GET All Posts
+GET http://localhost:9001/api/users/favorites-recipes
 Accept: application/json
 
 ### GET Post by ID
@@ -10,6 +22,13 @@ Accept: application/json
 GET http://localhost:9001/api/comments/user/quentin2
 Accept: application/json
 
+### GET All Comments of a user
+GET http://localhost:9001/api/roles/username/quentin2
+Accept: application/json
+
+### GET All Comments of a user
+DELETE http://localhost:9001/api/roles/ROLE_ADMIN/users/1
+Accept: application/json
 
 ### GET All Comments of a user
 GET http://localhost:9001/api/ingredients/recipe/4
@@ -27,7 +46,7 @@ Cookie: bezkoder-jwt=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJxdWVudGluMiIsImlhdCI6MTcwNz
 }
 
 ### POST Create a new recipe
-POST http://localhost:9001/api/recipe
+POST http://localhost:9001/api/recipes
 Content-Type: application/json
 Accept: application/json
 
@@ -103,4 +122,13 @@ Content-Type: application/json
   "username": "quentin2",
   "password": "quentin2"
 }
+
+### GET My roles
+GET http://localhost:9001/api/roles/users
+Accept: application/json
+
+
+### GET My roles
+GET http://localhost:9001/api/auth/me
+Accept: application/json
 

@@ -1,6 +1,7 @@
 package com.cookwe.data.repository;
 
 import com.cookwe.data.model.RecipeModel;
+import com.cookwe.data.model.RoleModel;
 import com.cookwe.data.model.UserModel;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -19,4 +20,7 @@ public interface UserRepository extends CrudRepository<UserModel, Long> {
 
     @Query("SELECT u.favoriteRecipes FROM UserModel u WHERE u.id = :userId")
     List<RecipeModel> findFavoriteRecipesByUserId(Long userId);
+
+    @Query("SELECT u.roles FROM UserModel u WHERE u.id = :userId")
+    List<RoleModel> findRolesByUserId(Long userId);
 }

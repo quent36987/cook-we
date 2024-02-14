@@ -14,11 +14,9 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Data
@@ -34,11 +32,12 @@ public class UserService {
     private RoleRepository roleRepository;
 
     @Autowired
-    PasswordEncoder encoder;
+    private PasswordEncoder encoder;
 
+    @Transactional
     public void createUser(String username, String email, String password) {
         UserModel user = new UserModel(username, email, encoder.encode(password));
-        Set<RoleModel> roles = new HashSet<>();
+        List<RoleModel> roles = new ArrayList<>();
 
         RoleModel userRole = roleRepository.findByName(ERole.ROLE_USER)
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -48,6 +47,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     public UserModel getUserById(Long id) {
         Optional<UserModel> user = userRepository.findById(id);
 
@@ -58,6 +58,7 @@ public class UserService {
         return user.get();
     }
 
+    @Transactional
     public RecipeModel getRecipeById(Long id) {
         Optional<RecipeModel> recipe = recipeRepository.findById(id);
 
@@ -68,26 +69,37 @@ public class UserService {
         return recipe.get();
     }
 
+    @Transactional
     public void addFavoriteRecipe(Long userId, Long recipeId) {
         UserModel user = getUserById(userId);
         RecipeModel favoriteRecipe = getRecipeById(recipeId);
 
-        if (user.getFavoriteRecipes().contains(favoriteRecipe)) {
+        List<RecipeModel> favoriteRecipes = userRepository.findFavoriteRecipesByUserId(userId);
+
+        if (favoriteRecipes.contains(favoriteRecipe)) {
             throw RestError.RECIPE_ALREADY_FAVORITE.get(favoriteRecipe.getName());
         }
 
-        user.addFavoriteRecipe(favoriteRecipe);
+        favoriteRecipes.add(favoriteRecipe);
+        user.setFavoriteRecipes(favoriteRecipes);
     }
 
+    @Transactional
     public void removeFavoriteRecipe(Long userId, Long recipeId) {
         UserModel user = getUserById(userId);
         RecipeModel favoriteRecipe = getRecipeById(recipeId);
 
-        if (!user.getFavoriteRecipes().remove(favoriteRecipe)) {
+        List<RecipeModel> favoriteRecipes = userRepository.findFavoriteRecipesByUserId(userId);
+
+        if (!favoriteRecipes.contains(favoriteRecipe)) {
             throw RestError.RECIPE_NOT_FAVORITE.get(favoriteRecipe.getName());
         }
+
+        favoriteRecipes.remove(favoriteRecipe);
+        user.setFavoriteRecipes(favoriteRecipes);
     }
 
+    @Transactional
     public List<RecipeEntity> getFavoriteRecipes(Long userId) {
         List<RecipeModel> favoriteRecipes = userRepository.findFavoriteRecipesByUserId(userId);
 
@@ -100,6 +112,7 @@ public class UserService {
         return RecipeModelToRecipeEntity.convertList(recipes);
     }
 
+    @Transactional
     public UserEntity getUserByUsername(String username) {
         Optional<UserModel> user = userRepository.findByUsername(username);
 
@@ -110,8 +123,17 @@ public class UserService {
         return UserModelToUserEntity.convert(user.get());
     }
 
-
+    @Transactional
     public Iterable<UserModel> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Transactional
+    public List<RecipeEntity> getRecipesByUsername(String username) {
+        UserEntity user = getUserByUsername(username);
+
+        List<RecipeModel> recipes = recipeRepository.findByUserId(user.getId());
+
+        return RecipeModelToRecipeEntity.convertList(recipes);
     }
 }
