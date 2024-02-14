@@ -38,9 +38,6 @@ jobs:
       - name: Check Gradlew Permissions
         run: ls -l gradlew && chmod +x gradlew
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@ec92e829475ac0c2315ea8f9eced72db85bb337a # v3.0.0
-
       - name: Run Gradle Tests
         run: |
           ./gradlew test
@@ -60,6 +57,9 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Check Gradlew Permissions
+        run: ls -l gradlew && chmod +x gradlew
+
       - name: Build Application
         run: |
           ./gradlew build -x test -x check
@@ -74,3 +74,34 @@ jobs:
       - name: push Docker image
         run: |
           docker push ghcr.io/${{ github.repository }}:latest
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Login to GitHub Container Registry
+        run: echo "${{ secrets.CR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Run Docker Compose
+        run: |
+          docker-compose -f docker/docker-compose.all.yml up -d
+          sleep 10
+          curl -X GET "http://localhost:9001/v3/api-docs" -H "accept: application/json" -o openapi.yaml
+
+      - name: Generate Swagger UI
+        uses: Legion2/swagger-ui-action@v1
+        with:
+          spec-file: openapi.yaml
+          output: swagger-ui
+          GITHUB_TOKEN: ${{ secrets.CR_TOKEN2 }}
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.CR_TOKEN2 }}
+          publish_dir: swagger-ui

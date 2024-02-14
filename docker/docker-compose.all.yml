@@ -1,0 +1,42 @@
+#name: cook_we_all
+
+services:
+  postgres:
+    image: postgres:12.1-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: cook-we-bdd
+    expose:
+      - 5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - bdd-network
+
+  cook-we-back:
+    image: ghcr.io/quent36987/cook-we:latest
+    container_name: cook-we-back
+    ports:
+      - 9001:9001
+    depends_on:
+      - postgres
+    networks:
+      - bdd-network
+    environment:
+      PORT: 9001
+      BD_URL: jdbc:postgresql://postgres:5432/cook-we-bdd
+      BD_USER: admin
+      BD_PASSWORD: admin
+      JWT_SECRET: "======================BezKoder=Spring==========================="
+      JWT_EXPIRATION_MS: 86400000
+      JWT_COOKIE_NAME: bezkoder-jwt
+
+volumes:
+  postgres-data:
+
+networks:
+  bdd-network:
+
+
