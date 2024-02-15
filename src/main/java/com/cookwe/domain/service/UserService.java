@@ -117,6 +117,11 @@ public class UserService {
     }
 
     @Transactional
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    @Transactional
     public UserEntity getUserByUsername(String username) {
         Optional<UserModel> user = userRepository.findByUsername(username);
 

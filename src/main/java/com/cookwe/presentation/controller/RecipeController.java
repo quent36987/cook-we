@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -64,6 +65,15 @@ public class RecipeController {
         Iterable<RecipeStepEntity> steps = recipeService.getStepsByRecipeId(recipeId);
 
         return RecipeStepEntityToRecipeStepResponse.convertList(steps);
+    }
+
+    @GetMapping("/ingredients/search")
+    @Operation(summary = "Get all recipes with at most one of the given ingredients")
+    @Parameter(name = "ingredients", description = "The ingredients to search for")
+    public List<RecipeResponse> getRecipesByIngredients(@RequestParam List<String> ingredients) {
+        List<RecipeEntity> recipes = recipeService.getRecipesByIngredients(ingredients);
+
+        return RecipeEntityToRecipeResponse.convertList(recipes);
     }
 
     @PostMapping("")

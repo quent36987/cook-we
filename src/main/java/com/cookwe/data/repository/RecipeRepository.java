@@ -1,6 +1,7 @@
 package com.cookwe.data.repository;
 
 
+import com.cookwe.data.model.IngredientModel;
 import com.cookwe.data.model.RecipeModel;
 import com.cookwe.domain.entity.RecipeEntity;
 import org.springframework.data.jpa.repository.Query;
@@ -21,5 +22,6 @@ public interface RecipeRepository extends CrudRepository<RecipeModel, Long> {
     @Query("SELECT r FROM RecipeModel r WHERE r.user.id = :userId")
     List<RecipeModel> findByUserId(@Param("userId") Long userId);
 
-
+    @Query("SELECT r FROM RecipeModel r JOIN IngredientModel i ON r.id = i.recipe.id WHERE i.name IN :names")
+    Iterable<RecipeModel> findByRecipeByIngredientsName(List<String> names);
 }

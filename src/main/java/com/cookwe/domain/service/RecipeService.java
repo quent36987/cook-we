@@ -155,4 +155,11 @@ public class RecipeService {
 
         return RecipeModelToRecipeEntity.convert(recipe);
     }
+
+    @Transactional
+    public List<RecipeEntity> getRecipesByIngredients(List<String> ingredients) {
+        Iterable<RecipeModel> recipeModels = recipeRepository.findByRecipeByIngredientsName(ingredients);
+
+        return RecipeModelToRecipeEntity.convertList(recipeModels);
+    }
 }

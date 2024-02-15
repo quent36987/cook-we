@@ -19,6 +19,7 @@ import com.cookwe.domain.entity.RecipePictureEntity;
 import com.cookwe.utils.converters.RecipePictureModelToRecipePictureEntity;
 import com.cookwe.utils.errors.RestError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -36,15 +37,9 @@ public class RecipePictureService {
     @Autowired
     RecipePictureRepository recipePictureRepository;
 
-    private final Path root = Paths.get("uploads");
+    @Value("${cook-we.picture.path}")
+    private String picturePath;
 
-    public void init() {
-        try {
-            Files.createDirectories(root);
-        } catch (IOException e) {
-            throw RestError.INTERNAL_SERVER_ERROR.get();
-        }
-    }
 
     @Transactional
     public List<RecipePictureEntity> getRecipePicturesByRecipeId(Long recipeId) {
@@ -60,10 +55,11 @@ public class RecipePictureService {
         }
 
         RecipeModel recipeModel = recipeService.getRecipeModelById(recipeId);
+        Path root = Paths.get(picturePath);
 
         try {
             String fileName = "i" + UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            Files.copy(file.getInputStream(), this.root.resolve(fileName));
+            Files.copy(file.getInputStream(), root.resolve(fileName));
 
             RecipePictureModel recipePictureModel = new RecipePictureModel()
                     .withRecipe(recipeModel)
@@ -82,6 +78,7 @@ public class RecipePictureService {
 
     @Transactional
     public Resource load(String filename) {
+        Path root = Paths.get(picturePath);
         try {
             Path file = root.resolve(filename);
             Resource resource = new UrlResource(file.toUri());
@@ -98,13 +95,15 @@ public class RecipePictureService {
 
     @Transactional
     public void deleteAll() {
+        Path root = Paths.get(picturePath);
         FileSystemUtils.deleteRecursively(root.toFile());
     }
 
     @Transactional
     public Stream<Path> loadAll() {
+        Path root = Paths.get(picturePath);
         try {
-            return Files.walk(this.root, 1).filter(path -> !path.equals(this.root)).map(this.root::relativize);
+            return Files.walk(root, 1).filter(path -> !path.equals(root)).map(root::relativize);
         } catch (IOException e) {
             throw RestError.PICTURE_NOT_FOUND.get();
         }
@@ -112,6 +111,7 @@ public class RecipePictureService {
 
     @Transactional
     public void delete(Long userId, String filename) {
+        Path root = Paths.get(picturePath);
         Optional<RecipePictureModel> recipePictureModel = recipePictureRepository.findByImageUrl(filename);
 
         if (recipePictureModel.isEmpty()) {

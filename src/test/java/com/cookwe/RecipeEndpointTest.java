@@ -277,4 +277,29 @@ public class RecipeEndpointTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
     }
+
+    @Test
+    public void testSearchINgredientinRecipe() throws Exception {
+        CreateRecipeRequest createRecipeRequest = UtilsTest.createRecipeRequestWithIngredients();
+        createRecipeRequest.setSteps(UtilsTest.getRecipeSteps());
+
+        RecipeResponse recipeResponse = UtilsTest.createRecipe(mockMvc, objectMapper, cookie, createRecipeRequest);
+
+        //empty search
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes/ingredients/search?ingredients=dsf,sdffds")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(0));
+
+        //search
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes/ingredients/search?ingredients=test-ingredient")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(recipeResponse.id));
+    }
 }
