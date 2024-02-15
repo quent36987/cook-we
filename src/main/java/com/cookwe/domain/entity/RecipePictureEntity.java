@@ -1,9 +1,6 @@
 package com.cookwe.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -11,11 +8,12 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@With
 public class RecipePictureEntity {
 
     private Long id;
-    private Long recipeId;
+    private RecipeEntity recipe;
     private String imageUrl;
-    private String userId;
+    private UserEntity user;
     private LocalDateTime createdAt;
 }

@@ -1,10 +1,7 @@
 package com.cookwe.domain.service;
 
 import com.cookwe.data.model.*;
-import com.cookwe.data.repository.IngredientRepository;
-import com.cookwe.data.repository.RecipeRepository;
-import com.cookwe.data.repository.RecipeStepRepository;
-import com.cookwe.data.repository.UserRepository;
+import com.cookwe.data.repository.*;
 import com.cookwe.domain.entity.RecipeEntity;
 import com.cookwe.domain.entity.RecipeStepEntity;
 import com.cookwe.presentation.request.CreateIngredientRequest;
@@ -37,6 +34,9 @@ public class RecipeService {
 
     @Autowired
     private IngredientService ingredientService;
+
+    @Autowired
+    private RecipePictureRepository recipePictureRepository;
 
     @Transactional
     public List<RecipeEntity> getRecipes() {

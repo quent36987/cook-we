@@ -1,8 +1,6 @@
 package com.cookwe.presentation.response;
 
 import com.cookwe.data.model.ESeason;
-import com.cookwe.data.model.UserModel;
-import com.cookwe.domain.entity.RecipeStepEntity;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.With;
@@ -29,6 +27,8 @@ public class RecipeResponse {
     public LocalDateTime createdAt;
 
     public List<RecipeStepResponse> steps;
+
+    public List<RecipePictureResponse> pictures;
 
 //    public List<UserResponse> favoritedBy;
 }

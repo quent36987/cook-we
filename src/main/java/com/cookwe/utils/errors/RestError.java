@@ -10,6 +10,7 @@ public enum RestError {
     COMMENT_NOT_FOUND(404, "Comment with ID %d not found"),
     USER_NOT_FOUND(404, "User not found"),
     SEASON_NOT_FOUND(404, "Season %s not found"),
+    PICTURE_NOT_FOUND(404, "Picture  not found"),
 
     // UNAUTHORIZED
     FORBIDDEN(403, "Forbidden"),
@@ -25,6 +26,8 @@ public enum RestError {
     EMAIL_ALREADY_EXISTS(400, "Email %s already exists"),
     ROLE_ALREADY_EXISTS(400, "Role %s already exists"),
     ROLE_NOT_PRESENT(400, "Role %s not present"),
+    FILE_CANT_BE_SAVE(400, "File can't be saved"),
+    FILE_CANT_BE_DELETED(400, "File can't be deleted"),
     // INTERNAL SERVER ERROR
     INTERNAL_SERVER_ERROR(500, "Internal server error"),
 

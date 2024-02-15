@@ -48,9 +48,9 @@ public class RecipeModel {
     @JsonIgnore
     public List<UserModel> favoritedBy = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Set<RecipePictureModel> pictures = new HashSet<>();
+//    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JsonIgnore
+//    private List<RecipePictureModel> pictures = new ArrayList<>();
 
 
 }

@@ -19,6 +19,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Setter
 @Getter
+@With
 @Table(name = "users",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "username"),

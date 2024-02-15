@@ -55,7 +55,6 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    
 
 //  @Override
 //  protected void configure(HttpSecurity http) throws Exception {
@@ -83,6 +82,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                                 .requestMatchers("/v3/api-docs/**").permitAll()
                                 .requestMatchers("/api/roles/**").authenticated()
                                 .requestMatchers("/api/users/**").authenticated()
+                                .requestMatchers("/api/pictures/**").permitAll()
                                 .anyRequest().authenticated()
 
                 );

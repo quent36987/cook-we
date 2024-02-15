@@ -33,5 +33,7 @@ public class RecipeEntity {
 
     public List<RecipeStepEntity> steps;
 
+    public List<RecipePictureEntity> pictures;
+
 //    public List<UserEntity> favoritedBy = new ArrayList<>();
 }

@@ -1,5 +1,5 @@
 ### GET All Posts
-GET http://localhost:9001/api/recipes/72
+GET http://localhost:9001/api/recipes
 Accept: application/json
 
 ### GET All Posts
