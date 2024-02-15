@@ -8,7 +8,6 @@ import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -24,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class PictureEnpointTest {
+class PictureEnpointTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -38,32 +37,32 @@ public class PictureEnpointTest {
     private static String cookie = "";
 
     @Test
-    public void testUploadPicture() throws Exception {
-        UtilsTest.createuser(userService, UtilsTest.USERNAME_1, UtilsTest.EMAIL_1, UtilsTest.PASSWORD_1);
-        cookie = UtilsTest.setUpSecurity(mockMvc, objectMapper, UtilsTest.USERNAME_1, UtilsTest.PASSWORD_1);
+    void testUploadPicture() throws Exception {
+        TestUtils.createuser(userService, TestUtils.USERNAME_1, TestUtils.EMAIL_1, TestUtils.PASSWORD_1);
+        cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
-        RecipeResponse recipe = UtilsTest.createRecipe(mockMvc, objectMapper, cookie, UtilsTest.createSimpleRecipeRequest());
+        RecipeResponse recipe = TestUtils.createRecipe(mockMvc, objectMapper, cookie, TestUtils.createSimpleRecipeRequest());
 
         RecipePictureResponse reponse = objectMapper.readValue(mockMvc.perform(MockMvcRequestBuilders.multipart("/api/pictures/recipes/" + recipe.id)
-                        .file(UtilsTest.createMockMultipartFile())
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .file(TestUtils.createMockMultipartFile())
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(), RecipePictureResponse.class);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/pictures/" + reponse.imageUrl)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().bytes("test".getBytes()));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/pictures/sdfdsfdsfsdf.png")
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/pictures/recipes/" + recipe.id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].imageUrl").value(reponse.imageUrl));
@@ -71,11 +70,11 @@ public class PictureEnpointTest {
         //delete picture
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/pictures/" + reponse.imageUrl)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/pictures/" + reponse.imageUrl)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
     }

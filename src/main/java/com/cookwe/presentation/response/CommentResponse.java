@@ -1,8 +1,5 @@
 package com.cookwe.presentation.response;
 
-import com.cookwe.data.model.RecipeModel;
-import com.cookwe.data.model.UserModel;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.With;

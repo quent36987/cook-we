@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class AuthEndpointTest {
+class AuthEndpointTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,7 +37,7 @@ public class AuthEndpointTest {
     private static final String EMAIL_2 = "test@test.fr2";
 
     @Test
-    public void testRegistration() throws Exception {
+    void testRegistration() throws Exception {
         SignupRequest signupRequest = new SignupRequest();
         signupRequest.setUsername(USERNAME_1);
         signupRequest.setEmail(EMAIL_1);
@@ -49,7 +49,7 @@ public class AuthEndpointTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
     @Test
-    public void testFailAuthentication() throws Exception {
+    void testFailAuthentication() throws Exception {
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setUsername("nonexistent");
         loginRequest.setPassword("nonexistent");
@@ -61,7 +61,7 @@ public class AuthEndpointTest {
     }
 
     @Test
-    public void testFailRegistration() throws Exception{
+    void testFailRegistration() throws Exception{
         SignupRequest signupRequest = new SignupRequest();
         signupRequest.setUsername(USERNAME_1);
         signupRequest.setEmail(EMAIL_1);

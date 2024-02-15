@@ -35,7 +35,6 @@ public class CommentService {
         return CommentModelToCommentEntity.convertList(comments);
     }
 
-    @Transactional
     public CommentModel getCommentById(Long commentId) {
         Optional<CommentModel> comment = commentRepository.findById(commentId);
 
@@ -63,10 +62,10 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(Long UserId, Long commentId) {
+    public void deleteComment(Long userId, Long commentId) {
         CommentModel comment = getCommentById(commentId);
 
-        if (!Objects.equals(comment.getUser().getId(), UserId)) {
+        if (!Objects.equals(comment.getUser().getId(), userId)) {
             throw RestError.FORBIDDEN_MESSAGE.get("You can't delete this comment(not the owner)");
         }
 

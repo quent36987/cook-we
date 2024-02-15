@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @With
 public class RecipePictureEntity {
-
     private Long id;
     private RecipeEntity recipe;
     private String imageUrl;

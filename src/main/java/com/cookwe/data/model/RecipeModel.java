@@ -1,16 +1,13 @@
 package com.cookwe.data.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Entity
@@ -20,7 +17,6 @@ import java.util.Set;
 @With
 @Table(name = "recipes")
 public class RecipeModel {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -47,10 +43,4 @@ public class RecipeModel {
     @ManyToMany(mappedBy = "favoriteRecipes", fetch = FetchType.LAZY)
     @JsonIgnore
     public List<UserModel> favoritedBy = new ArrayList<>();
-
-//    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JsonIgnore
-//    private List<RecipePictureModel> pictures = new ArrayList<>();
-
-
 }

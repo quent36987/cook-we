@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class CommentEndpointTest {
+class CommentEndpointTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -105,7 +105,7 @@ public class CommentEndpointTest {
     }
 
     @Test
-    public void testCreateComment() throws Exception {
+    void testCreateComment() throws Exception {
         createuser(USERNAME_1, EMAIL_1, PASSWORD_1);
         SetUpSecurity(USERNAME_1, PASSWORD_1);
 
@@ -153,7 +153,7 @@ public class CommentEndpointTest {
     }
 
     @Test
-    public void testCreateCommentWithWrongRecipeId() throws Exception {
+    void testCreateCommentWithWrongRecipeId() throws Exception {
         createuser(USERNAME_1, EMAIL_1, PASSWORD_1);
         SetUpSecurity(USERNAME_1, PASSWORD_1);
 
@@ -167,7 +167,7 @@ public class CommentEndpointTest {
     }
 
     @Test
-    public void testCreateAndDeleteDeniedComment() throws Exception {
+    void testCreateAndDeleteDeniedComment() throws Exception {
         createuser(USERNAME_1, EMAIL_1, PASSWORD_1);
         SetUpSecurity(USERNAME_1, PASSWORD_1);
 
@@ -233,7 +233,7 @@ public class CommentEndpointTest {
     }
 
     @Test
-    public void testCreateAndUpdateComment() throws Exception {
+    void testCreateAndUpdateComment() throws Exception {
         createuser(USERNAME_1, EMAIL_1, PASSWORD_1);
         SetUpSecurity(USERNAME_1, PASSWORD_1);
 
@@ -292,7 +292,7 @@ public class CommentEndpointTest {
     }
 
     @Test
-    public void testCommentWithoutText() throws Exception {
+    void testCommentWithoutText() throws Exception {
         createuser(USERNAME_1, EMAIL_1, PASSWORD_1);
         SetUpSecurity(USERNAME_1, PASSWORD_1);
 

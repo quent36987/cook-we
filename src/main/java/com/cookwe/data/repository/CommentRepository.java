@@ -16,5 +16,4 @@ public interface CommentRepository extends CrudRepository<CommentModel, Long> {
 
     @Query("SELECT c FROM CommentModel c WHERE c.user.username = :username")
     Iterable<CommentModel> findByUsername(String username);
-
 }

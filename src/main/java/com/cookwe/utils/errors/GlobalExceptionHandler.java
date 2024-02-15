@@ -14,10 +14,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<String> handleThrowable(Throwable exception) {
-        System.out.println(exception.getMessage());
-
-        if (exception instanceof ErrorCode) {
-            ErrorCode errorCode = (ErrorCode) exception;
+        if (exception instanceof ErrorCode errorCode) {
             return ResponseEntity.status(errorCode.getCode()).body(exception.getMessage());
         }
 

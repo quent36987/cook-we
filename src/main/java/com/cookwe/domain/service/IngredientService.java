@@ -27,7 +27,6 @@ public class IngredientService {
     @Autowired
     private RecipeRepository recipeRepository;
 
-    @Transactional
     public RecipeModel getRecipeModelById(Long id) {
         Optional<RecipeModel> optionalRecipe = recipeRepository.findById(id);
 
@@ -52,7 +51,6 @@ public class IngredientService {
         return addIngredientToModel(userId, recipe, name, quantity, unit);
     }
 
-    @Transactional
     public IngredientEntity addIngredientToModel(Long userId, RecipeModel recipe, String name, Float quantity, String unit) {
         try {
             EUnit.valueOf(unit);

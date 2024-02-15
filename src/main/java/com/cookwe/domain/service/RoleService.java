@@ -8,7 +8,6 @@ import com.cookwe.data.repository.UserRepository;
 import com.cookwe.domain.entity.RoleEntity;
 import com.cookwe.domain.entity.UserEntity;
 import com.cookwe.utils.converters.RoleModelToRoleEntity;
-import com.cookwe.utils.converters.UserModelToUserEntity;
 import com.cookwe.utils.errors.RestError;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ public class RoleService {
     @Autowired
     private UserService userService;
 
-    @Transactional
     public UserModel getUserByUsername(String username) {
         Optional<UserModel> user = userRepository.findByUsername(username);
 
@@ -42,7 +40,6 @@ public class RoleService {
         return user.get();
     }
 
-    @Transactional
     public UserModel getUserById(Long id) {
         Optional<UserModel> user = userRepository.findById(id);
 
@@ -71,10 +68,9 @@ public class RoleService {
     public List<RoleEntity> getRolesByUsername(String username) {
         UserEntity userEntity = userService.getUserByUsername(username);
 
-        return userEntity.roles;
+        return userEntity.getRoles();
     }
 
-    @Transactional
     public ERole getRoleByName(String name) {
         try {
             return ERole.valueOf(name);
@@ -83,7 +79,6 @@ public class RoleService {
         }
     }
 
-    @Transactional
     public RoleModel getRoleModelByName(String name) {
         Optional<RoleModel> roleModel = roleRepository.findByName(getRoleByName(name));
 

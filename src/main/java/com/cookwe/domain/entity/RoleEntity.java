@@ -8,6 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @With
 public class RoleEntity {
-    public Integer id;
-    public String role;
+    private Integer id;
+    private String role;
 }

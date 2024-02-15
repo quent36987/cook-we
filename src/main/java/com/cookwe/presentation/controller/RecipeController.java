@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,7 +53,6 @@ public class RecipeController {
     public RecipeResponse getRecipeById(@PathVariable Long id) {
         RecipeEntity recipe = recipeService.getRecipeEntityById(id);
 
-        System.out.println("recipe: " + recipe);
         return RecipeEntityToRecipeResponse.convert(recipe);
     }
 
@@ -76,10 +74,7 @@ public class RecipeController {
         return RecipeEntityToRecipeResponse.convertList(recipes);
     }
 
-    @PostMapping("")
-    @PreAuthorize("hasRole('USER')")
-    @Operation(summary = "Create a recipe")
-    public RecipeResponse createRecipe(@RequestBody CreateRecipeRequest request) {
+    private void verifyCreateRecipeRequest(CreateRecipeRequest request) {
         if (request.name == null || request.name.isEmpty()) {
             throw RestError.MISSING_FIELD.get("name");
         }
@@ -96,6 +91,16 @@ public class RecipeController {
             throw RestError.MISSING_FIELD.get("ingredients");
         }
 
+        if (request.steps == null) {
+            throw RestError.MISSING_FIELD.get("steps");
+        }
+    }
+
+    @PostMapping("")
+    @PreAuthorize("hasRole('USER')")
+    @Operation(summary = "Create a recipe")
+    public RecipeResponse createRecipe(@RequestBody CreateRecipeRequest request) {
+        verifyCreateRecipeRequest(request);
 
         RecipeEntity savedRecipe = recipeService.createRecipe(
                 this.getUserId(),
@@ -107,8 +112,6 @@ public class RecipeController {
                 request.ingredients
         );
 
-        System.out.println("savedRecipe: " + savedRecipe);
-
         return RecipeEntityToRecipeResponse.convert(savedRecipe);
     }
 
@@ -117,21 +120,7 @@ public class RecipeController {
     @Operation(summary = "Update a recipe")
     @Parameter(name = "id", description = "The id of the recipe")
     public RecipeResponse updateRecipe(@PathVariable Long recipeId, @RequestBody CreateRecipeRequest request) {
-        if (request.name == null || request.name.isEmpty()) {
-            throw RestError.MISSING_FIELD.get("name");
-        }
-
-        if (request.time == null || request.time <= 0) {
-            throw RestError.MISSING_FIELD.get("time");
-        }
-
-        if (request.portions == null || request.portions <= 0) {
-            throw RestError.MISSING_FIELD.get("portions");
-        }
-
-        if (request.ingredients == null) {
-            throw RestError.MISSING_FIELD.get("ingredients");
-        }
+        verifyCreateRecipeRequest(request);
 
         RecipeEntity updatedRecipe = recipeService.updateRecipe(
                 getUserId(),

@@ -20,7 +20,7 @@ public enum RestError {
     BAD_REQUEST(400, "Invalid request"),
     RECIPE_ALREADY_FAVORITE(400, "Recipe %s is already in your favorites"),
     RECIPE_NOT_FAVORITE(400, "Recipe %s is not in your favorites"),
-    MISSING_FIELD(400, "missing field: %s"), // FIXME
+    MISSING_FIELD(400, "missing field: %s"),
     MISSING_USER_ID(400, "User id (X-user-id header) can not be null."),
     USERNAME_ALREADY_EXISTS(400, "Username %s already exists"),
     EMAIL_ALREADY_EXISTS(400, "Email %s already exists"),

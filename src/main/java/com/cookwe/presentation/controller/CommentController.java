@@ -88,11 +88,4 @@ public class CommentController {
 
         return CommentEntityToCommentResponse.convertList(comments);
     }
-
-//  TODO (injection sql ;(  // Recherche de mot dans les commentaires
-//    @GetMapping("/search")
-//    public ResponseEntity<List<CommentResponse>> searchComments(@RequestParam String keyword) {
-//        List<CommentResponse> comments = commentService.searchComments(keyword);
-//        return ResponseEntity.ok(comments);
-//    }
 }

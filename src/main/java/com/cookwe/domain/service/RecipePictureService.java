@@ -50,7 +50,7 @@ public class RecipePictureService {
 
     @Transactional
     public RecipePictureEntity save(Long userId, Long recipeId, MultipartFile file) {
-        if (file == null || file.isEmpty() || file.getOriginalFilename() == null || file.getOriginalFilename().isEmpty()) {
+        if (file == null || file.isEmpty() || file.getOriginalFilename() == null) {
             throw RestError.MISSING_FIELD.get("file");
         }
 

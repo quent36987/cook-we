@@ -29,6 +29,4 @@ public class RecipeResponse {
     public List<RecipeStepResponse> steps;
 
     public List<RecipePictureResponse> pictures;
-
-//    public List<UserResponse> favoritedBy;
 }

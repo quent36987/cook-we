@@ -46,7 +46,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    @Transactional
     public UserModel getUserModelById(Long id) {
         Optional<UserModel> user = userRepository.findById(id);
 
@@ -62,7 +61,6 @@ public class UserService {
         return UserModelToUserEntity.convert(getUserModelById(id));
     }
 
-    @Transactional
     public RecipeModel getRecipeModelById(Long id) {
         Optional<RecipeModel> recipe = recipeRepository.findById(id);
 
@@ -121,7 +119,6 @@ public class UserService {
         return userRepository.existsByUsername(username);
     }
 
-    @Transactional
     public UserEntity getUserByUsername(String username) {
         Optional<UserModel> user = userRepository.findByUsername(username);
 

@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class RoleEndpointTest {
+class RoleEndpointTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -36,116 +36,116 @@ public class RoleEndpointTest {
     private static String cookie = "";
 
     @Test
-    public void testGetWitoutADMINROLE() throws Exception {
-        UtilsTest.createuser(userService, UtilsTest.USERNAME_1, UtilsTest.EMAIL_1, UtilsTest.PASSWORD_1);
-        cookie = UtilsTest.setUpSecurity(mockMvc, objectMapper, UtilsTest.USERNAME_1, UtilsTest.PASSWORD_1);
+    void testGetWitoutADMINROLE() throws Exception {
+        TestUtils.createuser(userService, TestUtils.USERNAME_1, TestUtils.EMAIL_1, TestUtils.PASSWORD_1);
+        cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/roles/users/" + UtilsTest.USERNAME_1)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/roles/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 
     @Test
-    public void getAllRoles() throws Exception {
-        UtilsTest.createuser(userService, UtilsTest.USERNAME_1, UtilsTest.EMAIL_1, UtilsTest.PASSWORD_1);
-        cookie = UtilsTest.setUpSecurity(mockMvc, objectMapper, UtilsTest.USERNAME_1, UtilsTest.PASSWORD_1);
+    void getAllRoles() throws Exception {
+        TestUtils.createuser(userService, TestUtils.USERNAME_1, TestUtils.EMAIL_1, TestUtils.PASSWORD_1);
+        cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/roles/all")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    public void getRolesByUserId() throws Exception {
-        UtilsTest.createuser(userService, UtilsTest.USERNAME_1, UtilsTest.EMAIL_1, UtilsTest.PASSWORD_1);
-        cookie = UtilsTest.setUpSecurity(mockMvc, objectMapper, UtilsTest.USERNAME_1, UtilsTest.PASSWORD_1);
+    void getRolesByUserId() throws Exception {
+        TestUtils.createuser(userService, TestUtils.USERNAME_1, TestUtils.EMAIL_1, TestUtils.PASSWORD_1);
+        cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/roles/users")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].role").value("ROLE_USER"));
     }
 
     @Test
-    public void AddAndRemoveRole() throws Exception {
-        UtilsTest.createuser(userService, UtilsTest.USERNAME_1, UtilsTest.EMAIL_1, UtilsTest.PASSWORD_1);
-        cookie = UtilsTest.setUpSecurity(mockMvc, objectMapper, UtilsTest.USERNAME_1, UtilsTest.PASSWORD_1);
+    void AddAndRemoveRole() throws Exception {
+        TestUtils.createuser(userService, TestUtils.USERNAME_1, TestUtils.EMAIL_1, TestUtils.PASSWORD_1);
+        cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/roles/ROLE_ADMIN/users/" + UtilsTest.USERNAME_1)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/roles/ROLE_ADMIN/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
 
-        roleService.addRoleToUser(UtilsTest.USERNAME_1, "ROLE_ADMIN");
+        roleService.addRoleToUser(TestUtils.USERNAME_1, "ROLE_ADMIN");
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/roles/users/" + UtilsTest.USERNAME_1)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/roles/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].role").value("ROLE_USER"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].role").value("ROLE_ADMIN"));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/roles/ROLE_MODERATOR/users/" + UtilsTest.USERNAME_1)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/roles/ROLE_MODERATOR/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/roles/users/" + UtilsTest.USERNAME_1)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/roles/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].role").value("ROLE_USER"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].role").value("ROLE_ADMIN"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].role").value("ROLE_MODERATOR"));
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/roles/ROLE_MODERATOR/users/" + UtilsTest.USERNAME_1)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/roles/ROLE_MODERATOR/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/roles/users/" + UtilsTest.USERNAME_1)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/roles/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].role").value("ROLE_USER"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].role").value("ROLE_ADMIN"));
     }
 
     @Test
-    public void testMultipleAdd() throws Exception {
-        UtilsTest.createuser(userService, UtilsTest.USERNAME_1, UtilsTest.EMAIL_1, UtilsTest.PASSWORD_1);
-        cookie = UtilsTest.setUpSecurity(mockMvc, objectMapper, UtilsTest.USERNAME_1, UtilsTest.PASSWORD_1);
+    void testMultipleAdd() throws Exception {
+        TestUtils.createuser(userService, TestUtils.USERNAME_1, TestUtils.EMAIL_1, TestUtils.PASSWORD_1);
+        cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
-        roleService.addRoleToUser(UtilsTest.USERNAME_1, "ROLE_ADMIN");
+        roleService.addRoleToUser(TestUtils.USERNAME_1, "ROLE_ADMIN");
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/roles/ROLE_ADMIN/users/" + UtilsTest.USERNAME_1)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/roles/ROLE_ADMIN/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        roleService.addRoleToUser(UtilsTest.USERNAME_1, "ROLE_MODERATOR");
+        roleService.addRoleToUser(TestUtils.USERNAME_1, "ROLE_MODERATOR");
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/roles/ROLE_MODERATOR/users/" + UtilsTest.USERNAME_1)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/roles/ROLE_MODERATOR/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/roles/ROLE_MODERATOR/users/" + UtilsTest.USERNAME_1)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/roles/ROLE_MODERATOR/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/roles/ROLE_MODERATOR/users/" + UtilsTest.USERNAME_1)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/roles/ROLE_MODERATOR/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/roles/RfgTORdfg/users/" + UtilsTest.USERNAME_1)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/roles/RfgTORdfg/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
     }

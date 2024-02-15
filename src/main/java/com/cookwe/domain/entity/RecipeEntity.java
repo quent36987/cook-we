@@ -1,15 +1,9 @@
 package com.cookwe.domain.entity;
 
 import com.cookwe.data.model.ESeason;
-import com.cookwe.data.model.UserModel;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import lombok.*;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -17,23 +11,13 @@ import java.util.Set;
 @NoArgsConstructor
 @With
 public class RecipeEntity {
-    public Long id;
-
-    public String name;
-
-    public Long time;
-
-    public Long portions;
-
-    public ESeason season;
-
-    public UserEntity user;
-
-    public LocalDateTime createdAt;
-
-    public List<RecipeStepEntity> steps;
-
-    public List<RecipePictureEntity> pictures;
-
-//    public List<UserEntity> favoritedBy = new ArrayList<>();
+    private Long id;
+    private String name;
+    private Long time;
+    private Long portions;
+    private ESeason season;
+    private UserEntity user;
+    private LocalDateTime createdAt;
+    private List<RecipeStepEntity> steps;
+    private List<RecipePictureEntity> pictures;
 }

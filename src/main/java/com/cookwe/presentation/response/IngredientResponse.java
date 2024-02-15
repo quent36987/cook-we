@@ -1,7 +1,6 @@
 package com.cookwe.presentation.response;
 
 import com.cookwe.data.model.EUnit;
-import com.cookwe.data.model.RecipeModel;
 import lombok.*;
 
 @Getter

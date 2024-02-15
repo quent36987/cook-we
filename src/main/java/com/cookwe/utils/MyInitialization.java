@@ -33,17 +33,11 @@ public class MyInitialization implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("ApplicationRunner initialized");
         if (!userService.existsByUsername(adminUsername)) {
             userService.createUser(adminUsername, adminEmail, adminPassword);
+            roleService.addRoleToUser(adminUsername, "ROLE_ADMIN");
+            roleService.addRoleToUser(adminUsername, "ROLE_MODERATOR");
 
-            List<String> roles = roleService.getRolesByUserId(userService.getUserByUsername(adminUsername).getId()).stream().map(RoleEntity::getRole).toList();
-            if (!roles.contains("ROLE_ADMIN")) {
-                roleService.addRoleToUser(adminUsername, "ROLE_ADMIN");
-            }
-            if (!roles.contains("ROLE_MODERATOR")) {
-                roleService.addRoleToUser(adminUsername, "ROLE_MODERATOR");
-            }
         }
     }
 }

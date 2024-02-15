@@ -45,7 +45,6 @@ public class RecipeService {
         return RecipeModelToRecipeEntity.convertList(recipes);
     }
 
-    @Transactional
     public RecipeModel getRecipeModelById(Long id) {
         Optional<RecipeModel> optionalRecipe = recipeRepository.findById(id);
 
@@ -70,7 +69,6 @@ public class RecipeService {
         return RecipeStepModelToRecipeStepEntity.convertList(steps);
     }
 
-    @Transactional
     public ESeason getSeasonByString(String season) {
         try {
             return ESeason.valueOf(season);
@@ -79,14 +77,12 @@ public class RecipeService {
         }
     }
 
-    @Transactional
     public void addIngredientToModel(List<CreateIngredientRequest> ingredientRequests, RecipeModel recipe, Long userId) {
         for (CreateIngredientRequest ingredientRequest : ingredientRequests) {
             ingredientService.addIngredientToModel(userId, recipe, ingredientRequest.name, ingredientRequest.quantity, ingredientRequest.unit);
         }
     }
 
-    @Transactional
     public void addStepToModel(List<String> steps, RecipeModel recipe) {
         Long index = 0L;
         for (String step : steps) {
@@ -97,20 +93,20 @@ public class RecipeService {
     }
 
     @Transactional
-    public RecipeEntity createRecipe(Long UserId, String name, Long time, Long portions, String season, List<String> steps, List<CreateIngredientRequest> ingredientRequests) {
+    public RecipeEntity createRecipe(Long userId, String name, Long time, Long portions, String season, List<String> steps, List<CreateIngredientRequest> ingredientRequests) {
         RecipeModel recipe = new RecipeModel();
         recipe.setName(name);
         recipe.setTime(time);
         recipe.setPortions(portions);
         recipe.setCreatedAt(LocalDateTime.now());
-        recipe.setUser(new UserModel(UserId));
+        recipe.setUser(new UserModel(userId));
         recipe.setSeason(getSeasonByString(season));
 
         RecipeModel savedRecipe = recipeRepository.save(recipe);
 
         addStepToModel(steps, savedRecipe);
 
-        addIngredientToModel(ingredientRequests, savedRecipe, UserId);
+        addIngredientToModel(ingredientRequests, savedRecipe, userId);
 
         return RecipeModelToRecipeEntity.convert(savedRecipe);
     }

@@ -1,7 +1,6 @@
 package com.cookwe.domain.entity;
 
 import com.cookwe.data.model.EUnit;
-import com.cookwe.data.model.RecipeModel;
 import lombok.*;
 
 @Getter
@@ -11,10 +10,7 @@ import lombok.*;
 @With
 public class IngredientEntity {
     private Long id;
-
     private String name;
-
     private Float quantity;
-
     private EUnit unit;
 }

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 @Transactional
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class IngredientEndpointTest {
+class IngredientEndpointTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -103,7 +103,7 @@ public class IngredientEndpointTest {
     }
 
     @Test
-    public void testAddIngredient() throws Exception {
+    void testAddIngredient() throws Exception {
         createuser(USERNAME_1, EMAIL_1, PASSWORD_1);
         setUpSecurity(USERNAME_1, PASSWORD_1);
 
@@ -140,7 +140,7 @@ public class IngredientEndpointTest {
     }
 
     @Test
-    public void testCreateRecipeWithIngredient() throws Exception {
+    void testCreateRecipeWithIngredient() throws Exception {
         createuser(USERNAME_1, EMAIL_1, PASSWORD_1);
         setUpSecurity(USERNAME_1, PASSWORD_1);
 
@@ -154,7 +154,7 @@ public class IngredientEndpointTest {
     }
 
     @Test
-    public void testAddAndDeleteIngredientAccesDenied() throws Exception {
+    void testAddAndDeleteIngredientAccesDenied() throws Exception {
         createuser(USERNAME_1, EMAIL_1, PASSWORD_1);
         setUpSecurity(USERNAME_1, PASSWORD_1);
 
@@ -188,7 +188,7 @@ public class IngredientEndpointTest {
     }
 
     @Test
-    public void testAddBadIngredientValue() throws Exception {
+    void testAddBadIngredientValue() throws Exception {
         createuser(USERNAME_1, EMAIL_1, PASSWORD_1);
         setUpSecurity(USERNAME_1, PASSWORD_1);
 
@@ -244,7 +244,7 @@ public class IngredientEndpointTest {
     }
 
     @Test
-    public void testUpdateIngredient() throws Exception {
+    void testUpdateIngredient() throws Exception {
         createuser(USERNAME_1, EMAIL_1, PASSWORD_1);
         setUpSecurity(USERNAME_1, PASSWORD_1);
 

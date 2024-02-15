@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
-public class UserEndpointTest {
+class UserEndpointTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,164 +36,164 @@ public class UserEndpointTest {
     private static String cookie = "";
 
     @Test
-    public void testGetWitoutAuth() throws Exception {
+    void testGetWitoutAuth() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users/favorites-recipes")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 
     @Test
-    public void testAddAndDeleteFavoriteRecipe() throws Exception {
-        UtilsTest.createuser(userService, UtilsTest.USERNAME_1, UtilsTest.EMAIL_1, UtilsTest.PASSWORD_1);
-        cookie = UtilsTest.setUpSecurity(mockMvc, objectMapper, UtilsTest.USERNAME_1, UtilsTest.PASSWORD_1);
+    void testAddAndDeleteFavoriteRecipe() throws Exception {
+        TestUtils.createuser(userService, TestUtils.USERNAME_1, TestUtils.EMAIL_1, TestUtils.PASSWORD_1);
+        cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
-        CreateRecipeRequest createRecipeRequest = UtilsTest.createSimpleRecipeRequest();
-        RecipeResponse recipeResponse = UtilsTest.createRecipe(mockMvc, objectMapper, cookie, createRecipeRequest);
+        CreateRecipeRequest createRecipeRequest = TestUtils.createSimpleRecipeRequest();
+        RecipeResponse recipeResponse = TestUtils.createRecipe(mockMvc, objectMapper, cookie, createRecipeRequest);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users/favorites-recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users/favorites-recipes")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(recipeResponse.id))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(recipeResponse.name));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/favorites-recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users/favorites-recipes")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
     }
 
     @Test
-    public void testAddAndDeleteTwoTime() throws Exception {
-        UtilsTest.createuser(userService, UtilsTest.USERNAME_1, UtilsTest.EMAIL_1, UtilsTest.PASSWORD_1);
-        cookie = UtilsTest.setUpSecurity(mockMvc, objectMapper, UtilsTest.USERNAME_1, UtilsTest.PASSWORD_1);
+    void testAddAndDeleteTwoTime() throws Exception {
+        TestUtils.createuser(userService, TestUtils.USERNAME_1, TestUtils.EMAIL_1, TestUtils.PASSWORD_1);
+        cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
-        CreateRecipeRequest createRecipeRequest = UtilsTest.createSimpleRecipeRequest();
-        RecipeResponse recipeResponse = UtilsTest.createRecipe(mockMvc, objectMapper, cookie, createRecipeRequest);
+        CreateRecipeRequest createRecipeRequest = TestUtils.createSimpleRecipeRequest();
+        RecipeResponse recipeResponse = TestUtils.createRecipe(mockMvc, objectMapper, cookie, createRecipeRequest);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users/favorites-recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users/favorites-recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/favorites-recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/favorites-recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    public void testGetUserByUsername() throws Exception {
-        UtilsTest.createuser(userService, UtilsTest.USERNAME_1, UtilsTest.EMAIL_1, UtilsTest.PASSWORD_1);
-        UtilsTest.createuser(userService, UtilsTest.USERNAME_2, UtilsTest.EMAIL_2, UtilsTest.PASSWORD_2);
-        cookie = UtilsTest.setUpSecurity(mockMvc, objectMapper, UtilsTest.USERNAME_1, UtilsTest.PASSWORD_1);
+    void testGetUserByUsername() throws Exception {
+        TestUtils.createuser(userService, TestUtils.USERNAME_1, TestUtils.EMAIL_1, TestUtils.PASSWORD_1);
+        TestUtils.createuser(userService, TestUtils.USERNAME_2, TestUtils.EMAIL_2, TestUtils.PASSWORD_2);
+        cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/" + UtilsTest.USERNAME_1)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(UtilsTest.USERNAME_1));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(TestUtils.USERNAME_1));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/" + UtilsTest.USERNAME_2)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/" + TestUtils.USERNAME_2)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(UtilsTest.USERNAME_2));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(TestUtils.USERNAME_2));
     }
 
     @Test
-    public void testGetUserRecipes() throws Exception {
-        UtilsTest.createuser(userService, UtilsTest.USERNAME_1, UtilsTest.EMAIL_1, UtilsTest.PASSWORD_1);
-        cookie = UtilsTest.setUpSecurity(mockMvc, objectMapper, UtilsTest.USERNAME_1, UtilsTest.PASSWORD_1);
+    void testGetUserRecipes() throws Exception {
+        TestUtils.createuser(userService, TestUtils.USERNAME_1, TestUtils.EMAIL_1, TestUtils.PASSWORD_1);
+        cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
 
-        CreateRecipeRequest createRecipeRequest = UtilsTest.createSimpleRecipeRequest();
-        UtilsTest.createRecipe(mockMvc, objectMapper, cookie, createRecipeRequest);
+        CreateRecipeRequest createRecipeRequest = TestUtils.createSimpleRecipeRequest();
+        TestUtils.createRecipe(mockMvc, objectMapper, cookie, createRecipeRequest);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(createRecipeRequest.getName()));
     }
 
     @Test
-    public void testGetUserRecipeByUsername() throws Exception {
-        UtilsTest.createuser(userService, UtilsTest.USERNAME_1, UtilsTest.EMAIL_1, UtilsTest.PASSWORD_1);
-        UtilsTest.createuser(userService, UtilsTest.USERNAME_2, UtilsTest.EMAIL_2, UtilsTest.PASSWORD_2);
-        cookie = UtilsTest.setUpSecurity(mockMvc, objectMapper, UtilsTest.USERNAME_1, UtilsTest.PASSWORD_1);
+    void testGetUserRecipeByUsername() throws Exception {
+        TestUtils.createuser(userService, TestUtils.USERNAME_1, TestUtils.EMAIL_1, TestUtils.PASSWORD_1);
+        TestUtils.createuser(userService, TestUtils.USERNAME_2, TestUtils.EMAIL_2, TestUtils.PASSWORD_2);
+        cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
-        CreateRecipeRequest createRecipeRequest = UtilsTest.createSimpleRecipeRequest();
-        UtilsTest.createRecipe(mockMvc, objectMapper, cookie, createRecipeRequest);
+        CreateRecipeRequest createRecipeRequest = TestUtils.createSimpleRecipeRequest();
+        TestUtils.createRecipe(mockMvc, objectMapper, cookie, createRecipeRequest);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/" + UtilsTest.USERNAME_1 + "/recipes")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/" + TestUtils.USERNAME_1 + "/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(createRecipeRequest.getName()));
 
-        cookie = UtilsTest.setUpSecurity(mockMvc, objectMapper, UtilsTest.USERNAME_2, UtilsTest.PASSWORD_2);
+        cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_2, TestUtils.PASSWORD_2);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/" + UtilsTest.USERNAME_1 + "/recipes")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/users/" + TestUtils.USERNAME_1 + "/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(createRecipeRequest.getName()));
     }
 
     @Test
-    public void testUpdateDetailUser() throws Exception {
-        UtilsTest.createuser(userService, UtilsTest.USERNAME_1, UtilsTest.EMAIL_1, UtilsTest.PASSWORD_1);
-        cookie = UtilsTest.setUpSecurity(mockMvc, objectMapper, UtilsTest.USERNAME_1, UtilsTest.PASSWORD_1);
+    void testUpdateDetailUser() throws Exception {
+        TestUtils.createuser(userService, TestUtils.USERNAME_1, TestUtils.EMAIL_1, TestUtils.PASSWORD_1);
+        cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users/details")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(UtilsTest.USERNAME_1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(UtilsTest.EMAIL_1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(TestUtils.USERNAME_1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(TestUtils.EMAIL_1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.password").doesNotExist())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.roles").doesNotExist())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").doesNotExist());
 
         UpdateUserRequest updateUserRequest = new UpdateUserRequest().withFirstName("test").withLastName("test2");
-        String result = "{\"username\":\"" + UtilsTest.USERNAME_1 + "\",\"email\":\"" + UtilsTest.EMAIL_1 + "\",\"firstName\":\"test\",\"lastName\":\"test2\"}";
+        String result = "{\"username\":\"" + TestUtils.USERNAME_1 + "\",\"email\":\"" + TestUtils.EMAIL_1 + "\",\"firstName\":\"test\",\"lastName\":\"test2\"}";
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/users/details")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateUserRequest))
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users/details")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(UtilsTest.COOKIE_NAME, cookie)))
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(result));
 
