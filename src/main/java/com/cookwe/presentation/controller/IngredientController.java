@@ -21,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/ingredients")
 @Tag(name = "Ingredient", description = "Ingredient operations")
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 public class IngredientController {
 
     @Autowired

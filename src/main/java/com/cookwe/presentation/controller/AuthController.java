@@ -6,9 +6,14 @@ import com.cookwe.data.model.RoleModel;
 import com.cookwe.data.model.UserModel;
 import com.cookwe.data.repository.RoleRepository;
 import com.cookwe.data.repository.UserRepository;
+import com.cookwe.domain.entity.UserEntity;
+import com.cookwe.domain.service.UserService;
 import com.cookwe.presentation.request.LoginRequest;
 import com.cookwe.presentation.request.SignupRequest;
+import com.cookwe.presentation.response.MessageResponse;
+import com.cookwe.presentation.response.UserDetailResponse;
 import com.cookwe.presentation.response.UserResponse;
+import com.cookwe.utils.converters.UserEntityToUserDetailResponse;
 import com.cookwe.utils.errors.RestError;
 import com.cookwe.utils.security.jwt.JwtUtils;
 import com.cookwe.utils.security.services.UserDetailsImpl;
@@ -29,8 +34,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// @CrossOrigin(origins = "*", maxAge = 3600)
-// @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
+//@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("/api/auth")
 @Tag(name = "Auth", description = "Authentication operations")
@@ -40,6 +45,9 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -68,7 +76,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     @Operation(summary = "Register a new user")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public MessageResponse registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (signUpRequest.getUsername().isEmpty() || signUpRequest.getEmail().isEmpty() || signUpRequest.getPassword().isEmpty()) {
             throw RestError.BAD_REQUEST.get();
         }
@@ -95,23 +103,25 @@ public class AuthController {
         user.setRoles(roles);
         userRepository.save(user);
 
-        return ResponseEntity.ok("User registered successfully!");
+        return new MessageResponse("User registered successfully!");
     }
 
     @PostMapping("/signout")
     @Operation(summary = "Sign out a user")
-    public ResponseEntity<String> logoutUser() {
+    public ResponseEntity<MessageResponse> logoutUser() {
         ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body("You've been signed out!");
+                .body(new MessageResponse("User signed out successfully!"));
     }
 
     @GetMapping("/me")
     @Operation(summary = "Get the current user")
-    public ResponseEntity<UserResponse> getCurrentUser() {
+    public UserDetailResponse getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        return ResponseEntity.ok(new UserResponse(userDetails.getUsername()));
+        UserEntity userEntity = userService.getUserByUsername(userDetails.getUsername());
+
+        return UserEntityToUserDetailResponse.convert(userEntity);
     }
 }
