@@ -1,9 +1,9 @@
 package com.cookwe;
 
-import com.cookwe.data.repository.CommentRepository;
-import com.cookwe.data.repository.RecipeRepository;
-import com.cookwe.data.repository.RecipeStepRepository;
-import com.cookwe.data.repository.UserRepository;
+import com.cookwe.data.repository.interfaces.CommentRepository;
+import com.cookwe.data.repository.interfaces.RecipeRepository;
+import com.cookwe.data.repository.interfaces.RecipeStepRepository;
+import com.cookwe.data.repository.interfaces.UserRepository;
 import com.cookwe.domain.service.UserService;
 import com.cookwe.presentation.request.CreateRecipeRequest;
 import com.cookwe.presentation.request.LoginRequest;

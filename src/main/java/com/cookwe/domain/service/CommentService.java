@@ -3,8 +3,9 @@ package com.cookwe.domain.service;
 import com.cookwe.data.model.CommentModel;
 import com.cookwe.data.model.RecipeModel;
 import com.cookwe.data.model.UserModel;
-import com.cookwe.data.repository.CommentRepository;
-import com.cookwe.data.repository.RecipeRepository;
+import com.cookwe.data.repository.CommentRepositoryCustom;
+import com.cookwe.data.repository.interfaces.CommentRepository;
+import com.cookwe.data.repository.RecipeRepositoryCustom;
 import com.cookwe.domain.entity.CommentEntity;
 import com.cookwe.utils.converters.CommentModelToCommentEntity;
 import com.cookwe.utils.errors.RestError;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @Data
@@ -26,7 +26,10 @@ public class CommentService {
     private CommentRepository commentRepository;
 
     @Autowired
-    private RecipeRepository recipeRepository;
+    private CommentRepositoryCustom commentRepositoryCustom;
+
+    @Autowired
+    private RecipeRepositoryCustom recipeRepositoryCustom;
 
     @Transactional
     public List<CommentEntity> getCommentsByRecipeId(Long recipeId) {
@@ -35,26 +38,19 @@ public class CommentService {
         return CommentModelToCommentEntity.convertList(comments);
     }
 
-    public CommentModel getCommentById(Long commentId) {
-        Optional<CommentModel> comment = commentRepository.findById(commentId);
+    @Transactional
+    public List<CommentEntity> getCommentsByUsername(String username) {
+        Iterable<CommentModel> comments = commentRepository.findByUsername(username);
 
-        if (comment.isEmpty()) {
-            throw RestError.COMMENT_NOT_FOUND.get(commentId);
-        }
-
-        return comment.get();
+        return CommentModelToCommentEntity.convertList(comments);
     }
 
     @Transactional
     public CommentEntity createComment(Long userId, Long recipeId, String text) {
-        Optional<RecipeModel> recipe = recipeRepository.findById(recipeId);
-
-        if (recipe.isEmpty()) {
-            throw RestError.RECIPE_NOT_FOUND.get(recipeId);
-        }
+        RecipeModel recipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
 
         CommentModel commentModel = new CommentModel().withUser(new UserModel(userId))
-                .withRecipe(recipe.get())
+                .withRecipe(recipe)
                 .withText(text)
                 .withCreatedAt(LocalDateTime.now());
 
@@ -63,7 +59,7 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long userId, Long commentId) {
-        CommentModel comment = getCommentById(commentId);
+        CommentModel comment = commentRepositoryCustom.getCommentById(commentId);
 
         if (!Objects.equals(comment.getUser().getId(), userId)) {
             throw RestError.FORBIDDEN_MESSAGE.get("You can't delete this comment(not the owner)");
@@ -74,7 +70,7 @@ public class CommentService {
 
     @Transactional
     public CommentEntity updateComment(Long userId, Long commentId, String text) {
-        CommentModel comment = getCommentById(commentId);
+        CommentModel comment = commentRepositoryCustom.getCommentById(commentId);
 
         if (!Objects.equals(comment.getUser().getId(), userId)) {
             throw RestError.FORBIDDEN_MESSAGE.get("You can't update this comment(not the owner)");
@@ -83,12 +79,5 @@ public class CommentService {
         comment.setText(text);
 
         return CommentModelToCommentEntity.convert(commentRepository.save(comment));
-    }
-
-    @Transactional
-    public List<CommentEntity> getCommentsByUsername(String username) {
-        Iterable<CommentModel> comments = commentRepository.findByUsername(username);
-
-        return CommentModelToCommentEntity.convertList(comments);
     }
 }

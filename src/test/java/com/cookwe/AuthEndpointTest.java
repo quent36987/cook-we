@@ -1,7 +1,5 @@
 package com.cookwe;
 
-import com.cookwe.data.repository.RecipeRepository;
-import com.cookwe.data.repository.UserRepository;
 import com.cookwe.presentation.request.LoginRequest;
 import com.cookwe.presentation.request.SignupRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;

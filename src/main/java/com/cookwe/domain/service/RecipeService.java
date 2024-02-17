@@ -2,7 +2,7 @@ package com.cookwe.domain.service;
 
 import com.cookwe.data.model.*;
 import com.cookwe.data.repository.*;
-import com.cookwe.domain.entity.IngredientEntity;
+import com.cookwe.data.repository.interfaces.*;
 import com.cookwe.domain.entity.RecipeDetailEntity;
 import com.cookwe.domain.entity.RecipeEntity;
 import com.cookwe.domain.entity.RecipeStepEntity;
@@ -10,6 +10,7 @@ import com.cookwe.presentation.request.CreateIngredientRequest;
 import com.cookwe.utils.converters.RecipeModelToRecipeDetailEntity;
 import com.cookwe.utils.converters.RecipeModelToRecipeEntity;
 import com.cookwe.utils.converters.RecipeStepModelToRecipeStepEntity;
+import com.cookwe.utils.converters.StringToESeason;
 import com.cookwe.utils.errors.RestError;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class RecipeService {
 
     @Autowired
     private RecipeRepository recipeRepository;
+
+    @Autowired
+    private RecipeRepositoryCustom recipeRepositoryCustom;
 
     @Autowired
     private RecipeStepRepository recipeStepRepository;
@@ -54,28 +58,9 @@ public class RecipeService {
         return RecipeModelToRecipeEntity.convertList(recipes);
     }
 
-    public RecipeModel getRecipeModelById(Long id) {
-        Optional<RecipeModel> optionalRecipe = recipeRepository.findById(id);
-
-        if (optionalRecipe.isEmpty()) {
-            throw RestError.RECIPE_NOT_FOUND.get(id);
-        }
-
-        return optionalRecipe.get();
-    }
-
-    @Transactional
-    public RecipeEntity getRecipeEntityById(Long id) {
-        System.out.println(id);
-        RecipeModel recipe = getRecipeModelById(id);
-
-        System.out.println(recipe);
-        return RecipeModelToRecipeEntity.convert(recipe);
-    }
-
     @Transactional
     public RecipeDetailEntity getRecipeDetailById(Long recipeId) {
-        RecipeModel recipeModel = getRecipeModelById(recipeId);
+        RecipeModel recipeModel = recipeRepositoryCustom.getRecipeModelById(recipeId);
 
         RecipeDetailEntity recipe = RecipeModelToRecipeDetailEntity.convert(recipeModel);
 
@@ -95,12 +80,18 @@ public class RecipeService {
         return RecipeStepModelToRecipeStepEntity.convertList(steps);
     }
 
-    public ESeason getSeasonByString(String season) {
-        try {
-            return ESeason.valueOf(season);
-        } catch (IllegalArgumentException e) {
-            throw RestError.SEASON_NOT_FOUND.get(season);
-        }
+    @Transactional
+    public List<RecipeEntity> getRecipesByUserId(Long userId) {
+        List<RecipeModel> recipes = recipeRepository.findByUserId(userId);
+
+        return RecipeModelToRecipeEntity.convertList(recipes);
+    }
+
+    @Transactional
+    public List<RecipeEntity> getRecipesByIngredients(List<String> ingredients) {
+        Iterable<RecipeModel> recipeModels = recipeRepository.findByRecipeByIngredientsName(ingredients);
+
+        return RecipeModelToRecipeEntity.convertList(recipeModels);
     }
 
     public void addIngredientToModel(List<CreateIngredientRequest> ingredientRequests, RecipeModel recipe, Long userId) {
@@ -126,7 +117,7 @@ public class RecipeService {
         recipe.setPortions(portions);
         recipe.setCreatedAt(LocalDateTime.now());
         recipe.setUser(new UserModel(userId));
-        recipe.setSeason(getSeasonByString(season));
+        recipe.setSeason(StringToESeason.convert(season));
 
         RecipeModel savedRecipe = recipeRepository.save(recipe);
 
@@ -139,7 +130,7 @@ public class RecipeService {
 
     @Transactional
     public void deleteRecipe(Long userId, Long recipeId) {
-        RecipeModel recipe = getRecipeModelById(recipeId);
+        RecipeModel recipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
 
         if (!recipe.getUser().getId().equals(userId)) {
             throw RestError.FORBIDDEN_MESSAGE.get("You are not the owner of this recipe");
@@ -150,7 +141,7 @@ public class RecipeService {
 
     @Transactional
     public RecipeEntity updateRecipe(Long userId, Long recipeId, String name, Long time, Long portions, String season, List<String> steps, List<CreateIngredientRequest> ingredientRequests) {
-        RecipeModel recipe = getRecipeModelById(recipeId);
+        RecipeModel recipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
 
         if (!recipe.getUser().getId().equals(userId)) {
             throw RestError.FORBIDDEN_MESSAGE.get("You are not the owner of this recipe");
@@ -159,7 +150,7 @@ public class RecipeService {
         recipe.setName(name);
         recipe.setTime(time);
         recipe.setPortions(portions);
-        recipe.setSeason(getSeasonByString(season));
+        recipe.setSeason(StringToESeason.convert(season));
 
         Iterable<RecipeStepModel> recipeSteps = recipeStepRepository.findByRecipeId(recipeId);
 
@@ -177,13 +168,4 @@ public class RecipeService {
 
         return RecipeModelToRecipeEntity.convert(recipe);
     }
-
-    @Transactional
-    public List<RecipeEntity> getRecipesByIngredients(List<String> ingredients) {
-        Iterable<RecipeModel> recipeModels = recipeRepository.findByRecipeByIngredientsName(ingredients);
-
-        return RecipeModelToRecipeEntity.convertList(recipeModels);
-    }
-
-
 }

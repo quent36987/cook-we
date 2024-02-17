@@ -2,6 +2,7 @@ package com.cookwe.presentation.controller;
 
 import com.cookwe.domain.entity.RecipeEntity;
 import com.cookwe.domain.entity.UserEntity;
+import com.cookwe.domain.service.RecipeService;
 import com.cookwe.domain.service.UserService;
 import com.cookwe.presentation.response.MessageResponse;
 import com.cookwe.presentation.response.RecipeResponse;
@@ -31,6 +32,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RecipeService recipeService;
+
     public Long getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
@@ -51,7 +55,7 @@ public class UserController {
     @Operation(summary = "Get my recipes")
     @GetMapping("/recipes")
     public List<RecipeResponse> getRecipes() {
-        List<RecipeEntity> recipeEntities = userService.getRecipes(getUserId());
+        List<RecipeEntity> recipeEntities = recipeService.getRecipesByUserId(getUserId());
 
         return RecipeEntityToRecipeResponse.convertList(recipeEntities);
     }

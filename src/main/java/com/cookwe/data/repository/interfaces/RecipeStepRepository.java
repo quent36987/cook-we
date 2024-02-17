@@ -1,4 +1,4 @@
-package com.cookwe.data.repository;
+package com.cookwe.data.repository.interfaces;
 
 import com.cookwe.data.model.RecipeStepModel;
 import org.springframework.data.jpa.repository.JpaRepository;

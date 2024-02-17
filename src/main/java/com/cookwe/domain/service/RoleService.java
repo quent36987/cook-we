@@ -3,8 +3,9 @@ package com.cookwe.domain.service;
 import com.cookwe.data.model.ERole;
 import com.cookwe.data.model.RoleModel;
 import com.cookwe.data.model.UserModel;
-import com.cookwe.data.repository.RoleRepository;
-import com.cookwe.data.repository.UserRepository;
+import com.cookwe.data.repository.UserRepositoryCustom;
+import com.cookwe.data.repository.interfaces.RoleRepository;
+import com.cookwe.data.repository.interfaces.UserRepository;
 import com.cookwe.domain.entity.RoleEntity;
 import com.cookwe.domain.entity.UserEntity;
 import com.cookwe.utils.converters.RoleModelToRoleEntity;
@@ -28,31 +29,11 @@ public class RoleService {
     private UserRepository userRepository;
 
     @Autowired
-    private UserService userService;
-
-    public UserModel getUserByUsername(String username) {
-        Optional<UserModel> user = userRepository.findByUsername(username);
-
-        if (user.isEmpty()) {
-            throw RestError.USER_NOT_FOUND.get();
-        }
-
-        return user.get();
-    }
-
-    public UserModel getUserById(Long id) {
-        Optional<UserModel> user = userRepository.findById(id);
-
-        if (user.isEmpty()) {
-            throw RestError.USER_NOT_FOUND.get();
-        }
-
-        return user.get();
-    }
+    private UserRepositoryCustom userRepositoryCustom;
 
     @Transactional
     public List<RoleEntity> getRolesByUserId(Long userId) {
-        UserModel user = getUserById(userId);
+        UserModel user = userRepositoryCustom.getUserById(userId);
 
         return RoleModelToRoleEntity.convertList(user.getRoles());
     }
@@ -66,9 +47,9 @@ public class RoleService {
 
     @Transactional
     public List<RoleEntity> getRolesByUsername(String username) {
-        UserEntity userEntity = userService.getUserByUsername(username);
+        UserModel userModel = userRepositoryCustom.getUserByUsername(username);
 
-        return userEntity.getRoles();
+        return RoleModelToRoleEntity.convertList(userModel.getRoles());
     }
 
     public ERole getRoleByName(String name) {
@@ -91,7 +72,7 @@ public class RoleService {
 
     @Transactional
     public void addRoleToUser(String username, String role) {
-        UserModel user = getUserByUsername(username);
+        UserModel user = userRepositoryCustom.getUserByUsername(username);
         RoleModel roleModel = getRoleModelByName(role);
 
         List<RoleModel> roles = userRepository.findRolesByUserId(user.getId());
@@ -108,7 +89,7 @@ public class RoleService {
 
     @Transactional
     public void removeRoleFromUser(String username, String role) {
-        UserModel user = getUserByUsername(username);
+        UserModel user = userRepositoryCustom.getUserByUsername(username);
         RoleModel roleModel = getRoleModelByName(role);
 
         List<RoleModel> roles = userRepository.findRolesByUserId(user.getId());

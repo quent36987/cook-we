@@ -1,4 +1,4 @@
-package com.cookwe.data.repository;
+package com.cookwe.data.repository.interfaces;
 
 import com.cookwe.data.model.RecipeModel;
 import com.cookwe.data.model.RoleModel;

@@ -1,9 +1,11 @@
 package com.cookwe.domain.service;
 
 import com.cookwe.data.model.*;
-import com.cookwe.data.repository.RecipeRepository;
-import com.cookwe.data.repository.RoleRepository;
-import com.cookwe.data.repository.UserRepository;
+import com.cookwe.data.repository.RecipeRepositoryCustom;
+import com.cookwe.data.repository.UserRepositoryCustom;
+import com.cookwe.data.repository.interfaces.RecipeRepository;
+import com.cookwe.data.repository.interfaces.RoleRepository;
+import com.cookwe.data.repository.interfaces.UserRepository;
 import com.cookwe.domain.entity.RecipeEntity;
 import com.cookwe.domain.entity.UserEntity;
 import com.cookwe.utils.converters.RecipeModelToRecipeEntity;
@@ -25,6 +27,12 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private UserRepositoryCustom userRepositoryCustom;
+
+    @Autowired
+    private RecipeRepositoryCustom recipeRepositoryCustom;
+
+    @Autowired
     private RecipeRepository recipeRepository;
 
     @Autowired
@@ -33,72 +41,10 @@ public class UserService {
     @Autowired
     private PasswordEncoder encoder;
 
-    @Transactional
-    public void createUser(String username, String email, String password) {
-        UserModel user = new UserModel(username, email, encoder.encode(password));
-        List<RoleModel> roles = new ArrayList<>();
-
-        RoleModel userRole = roleRepository.findByName(ERole.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-        roles.add(userRole);
-
-        user.setRoles(roles);
-        userRepository.save(user);
-    }
-
-    public UserModel getUserModelById(Long id) {
-        Optional<UserModel> user = userRepository.findById(id);
-
-        if (user.isEmpty()) {
-            throw RestError.USER_NOT_FOUND.get();
-        }
-
-        return user.get();
-    }
 
     @Transactional
     public UserEntity getUserById(Long id) {
-        return UserModelToUserEntity.convert(getUserModelById(id));
-    }
-
-    public RecipeModel getRecipeModelById(Long id) {
-        Optional<RecipeModel> recipe = recipeRepository.findById(id);
-
-        if (recipe.isEmpty()) {
-            throw RestError.RECIPE_NOT_FOUND.get(id);
-        }
-
-        return recipe.get();
-    }
-
-    @Transactional
-    public void addFavoriteRecipe(Long userId, Long recipeId) {
-        UserModel user = getUserModelById(userId);
-        RecipeModel favoriteRecipe = getRecipeModelById(recipeId);
-
-        List<RecipeModel> favoriteRecipes = userRepository.findFavoriteRecipesByUserId(userId);
-
-        if (favoriteRecipes.contains(favoriteRecipe)) {
-            throw RestError.RECIPE_ALREADY_FAVORITE.get(favoriteRecipe.getName());
-        }
-
-        favoriteRecipes.add(favoriteRecipe);
-        user.setFavoriteRecipes(favoriteRecipes);
-    }
-
-    @Transactional
-    public void removeFavoriteRecipe(Long userId, Long recipeId) {
-        UserModel user = getUserModelById(userId);
-        RecipeModel favoriteRecipe = getRecipeModelById(recipeId);
-
-        List<RecipeModel> favoriteRecipes = userRepository.findFavoriteRecipesByUserId(userId);
-
-        if (!favoriteRecipes.contains(favoriteRecipe)) {
-            throw RestError.RECIPE_NOT_FAVORITE.get(favoriteRecipe.getName());
-        }
-
-        favoriteRecipes.remove(favoriteRecipe);
-        user.setFavoriteRecipes(favoriteRecipes);
+        return UserModelToUserEntity.convert(userRepositoryCustom.getUserById(id));
     }
 
     @Transactional
@@ -108,17 +54,12 @@ public class UserService {
         return RecipeModelToRecipeEntity.convertList(favoriteRecipes);
     }
 
-    public List<RecipeEntity> getRecipes(Long userId) {
-        List<RecipeModel> recipes = recipeRepository.findByUserId(userId);
-
-        return RecipeModelToRecipeEntity.convertList(recipes);
-    }
-
     @Transactional
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
 
+    @Transactional
     public UserEntity getUserByUsername(String username) {
         Optional<UserModel> user = userRepository.findByUsername(username);
 
@@ -144,8 +85,22 @@ public class UserService {
     }
 
     @Transactional
+    public void createUser(String username, String email, String password) {
+        UserModel user = new UserModel(username, email, encoder.encode(password));
+        List<RoleModel> roles = new ArrayList<>();
+
+        RoleModel userRole = roleRepository.findByName(ERole.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+        roles.add(userRole);
+
+        user.setRoles(roles);
+        userRepository.save(user);
+    }
+
+
+    @Transactional
     public UserEntity updateUserDetails(Long id, String firstName, String lastName) {
-        UserModel user = getUserModelById(id);
+        UserModel user = userRepositoryCustom.getUserById(id);
 
         user.setFirstName(firstName);
         user.setLastName(lastName);
@@ -153,5 +108,35 @@ public class UserService {
         userRepository.save(user);
 
         return UserModelToUserEntity.convert(user);
+    }
+
+    @Transactional
+    public void addFavoriteRecipe(Long userId, Long recipeId) {
+        UserModel user = userRepositoryCustom.getUserById(userId);
+        RecipeModel favoriteRecipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
+
+        List<RecipeModel> favoriteRecipes = userRepository.findFavoriteRecipesByUserId(userId);
+
+        if (favoriteRecipes.contains(favoriteRecipe)) {
+            throw RestError.RECIPE_ALREADY_FAVORITE.get(favoriteRecipe.getName());
+        }
+
+        favoriteRecipes.add(favoriteRecipe);
+        user.setFavoriteRecipes(favoriteRecipes);
+    }
+
+    @Transactional
+    public void removeFavoriteRecipe(Long userId, Long recipeId) {
+        UserModel user = userRepositoryCustom.getUserById(userId);
+        RecipeModel favoriteRecipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
+
+        List<RecipeModel> favoriteRecipes = userRepository.findFavoriteRecipesByUserId(userId);
+
+        if (!favoriteRecipes.contains(favoriteRecipe)) {
+            throw RestError.RECIPE_NOT_FAVORITE.get(favoriteRecipe.getName());
+        }
+
+        favoriteRecipes.remove(favoriteRecipe);
+        user.setFavoriteRecipes(favoriteRecipes);
     }
 }

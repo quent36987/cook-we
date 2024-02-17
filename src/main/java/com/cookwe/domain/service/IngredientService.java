@@ -3,8 +3,9 @@ package com.cookwe.domain.service;
 import com.cookwe.data.model.EUnit;
 import com.cookwe.data.model.IngredientModel;
 import com.cookwe.data.model.RecipeModel;
-import com.cookwe.data.repository.IngredientRepository;
-import com.cookwe.data.repository.RecipeRepository;
+import com.cookwe.data.repository.interfaces.IngredientRepository;
+import com.cookwe.data.repository.interfaces.RecipeRepository;
+import com.cookwe.data.repository.RecipeRepositoryCustom;
 import com.cookwe.domain.entity.IngredientEntity;
 import com.cookwe.utils.converters.IngredientModelToIngredientEntity;
 import com.cookwe.utils.errors.RestError;
@@ -27,16 +28,8 @@ public class IngredientService {
     @Autowired
     private RecipeRepository recipeRepository;
 
-
-    public RecipeModel getRecipeModelById(Long id) {
-        Optional<RecipeModel> optionalRecipe = recipeRepository.findById(id);
-
-        if (optionalRecipe.isEmpty()) {
-            throw RestError.RECIPE_NOT_FOUND.get(id);
-        }
-
-        return optionalRecipe.get();
-    }
+    @Autowired
+    private RecipeRepositoryCustom recipeRepositoryCustom;
 
     @Transactional
     public List<IngredientEntity> getIngredientsByRecipeId(Long recipeId) {
@@ -47,7 +40,7 @@ public class IngredientService {
 
     @Transactional
     public IngredientEntity addIngredient(Long userId, Long recipeId, String name, Float quantity, String unit) {
-        RecipeModel recipe = getRecipeModelById(recipeId);
+        RecipeModel recipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
 
         return addIngredientToModel(userId, recipe, name, quantity, unit);
     }
@@ -84,7 +77,7 @@ public class IngredientService {
 
     @Transactional
     public void deleteIngredient(Long userId, Long recipeId, String ingredientName) {
-        RecipeModel recipe = getRecipeModelById(recipeId);
+        RecipeModel recipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
 
         if (!Objects.equals(recipe.getUser().getId(), userId)) {
             throw RestError.FORBIDDEN_MESSAGE.get("You are not the owner of the recipe");

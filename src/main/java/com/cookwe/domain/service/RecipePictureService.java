@@ -14,8 +14,9 @@ import java.util.stream.Stream;
 import com.cookwe.data.model.RecipeModel;
 import com.cookwe.data.model.RecipePictureModel;
 import com.cookwe.data.model.UserModel;
-import com.cookwe.data.repository.RecipePictureRepository;
-import com.cookwe.data.repository.RecipeRepository;
+import com.cookwe.data.repository.RecipeRepositoryCustom;
+import com.cookwe.data.repository.interfaces.RecipePictureRepository;
+import com.cookwe.data.repository.interfaces.RecipeRepository;
 import com.cookwe.domain.entity.RecipePictureEntity;
 import com.cookwe.utils.converters.RecipePictureModelToRecipePictureEntity;
 import com.cookwe.utils.errors.RestError;
@@ -33,10 +34,13 @@ import lombok.Data;
 @Data
 public class RecipePictureService {
     @Autowired
-    RecipeRepository recipeRepository;
+    private RecipeRepository recipeRepository;
 
     @Autowired
-    RecipePictureRepository recipePictureRepository;
+    private RecipeRepositoryCustom recipeRepositoryCustom;
+
+    @Autowired
+    private RecipePictureRepository recipePictureRepository;
 
     @Value("${cook-we.picture.path}")
     private String picturePath;
@@ -55,13 +59,7 @@ public class RecipePictureService {
             throw RestError.MISSING_FIELD.get("file");
         }
 
-        Optional<RecipeModel> optionalRecipe = recipeRepository.findById(recipeId);
-
-        if (optionalRecipe.isEmpty()) {
-            throw RestError.RECIPE_NOT_FOUND.get(recipeId);
-        } // FIXME the following line need to be i repository ?!
-
-        RecipeModel recipeModel = optionalRecipe.get();
+        RecipeModel recipeModel = recipeRepositoryCustom.getRecipeModelById(recipeId);
 
         Path root = Paths.get(picturePath);
 
@@ -102,12 +100,6 @@ public class RecipePictureService {
     }
 
     @Transactional
-    public void deleteAll() {
-        Path root = Paths.get(picturePath);
-        FileSystemUtils.deleteRecursively(root.toFile());
-    }
-
-    @Transactional
     public Stream<Path> loadAll() {
         Path root = Paths.get(picturePath);
         try {
@@ -115,6 +107,12 @@ public class RecipePictureService {
         } catch (IOException e) {
             throw RestError.PICTURE_NOT_FOUND.get();
         }
+    }
+
+    @Transactional
+    public void deleteAll() {
+        Path root = Paths.get(picturePath);
+        FileSystemUtils.deleteRecursively(root.toFile());
     }
 
     @Transactional

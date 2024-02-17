@@ -2,7 +2,7 @@ package com.cookwe.utils.security.services;
 
 
 import com.cookwe.data.model.UserModel;
-import com.cookwe.data.repository.UserRepository;
+import com.cookwe.data.repository.interfaces.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
