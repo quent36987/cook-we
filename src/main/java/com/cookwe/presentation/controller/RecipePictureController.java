@@ -2,6 +2,7 @@ package com.cookwe.presentation.controller;
 
 import com.cookwe.domain.entity.RecipePictureEntity;
 import com.cookwe.domain.service.RecipePictureService;
+import com.cookwe.presentation.response.MessageResponse;
 import com.cookwe.presentation.response.RecipePictureResponse;
 import com.cookwe.utils.converters.RecipePictureEntityToRecipePictureReponse;
 import com.cookwe.utils.errors.RestError;
@@ -47,6 +48,8 @@ public class RecipePictureController {
     }
 
     @GetMapping("/recipes/{recipeId}")
+    @Operation(summary = "Get pictures for a recipe")
+    @Parameter(name = "recipeId", description = "Id of the recipe")
     public List<RecipePictureResponse> getRecipePictures(@PathVariable Long recipeId) {
         List<RecipePictureEntity> recipePictures = recipePictureService.getRecipePicturesByRecipeId(recipeId);
 
@@ -65,9 +68,9 @@ public class RecipePictureController {
     @DeleteMapping("/{filename:.+}")
     @Operation(summary = "Delete a picture")
     @Parameter(name = "filename", description = "Name of the picture")
-    public String deleteFile(@PathVariable String filename) {
+    public MessageResponse deleteFile(@PathVariable String filename) {
         recipePictureService.delete(getUserId(), filename);
 
-        return "Deleted";
+        return new MessageResponse("Picture deleted successfully");
     }
 }

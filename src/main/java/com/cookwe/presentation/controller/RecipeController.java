@@ -1,11 +1,15 @@
 package com.cookwe.presentation.controller;
 
+import com.cookwe.domain.entity.RecipeDetailEntity;
 import com.cookwe.domain.entity.RecipeEntity;
 import com.cookwe.domain.entity.RecipeStepEntity;
 import com.cookwe.domain.service.RecipeService;
 import com.cookwe.presentation.request.CreateRecipeRequest;
+import com.cookwe.presentation.response.MessageResponse;
+import com.cookwe.presentation.response.RecipeDetailResponse;
 import com.cookwe.presentation.response.RecipeResponse;
 import com.cookwe.presentation.response.RecipeStepResponse;
+import com.cookwe.utils.converters.RecipeDetailEntityToRecipeDetailResponse;
 import com.cookwe.utils.converters.RecipeEntityToRecipeResponse;
 import com.cookwe.utils.converters.RecipeStepEntityToRecipeStepResponse;
 import com.cookwe.utils.errors.RestError;
@@ -49,12 +53,12 @@ public class RecipeController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get a recipe by id")
+    @Operation(summary = "Get a recipe detail by id")
     @Parameter(name = "id", description = "The id of the recipe")
-    public RecipeResponse getRecipeById(@PathVariable Long id) {
-        RecipeEntity recipe = recipeService.getRecipeEntityById(id);
+    public RecipeDetailResponse getRecipeById(@PathVariable Long id) {
+        RecipeDetailEntity recipe = recipeService.getRecipeDetailById(id);
 
-        return RecipeEntityToRecipeResponse.convert(recipe);
+        return RecipeDetailEntityToRecipeDetailResponse.convert(recipe);
     }
 
     @GetMapping("/{recipeId}/steps")
@@ -141,9 +145,9 @@ public class RecipeController {
     @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Delete a recipe")
     @Parameter(name = "id", description = "The id of the recipe")
-    public String deleteRecipe(@PathVariable Long recipeId) {
+    public MessageResponse deleteRecipe(@PathVariable Long recipeId) {
         recipeService.deleteRecipe(getUserId(), recipeId);
 
-        return "Recipe deleted";
+        return new MessageResponse("Recipe deleted successfully");
     }
 }

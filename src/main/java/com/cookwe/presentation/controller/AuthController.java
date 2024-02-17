@@ -76,7 +76,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     @Operation(summary = "Register a new user")
-    public MessageResponse registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (signUpRequest.getUsername().isEmpty() || signUpRequest.getEmail().isEmpty() || signUpRequest.getPassword().isEmpty()) {
             throw RestError.BAD_REQUEST.get();
         }
@@ -103,7 +103,7 @@ public class AuthController {
         user.setRoles(roles);
         userRepository.save(user);
 
-        return new MessageResponse("User registered successfully!");
+        return this.authenticateUser(new LoginRequest(signUpRequest.getUsername(), signUpRequest.getPassword()));
     }
 
     @PostMapping("/signout")

@@ -1,12 +1,18 @@
 package com.cookwe.utils.errors;
 
 
+import com.cookwe.presentation.response.MessageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.lang.reflect.Field;
+import java.util.Objects;
 
 
 @ControllerAdvice
@@ -24,6 +30,12 @@ public class GlobalExceptionHandler {
 
         if (exception instanceof AuthenticationException) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        }
+
+        if (exception instanceof MethodArgumentNotValidException) {
+            FieldError error = ((MethodArgumentNotValidException) exception).getBindingResult().getFieldError();
+            String message = error != null ? error.getDefaultMessage() : "Invalid input";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         }
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");

@@ -15,6 +15,7 @@ import com.cookwe.data.model.RecipeModel;
 import com.cookwe.data.model.RecipePictureModel;
 import com.cookwe.data.model.UserModel;
 import com.cookwe.data.repository.RecipePictureRepository;
+import com.cookwe.data.repository.RecipeRepository;
 import com.cookwe.domain.entity.RecipePictureEntity;
 import com.cookwe.utils.converters.RecipePictureModelToRecipePictureEntity;
 import com.cookwe.utils.errors.RestError;
@@ -32,7 +33,7 @@ import lombok.Data;
 @Data
 public class RecipePictureService {
     @Autowired
-    RecipeService recipeService;
+    RecipeRepository recipeRepository;
 
     @Autowired
     RecipePictureRepository recipePictureRepository;
@@ -54,7 +55,14 @@ public class RecipePictureService {
             throw RestError.MISSING_FIELD.get("file");
         }
 
-        RecipeModel recipeModel = recipeService.getRecipeModelById(recipeId);
+        Optional<RecipeModel> optionalRecipe = recipeRepository.findById(recipeId);
+
+        if (optionalRecipe.isEmpty()) {
+            throw RestError.RECIPE_NOT_FOUND.get(recipeId);
+        } // FIXME the following line need to be i repository ?!
+
+        RecipeModel recipeModel = optionalRecipe.get();
+
         Path root = Paths.get(picturePath);
 
         try {

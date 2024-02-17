@@ -2,6 +2,7 @@ package com.cookwe.presentation.controller;
 
 import com.cookwe.domain.entity.RoleEntity;
 import com.cookwe.domain.service.RoleService;
+import com.cookwe.presentation.response.MessageResponse;
 import com.cookwe.presentation.response.RoleResponse;
 import com.cookwe.utils.converters.RoleEntityToRoleResponse;
 import com.cookwe.utils.errors.RestError;
@@ -66,10 +67,10 @@ public class RoleController {
     @Parameter(name = "roleName", description = "The name of the role")
     @Parameter(name = "username", description = "The username of the user")
     @PreAuthorize("hasRole('ADMIN')")
-    public String addRoleToUser(@PathVariable String roleName, @PathVariable String username) {
+    public MessageResponse addRoleToUser(@PathVariable String roleName, @PathVariable String username) {
         roleService.addRoleToUser(username, roleName);
 
-        return "Role added to user";
+        return new MessageResponse("Role added to user");
     }
 
     @DeleteMapping("{roleName}/users/{username}")
@@ -77,10 +78,10 @@ public class RoleController {
     @Parameter(name = "roleName", description = "The name of the role")
     @Parameter(name = "username", description = "The username of the user")
     @PreAuthorize("hasRole('ADMIN')")
-    public String removeRoleFromUser(@PathVariable String roleName, @PathVariable String username) {
+    public MessageResponse removeRoleFromUser(@PathVariable String roleName, @PathVariable String username) {
         roleService.removeRoleFromUser(username, roleName);
 
-        return "Role removed from user";
+        return new MessageResponse("Role removed from user");
     }
 
 }

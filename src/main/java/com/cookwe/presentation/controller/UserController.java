@@ -3,6 +3,7 @@ package com.cookwe.presentation.controller;
 import com.cookwe.domain.entity.RecipeEntity;
 import com.cookwe.domain.entity.UserEntity;
 import com.cookwe.domain.service.UserService;
+import com.cookwe.presentation.response.MessageResponse;
 import com.cookwe.presentation.response.RecipeResponse;
 import com.cookwe.presentation.response.UserDetailResponse;
 import com.cookwe.presentation.response.UserResponse;
@@ -67,19 +68,19 @@ public class UserController {
     @Operation(summary = "add recipe to user favorites recipes")
     @Parameter(name = "recipeId", description = "The id of the recipe")
     @PostMapping("/favorites-recipes/{recipeId}")
-    public String addRecipeToFavorites(@PathVariable Long recipeId) {
+    public MessageResponse addRecipeToFavorites(@PathVariable Long recipeId) {
         userService.addFavoriteRecipe(getUserId(), recipeId);
 
-        return "Recipe added to favorites";
+        return new MessageResponse("Recipe added to favorites");
     }
 
     @Operation(summary = "delete recipe from user favorites recipes")
     @Parameter(name = "recipeId", description = "The id of the recipe")
     @DeleteMapping("/favorites-recipes/{recipeId}")
-    public String deleteRecipeFromFavorites(@PathVariable Long recipeId) {
+    public MessageResponse deleteRecipeFromFavorites(@PathVariable Long recipeId) {
         userService.removeFavoriteRecipe(getUserId(), recipeId);
 
-        return "Recipe deleted from favorites";
+        return new MessageResponse("Recipe removed from favorites");
     }
 
     @Operation(summary = "Get user recipes with username")

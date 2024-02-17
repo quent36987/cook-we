@@ -2,9 +2,12 @@ package com.cookwe.domain.service;
 
 import com.cookwe.data.model.*;
 import com.cookwe.data.repository.*;
+import com.cookwe.domain.entity.IngredientEntity;
+import com.cookwe.domain.entity.RecipeDetailEntity;
 import com.cookwe.domain.entity.RecipeEntity;
 import com.cookwe.domain.entity.RecipeStepEntity;
 import com.cookwe.presentation.request.CreateIngredientRequest;
+import com.cookwe.utils.converters.RecipeModelToRecipeDetailEntity;
 import com.cookwe.utils.converters.RecipeModelToRecipeEntity;
 import com.cookwe.utils.converters.RecipeStepModelToRecipeStepEntity;
 import com.cookwe.utils.errors.RestError;
@@ -38,6 +41,12 @@ public class RecipeService {
     @Autowired
     private RecipePictureRepository recipePictureRepository;
 
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private RecipePictureService recipePictureService;
+
     @Transactional
     public List<RecipeEntity> getRecipes() {
         Iterable<RecipeModel> recipes = recipeRepository.findAll();
@@ -57,9 +66,26 @@ public class RecipeService {
 
     @Transactional
     public RecipeEntity getRecipeEntityById(Long id) {
+        System.out.println(id);
         RecipeModel recipe = getRecipeModelById(id);
 
+        System.out.println(recipe);
         return RecipeModelToRecipeEntity.convert(recipe);
+    }
+
+    @Transactional
+    public RecipeDetailEntity getRecipeDetailById(Long recipeId) {
+        RecipeModel recipeModel = getRecipeModelById(recipeId);
+
+        RecipeDetailEntity recipe = RecipeModelToRecipeDetailEntity.convert(recipeModel);
+
+        recipe.setIngredients(ingredientService.getIngredientsByRecipeId(recipeId));
+
+        recipe.setComments(commentService.getCommentsByRecipeId(recipeId));
+
+        recipe.setPictures(recipePictureService.getRecipePicturesByRecipeId(recipeId));
+
+        return recipe;
     }
 
     @Transactional
@@ -158,4 +184,6 @@ public class RecipeService {
 
         return RecipeModelToRecipeEntity.convertList(recipeModels);
     }
+
+
 }

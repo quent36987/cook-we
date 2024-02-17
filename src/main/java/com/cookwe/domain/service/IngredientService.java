@@ -27,6 +27,7 @@ public class IngredientService {
     @Autowired
     private RecipeRepository recipeRepository;
 
+
     public RecipeModel getRecipeModelById(Long id) {
         Optional<RecipeModel> optionalRecipe = recipeRepository.findById(id);
 

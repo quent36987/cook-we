@@ -1,9 +1,9 @@
 ### GET All Posts
-GET http://localhost:9001/api/recipes
+GET http://localhost:9001/api/recipes/1
 Accept: application/json
 
 ### GET All Posts
-POST http://localhost:9001/api/users/favorites-recipes/6
+POST http://localhost:9001/api/users/favorites-recipes/1
 Accept: application/json
 
 ### GET All Posts
