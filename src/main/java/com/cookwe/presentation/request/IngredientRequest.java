@@ -1,5 +1,6 @@
 package com.cookwe.presentation.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 @AllArgsConstructor
@@ -10,5 +11,7 @@ import lombok.*;
 public class IngredientRequest {
     public String name;
     public Float quantity;
+
+    @Schema(type = "string", allowableValues = {"GRAM", "MILLILITER", "TEASPOON", "TABLESPOON", "CUP", "PIECE"})
     public String unit;
 }
