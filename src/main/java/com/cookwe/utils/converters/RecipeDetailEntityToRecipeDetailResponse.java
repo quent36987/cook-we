@@ -8,19 +8,20 @@ import java.util.List;
 
 public class RecipeDetailEntityToRecipeDetailResponse {
     public static RecipeDetailResponse convert(RecipeDetailEntity recipeDetailEntity) {
-        return new RecipeDetailResponse()
-                .withId(recipeDetailEntity.getId())
-                .withName(recipeDetailEntity.getName())
-                .withTime(recipeDetailEntity.getTime())
-                .withPortions(recipeDetailEntity.getPortions())
-                .withSeason(recipeDetailEntity.getSeason())
-                .withUser(UserEntityToUserResponse.convert(recipeDetailEntity.getUser()))
-                .withCreatedAt(recipeDetailEntity.getCreatedAt())
-                .withType(recipeDetailEntity.getType())
-                .withIngredients(IngredientEntityToIngredientResponse.convertList(recipeDetailEntity.getIngredients()))
-                .withPictures(RecipePictureEntityToRecipePictureReponse.convertList(recipeDetailEntity.getPictures()))
-                .withComments(CommentEntityToCommentResponse.convertList(recipeDetailEntity.getComments()))
-                .withSteps(RecipeStepEntityToRecipeStepResponse.convertList(recipeDetailEntity.getSteps()));
+        return RecipeDetailResponse.builder()
+                .id(recipeDetailEntity.getId())
+                .name(recipeDetailEntity.getName())
+                .time(recipeDetailEntity.getTime())
+                .portions(recipeDetailEntity.getPortions())
+                .season(recipeDetailEntity.getSeason())
+                .user(UserEntityToUserResponse.convert(recipeDetailEntity.getUser()))
+                .createdAt(recipeDetailEntity.getCreatedAt())
+                .type(recipeDetailEntity.getType())
+                .ingredients(IngredientEntityToIngredientResponse.convertList(recipeDetailEntity.getIngredients()))
+                .pictures(RecipePictureEntityToRecipePictureReponse.convertList(recipeDetailEntity.getPictures()))
+                .comments(CommentEntityToCommentResponse.convertList(recipeDetailEntity.getComments()))
+                .steps(RecipeStepEntityToRecipeStepResponse.convertList(recipeDetailEntity.getSteps()))
+                .build();
     }
 
     public static List<RecipeDetailResponse> convertList(Iterable<RecipeDetailEntity> recipeDetailEntities) {

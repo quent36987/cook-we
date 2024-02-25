@@ -3,6 +3,7 @@ package com.cookwe.presentation.response;
 import com.cookwe.data.model.ESeason;
 import com.cookwe.data.model.EType;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,17 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class RecipeDetailResponse {
-    public Long id;
-    public String name;
-    public Long time;
-    public Long portions;
-    public ESeason season;
-    public EType type;
-    public UserResponse user;
-    public LocalDateTime createdAt;
-    public List<RecipeStepResponse> steps;
-    public List<RecipePictureResponse> pictures;
+@SuperBuilder
+public class RecipeDetailResponse extends RecipeResponse {
     public List<IngredientResponse> ingredients;
     public List<CommentResponse> comments;
 }

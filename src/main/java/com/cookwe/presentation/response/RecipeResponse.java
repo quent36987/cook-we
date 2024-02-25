@@ -5,6 +5,7 @@ import com.cookwe.data.model.EType;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @With
+@SuperBuilder
 public class RecipeResponse {
     public Long id;
 

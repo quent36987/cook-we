@@ -3,15 +3,17 @@ package com.cookwe.domain.entity;
 import com.cookwe.data.model.ESeason;
 import com.cookwe.data.model.EType;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
+@With
 @AllArgsConstructor
 @NoArgsConstructor
-@With
+@SuperBuilder
 public class RecipeEntity {
     private Long id;
     private String name;

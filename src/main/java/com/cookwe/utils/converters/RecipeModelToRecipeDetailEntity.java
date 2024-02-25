@@ -10,16 +10,17 @@ import java.util.List;
 
 public class RecipeModelToRecipeDetailEntity {
     public static RecipeDetailEntity convert(RecipeModel recipeModel) {
-        return new RecipeDetailEntity()
-                .withId(recipeModel.getId())
-                .withName(recipeModel.getName())
-                .withTime(recipeModel.getTime())
-                .withPortions(recipeModel.getPortions())
-                .withSeason(recipeModel.getSeason())
-                .withType(recipeModel.getType())
-                .withUser(UserModelToUserEntity.convert(recipeModel.getUser()))
-                .withCreatedAt(recipeModel.getCreatedAt())
-                .withSteps(RecipeStepModelToRecipeStepEntity.convertList(recipeModel.getSteps()));
+        return RecipeDetailEntity.builder()
+                .id(recipeModel.getId())
+                .name(recipeModel.getName())
+                .time(recipeModel.getTime())
+                .portions(recipeModel.getPortions())
+                .season(recipeModel.getSeason())
+                .type(recipeModel.getType())
+                .user(UserModelToUserEntity.convert(recipeModel.getUser()))
+                .createdAt(recipeModel.getCreatedAt())
+                .steps(RecipeStepModelToRecipeStepEntity.convertList(recipeModel.getSteps()))
+                .build();
     }
 
     public static List<RecipeDetailEntity> convertList(Iterable<RecipeModel> recipeModels) {
