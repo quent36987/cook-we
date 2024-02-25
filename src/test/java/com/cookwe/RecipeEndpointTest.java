@@ -5,7 +5,7 @@ import com.cookwe.data.repository.interfaces.RecipeRepository;
 import com.cookwe.data.repository.interfaces.RecipeStepRepository;
 import com.cookwe.data.repository.interfaces.UserRepository;
 import com.cookwe.domain.service.UserService;
-import com.cookwe.presentation.request.CreateRecipeRequest;
+import com.cookwe.presentation.request.RecipeRequest;
 import com.cookwe.presentation.request.LoginRequest;
 import com.cookwe.presentation.request.SignupRequest;
 import com.cookwe.presentation.response.RecipeResponse;
@@ -101,13 +101,7 @@ class RecipeEndpointTest {
 
     @Test
     void testCreateRecipeWithoutLogin() throws Exception {
-        CreateRecipeRequest recipe = new CreateRecipeRequest()
-                .withName("test")
-                .withTime(10L)
-                .withSeason("SPRING")
-                .withPortions(2L)
-                .withIngredients(new ArrayList<>())
-                .withSteps(Arrays.asList("step1", "step2"));
+        RecipeRequest recipe = createSimpleRecipeRequest();
 
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
@@ -118,43 +112,32 @@ class RecipeEndpointTest {
 
     @Test
     void testCreateRecipeWithLogin() throws Exception {
-        CreateRecipeRequest recipe = new CreateRecipeRequest()
-                .withName("test")
-                .withTime(10L)
-                .withSeason("SPRING")
-                .withPortions(2L)
-                .withIngredients(new ArrayList<>())
-                .withSteps(Arrays.asList("step1", "step2"));
+        RecipeRequest recipe = createSimpleRecipeRequest();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(recipe))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.name").value("test"))
-                .andExpect(jsonPath("$.time").value(10))
-                .andExpect(jsonPath("$.season").value("SPRING"));
+                .andExpect(jsonPath("$.name").value(recipe.name))
+                .andExpect(jsonPath("$.time").value(recipe.time))
+                .andExpect(jsonPath("$.season").value(recipe.season));
 
     }
 
     @Test
     void testGetAllRecipes() throws Exception {
-        CreateRecipeRequest recipe = new CreateRecipeRequest()
-                .withName("test")
-                .withTime(10L)
-                .withSeason("SPRING")
-                .withPortions(2L)
-                .withIngredients(new ArrayList<>())
-                .withSteps(Arrays.asList("step1", "step2"));
+        RecipeRequest recipe = createSimpleRecipeRequest();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(recipe))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.name").value("test"))
-                .andExpect(jsonPath("$.time").value(10))
-                .andExpect(jsonPath("$.season").value("SPRING"));
+                .andExpect(jsonPath("$.name").value(recipe.name))
+                .andExpect(jsonPath("$.time").value(recipe.time))
+                .andExpect(jsonPath("$.type").value(recipe.type))
+                .andExpect(jsonPath("$.season").value(recipe.season));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -166,22 +149,16 @@ class RecipeEndpointTest {
 
     @Test
     void testGetRecipeWithId() throws Exception {
-        CreateRecipeRequest recipe = new CreateRecipeRequest()
-                .withName("test")
-                .withTime(10L)
-                .withSeason("SPRING")
-                .withPortions(2L)
-                .withIngredients(new ArrayList<>())
-                .withSteps(Arrays.asList("step1", "step2"));
+        RecipeRequest recipe = createSimpleRecipeRequest();
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(recipe))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.name").value("test"))
-                .andExpect(jsonPath("$.time").value(10))
-                .andExpect(jsonPath("$.season").value("SPRING"))
+                .andExpect(jsonPath("$.name").value(recipe.name))
+                .andExpect(jsonPath("$.time").value(recipe.time))
+                .andExpect(jsonPath("$.season").value(recipe.season))
                 .andReturn();
 
         String contentAsString = result.getResponse().getContentAsString();
@@ -192,9 +169,9 @@ class RecipeEndpointTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.name").value("test"))
-                .andExpect(jsonPath("$.time").value(10))
-                .andExpect(jsonPath("$.season").value("SPRING"))
+                .andExpect(jsonPath("$.name").value(recipe.name))
+                .andExpect(jsonPath("$.time").value(recipe.time))
+                .andExpect(jsonPath("$.season").value(recipe.season))
                 .andExpect(jsonPath("$.steps").isArray());
         // .andExpect(jsonPath("$.user.username").value(USERNAME_1));
     }
@@ -209,19 +186,19 @@ class RecipeEndpointTest {
 
     @Test
     void testUpdateAndDeleteRecipe() throws Exception {
-        CreateRecipeRequest createRecipeRequest = TestUtils.createRecipeRequestWithIngredients();
-        createRecipeRequest.setSteps(TestUtils.getRecipeSteps());
+        RecipeRequest recipeRequest = TestUtils.createRecipeRequestWithIngredients();
+        recipeRequest.setSteps(TestUtils.getRecipeSteps());
 
-        RecipeResponse recipeResponse = TestUtils.createRecipe(mockMvc, objectMapper, cookie, createRecipeRequest);
+        RecipeResponse recipeResponse = TestUtils.createRecipe(mockMvc, objectMapper, cookie, recipeRequest);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createRecipeRequest))
+                        .content(objectMapper.writeValueAsString(recipeRequest))
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(createRecipeRequest.name))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.time").value(createRecipeRequest.time))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.season").value(createRecipeRequest.season))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(recipeRequest.name))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.time").value(recipeRequest.time))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.season").value(recipeRequest.season))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.steps").isArray());
 
         //get ingredient
@@ -238,7 +215,7 @@ class RecipeEndpointTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(STRING_STEPS));
 
-        CreateRecipeRequest updatedRecipe = TestUtils.createRecipeRequestWithIngredientsBis();
+        RecipeRequest updatedRecipe = TestUtils.createRecipeRequestWithIngredientsBis();
         updatedRecipe.setSteps(TestUtils.getRecipeStepsBis());
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/recipes/" + recipeResponse.id)
@@ -280,10 +257,10 @@ class RecipeEndpointTest {
 
     @Test
     void testSearchINgredientinRecipe() throws Exception {
-        CreateRecipeRequest createRecipeRequest = TestUtils.createRecipeRequestWithIngredients();
-        createRecipeRequest.setSteps(TestUtils.getRecipeSteps());
+        RecipeRequest recipeRequest = TestUtils.createRecipeRequestWithIngredients();
+        recipeRequest.setSteps(TestUtils.getRecipeSteps());
 
-        RecipeResponse recipeResponse = TestUtils.createRecipe(mockMvc, objectMapper, cookie, createRecipeRequest);
+        RecipeResponse recipeResponse = TestUtils.createRecipe(mockMvc, objectMapper, cookie, recipeRequest);
 
         //empty search
         mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes/ingredients/search?ingredients=dsf,sdffds")

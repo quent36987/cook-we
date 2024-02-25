@@ -1,6 +1,7 @@
 package com.cookwe.presentation.response;
 
 import com.cookwe.data.model.ESeason;
+import com.cookwe.data.model.EType;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ public class RecipeDetailResponse {
     public Long time;
     public Long portions;
     public ESeason season;
+    public EType type;
     public UserResponse user;
     public LocalDateTime createdAt;
     public List<RecipeStepResponse> steps;

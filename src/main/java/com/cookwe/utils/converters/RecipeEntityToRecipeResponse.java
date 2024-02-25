@@ -14,6 +14,7 @@ public class RecipeEntityToRecipeResponse {
                 .withTime(recipeEntity.getTime())
                 .withPortions(recipeEntity.getPortions())
                 .withSeason(recipeEntity.getSeason())
+                .withType(recipeEntity.getType())
                 .withUser(UserEntityToUserResponse.convert(recipeEntity.getUser()))
                 .withCreatedAt(recipeEntity.getCreatedAt())
                 .withSteps(RecipeStepEntityToRecipeStepResponse.convertList(recipeEntity.getSteps()));

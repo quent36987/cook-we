@@ -1,7 +1,7 @@
 package com.cookwe;
 
 import com.cookwe.domain.service.UserService;
-import com.cookwe.presentation.request.CreateRecipeRequest;
+import com.cookwe.presentation.request.RecipeRequest;
 import com.cookwe.presentation.request.UpdateUserRequest;
 import com.cookwe.presentation.response.RecipeResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,8 +47,8 @@ class UserEndpointTest {
         TestUtils.createuser(userService, TestUtils.USERNAME_1, TestUtils.EMAIL_1, TestUtils.PASSWORD_1);
         cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
-        CreateRecipeRequest createRecipeRequest = TestUtils.createSimpleRecipeRequest();
-        RecipeResponse recipeResponse = TestUtils.createRecipe(mockMvc, objectMapper, cookie, createRecipeRequest);
+        RecipeRequest recipeRequest = TestUtils.createSimpleRecipeRequest();
+        RecipeResponse recipeResponse = TestUtils.createRecipe(mockMvc, objectMapper, cookie, recipeRequest);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users/favorites-recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -79,8 +79,8 @@ class UserEndpointTest {
         TestUtils.createuser(userService, TestUtils.USERNAME_1, TestUtils.EMAIL_1, TestUtils.PASSWORD_1);
         cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
-        CreateRecipeRequest createRecipeRequest = TestUtils.createSimpleRecipeRequest();
-        RecipeResponse recipeResponse = TestUtils.createRecipe(mockMvc, objectMapper, cookie, createRecipeRequest);
+        RecipeRequest recipeRequest = TestUtils.createSimpleRecipeRequest();
+        RecipeResponse recipeResponse = TestUtils.createRecipe(mockMvc, objectMapper, cookie, recipeRequest);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users/favorites-recipes/" + recipeResponse.id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -133,14 +133,14 @@ class UserEndpointTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
 
-        CreateRecipeRequest createRecipeRequest = TestUtils.createSimpleRecipeRequest();
-        TestUtils.createRecipe(mockMvc, objectMapper, cookie, createRecipeRequest);
+        RecipeRequest recipeRequest = TestUtils.createSimpleRecipeRequest();
+        TestUtils.createRecipe(mockMvc, objectMapper, cookie, recipeRequest);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(createRecipeRequest.getName()));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(recipeRequest.getName()));
     }
 
     @Test
@@ -149,14 +149,14 @@ class UserEndpointTest {
         TestUtils.createuser(userService, TestUtils.USERNAME_2, TestUtils.EMAIL_2, TestUtils.PASSWORD_2);
         cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
-        CreateRecipeRequest createRecipeRequest = TestUtils.createSimpleRecipeRequest();
-        TestUtils.createRecipe(mockMvc, objectMapper, cookie, createRecipeRequest);
+        RecipeRequest recipeRequest = TestUtils.createSimpleRecipeRequest();
+        TestUtils.createRecipe(mockMvc, objectMapper, cookie, recipeRequest);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users/" + TestUtils.USERNAME_1 + "/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(createRecipeRequest.getName()));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(recipeRequest.getName()));
 
         cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_2, TestUtils.PASSWORD_2);
 
@@ -164,7 +164,7 @@ class UserEndpointTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(createRecipeRequest.getName()));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(recipeRequest.getName()));
     }
 
     @Test

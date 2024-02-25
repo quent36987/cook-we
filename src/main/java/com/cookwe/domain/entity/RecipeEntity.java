@@ -1,7 +1,9 @@
 package com.cookwe.domain.entity;
 
 import com.cookwe.data.model.ESeason;
+import com.cookwe.data.model.EType;
 import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,6 +18,7 @@ public class RecipeEntity {
     private Long time;
     private Long portions;
     private ESeason season;
+    private EType type;
     private UserEntity user;
     private LocalDateTime createdAt;
     private List<RecipeStepEntity> steps;

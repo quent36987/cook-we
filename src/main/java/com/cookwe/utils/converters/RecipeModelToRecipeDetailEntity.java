@@ -16,6 +16,7 @@ public class RecipeModelToRecipeDetailEntity {
                 .withTime(recipeModel.getTime())
                 .withPortions(recipeModel.getPortions())
                 .withSeason(recipeModel.getSeason())
+                .withType(recipeModel.getType())
                 .withUser(UserModelToUserEntity.convert(recipeModel.getUser()))
                 .withCreatedAt(recipeModel.getCreatedAt())
                 .withSteps(RecipeStepModelToRecipeStepEntity.convertList(recipeModel.getSteps()));

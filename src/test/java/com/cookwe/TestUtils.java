@@ -1,8 +1,8 @@
 package com.cookwe;
 
 import com.cookwe.domain.service.UserService;
-import com.cookwe.presentation.request.CreateIngredientRequest;
-import com.cookwe.presentation.request.CreateRecipeRequest;
+import com.cookwe.presentation.request.IngredientRequest;
+import com.cookwe.presentation.request.RecipeRequest;
 import com.cookwe.presentation.request.LoginRequest;
 import com.cookwe.presentation.response.RecipeResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,49 +53,51 @@ class TestUtils {
     }
 
 
-    public static CreateRecipeRequest createSimpleRecipeRequest() {
-        CreateRecipeRequest createRecipeRequest = new CreateRecipeRequest();
-        createRecipeRequest.setName("test-recipe");
-        createRecipeRequest.setTime(10L);
-        createRecipeRequest.setPortions(4L);
-        createRecipeRequest.setSeason("SUMMER");
-        createRecipeRequest.setIngredients(new ArrayList<>());
-        createRecipeRequest.setSteps(new ArrayList<>());
+    public static RecipeRequest createSimpleRecipeRequest() {
+        RecipeRequest recipeRequest = new RecipeRequest();
+        recipeRequest.setName("test-recipe");
+        recipeRequest.setTime(10L);
+        recipeRequest.setPortions(4L);
+        recipeRequest.setSeason("SUMMER");
+        recipeRequest.setType("DESSERT");
+        recipeRequest.setIngredients(new ArrayList<>());
+        recipeRequest.setSteps(new ArrayList<>());
 
-        return createRecipeRequest;
+        return recipeRequest;
     }
 
-    public static CreateRecipeRequest createSimpleRecipeRequestBis() {
-        CreateRecipeRequest createRecipeRequest = new CreateRecipeRequest();
-        createRecipeRequest.setName("test-bis");
-        createRecipeRequest.setTime(1L);
-        createRecipeRequest.setPortions(40L);
-        createRecipeRequest.setSeason("WINTER");
-        createRecipeRequest.setIngredients(new ArrayList<>());
-        createRecipeRequest.setSteps(new ArrayList<>());
+    public static RecipeRequest createSimpleRecipeRequestBis() {
+        RecipeRequest recipeRequest = new RecipeRequest();
+        recipeRequest.setName("test-bis");
+        recipeRequest.setTime(1L);
+        recipeRequest.setPortions(40L);
+        recipeRequest.setSeason("WINTER");
+        recipeRequest.setType("ENTREE");
+        recipeRequest.setIngredients(new ArrayList<>());
+        recipeRequest.setSteps(new ArrayList<>());
 
-        return createRecipeRequest;
+        return recipeRequest;
     }
 
 
     public static String STRING_INGREDIENTS = "[{\"name\":\"test-ingredient\",\"quantity\":10.0,\"unit\":\"MILLILITER\"},{\"name\":\"test-ingredient2\",\"quantity\":20.0,\"unit\":\"GRAM\"}]";
 
-    public static CreateRecipeRequest createRecipeRequestWithIngredients() {
-        CreateRecipeRequest createRecipeRequest = createSimpleRecipeRequest();
-        createRecipeRequest.getIngredients().add(new CreateIngredientRequest("test-ingredient", 10F, "MILLILITER"));
-        createRecipeRequest.getIngredients().add(new CreateIngredientRequest("test-ingredient2", 20F, "GRAM"));
+    public static RecipeRequest createRecipeRequestWithIngredients() {
+        RecipeRequest recipeRequest = createSimpleRecipeRequest();
+        recipeRequest.getIngredients().add(new IngredientRequest("test-ingredient", 10F, "MILLILITER"));
+        recipeRequest.getIngredients().add(new IngredientRequest("test-ingredient2", 20F, "GRAM"));
 
-        return createRecipeRequest;
+        return recipeRequest;
     }
 
     public static String STRING_INGREDIENTS_BIS = "[{\"name\":\"test-bis\",\"quantity\":1.5,\"unit\":\"PIECE\"},{\"name\":\"test-bis2\",\"quantity\":2.0,\"unit\":\"CUP\"}]";
 
-    public static CreateRecipeRequest createRecipeRequestWithIngredientsBis() {
-        CreateRecipeRequest createRecipeRequest = createSimpleRecipeRequestBis();
-        createRecipeRequest.getIngredients().add(new CreateIngredientRequest("test-bis", 1.5F, "PIECE"));
-        createRecipeRequest.getIngredients().add(new CreateIngredientRequest("test-bis2", 2F, "CUP"));
+    public static RecipeRequest createRecipeRequestWithIngredientsBis() {
+        RecipeRequest recipeRequest = createSimpleRecipeRequestBis();
+        recipeRequest.getIngredients().add(new IngredientRequest("test-bis", 1.5F, "PIECE"));
+        recipeRequest.getIngredients().add(new IngredientRequest("test-bis2", 2F, "CUP"));
 
-        return createRecipeRequest;
+        return recipeRequest;
     }
 
     public static String STRING_STEPS = "[{\"stepNumber\":0,\"text\":\"step 1\"},{\"stepNumber\":1,\"text\":\"step 2\"}]";
@@ -119,7 +121,7 @@ class TestUtils {
     }
 
 
-    public static RecipeResponse createRecipe(MockMvc mockMvc, ObjectMapper objectMapper, String cookie, CreateRecipeRequest recipe) throws Exception {
+    public static RecipeResponse createRecipe(MockMvc mockMvc, ObjectMapper objectMapper, String cookie, RecipeRequest recipe) throws Exception {
         return objectMapper.readValue(mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(recipe))

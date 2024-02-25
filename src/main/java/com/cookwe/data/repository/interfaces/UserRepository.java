@@ -23,4 +23,8 @@ public interface UserRepository extends CrudRepository<UserModel, Long> {
 
     @Query("SELECT u.roles FROM UserModel u WHERE u.id = :userId")
     List<RoleModel> findRolesByUserId(Long userId);
+
+    @Query("SELECT 1 FROM UserModel u JOIN u.favoriteRecipes r WHERE u.id = :userId AND r.id = :recipeId")
+    Boolean isUserLikedRecipe(Long userId, Long recipeId);
+
 }

@@ -7,8 +7,6 @@ import lombok.*;
 @Getter
 @Setter
 @With
-public class CreateIngredientRequest {
-    public String name;
-    public Float quantity;
-    public String unit;
+public class CommentRequest {
+    public String text;
 }

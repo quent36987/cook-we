@@ -1,6 +1,7 @@
 package com.cookwe.presentation.response;
 
 import com.cookwe.data.model.ESeason;
+import com.cookwe.data.model.EType;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.With;
@@ -21,6 +22,7 @@ public class RecipeResponse {
     public Long portions;
 
     public ESeason season;
+    public EType type;
 
     public UserResponse user;
 

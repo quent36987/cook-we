@@ -2,7 +2,7 @@ package com.cookwe.presentation.controller;
 
 import com.cookwe.domain.entity.IngredientEntity;
 import com.cookwe.domain.service.IngredientService;
-import com.cookwe.presentation.request.CreateIngredientRequest;
+import com.cookwe.presentation.request.IngredientRequest;
 import com.cookwe.presentation.response.IngredientResponse;
 import com.cookwe.utils.converters.IngredientEntityToIngredientResponse;
 import com.cookwe.utils.errors.RestError;
@@ -48,7 +48,7 @@ public class IngredientController {
     @PutMapping("/recipes/{recipeId}")
     @Operation(summary = "Add or update a new ingredient to a recipe")
     @Parameter(name = "recipeId", description = "The id of the recipe")
-    public IngredientResponse addIngredient(@PathVariable Long recipeId, @RequestBody CreateIngredientRequest request) {
+    public IngredientResponse addIngredient(@PathVariable Long recipeId, @RequestBody IngredientRequest request) {
         if (request.name == null || request.name.isEmpty()) {
             throw RestError.MISSING_FIELD.get("name");
         }

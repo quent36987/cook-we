@@ -10,6 +10,7 @@ public enum RestError {
     COMMENT_NOT_FOUND(404, "Comment with ID %d not found"),
     USER_NOT_FOUND(404, "User not found"),
     SEASON_NOT_FOUND(404, "Season %s not found"),
+    TYPE_NOT_FOUND(404, "Type %s not found"),
     PICTURE_NOT_FOUND(404, "Picture  not found"),
 
     // UNAUTHORIZED

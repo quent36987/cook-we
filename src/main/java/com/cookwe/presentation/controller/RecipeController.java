@@ -4,7 +4,7 @@ import com.cookwe.domain.entity.RecipeDetailEntity;
 import com.cookwe.domain.entity.RecipeEntity;
 import com.cookwe.domain.entity.RecipeStepEntity;
 import com.cookwe.domain.service.RecipeService;
-import com.cookwe.presentation.request.CreateRecipeRequest;
+import com.cookwe.presentation.request.RecipeRequest;
 import com.cookwe.presentation.response.MessageResponse;
 import com.cookwe.presentation.response.RecipeDetailResponse;
 import com.cookwe.presentation.response.RecipeResponse;
@@ -79,7 +79,7 @@ public class RecipeController {
         return RecipeEntityToRecipeResponse.convertList(recipes);
     }
 
-    private void verifyCreateRecipeRequest(CreateRecipeRequest request) {
+    private void verifyCreateRecipeRequest(RecipeRequest request) {
         if (request.name == null || request.name.isEmpty()) {
             throw RestError.MISSING_FIELD.get("name");
         }
@@ -104,7 +104,7 @@ public class RecipeController {
     @PostMapping("")
     @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Create a recipe")
-    public RecipeResponse createRecipe(@RequestBody CreateRecipeRequest request) {
+    public RecipeResponse createRecipe(@RequestBody RecipeRequest request) {
         verifyCreateRecipeRequest(request);
 
         RecipeEntity savedRecipe = recipeService.createRecipe(
@@ -114,7 +114,8 @@ public class RecipeController {
                 request.portions,
                 request.season,
                 request.steps,
-                request.ingredients
+                request.ingredients,
+                request.type
         );
 
         return RecipeEntityToRecipeResponse.convert(savedRecipe);
@@ -124,9 +125,10 @@ public class RecipeController {
     @PreAuthorize("hasRole('USER')")
     @Operation(summary = "Update a recipe")
     @Parameter(name = "id", description = "The id of the recipe")
-    public RecipeResponse updateRecipe(@PathVariable Long recipeId, @RequestBody CreateRecipeRequest request) {
+    public RecipeResponse updateRecipe(@PathVariable Long recipeId, @RequestBody RecipeRequest request) {
         verifyCreateRecipeRequest(request);
 
+        //FIXME: send a different props to updateRecipe (to many arguments)
         RecipeEntity updatedRecipe = recipeService.updateRecipe(
                 getUserId(),
                 recipeId,
@@ -135,7 +137,8 @@ public class RecipeController {
                 request.portions,
                 request.season,
                 request.steps,
-                request.ingredients
+                request.ingredients,
+                request.type
         );
 
         return RecipeEntityToRecipeResponse.convert(updatedRecipe);

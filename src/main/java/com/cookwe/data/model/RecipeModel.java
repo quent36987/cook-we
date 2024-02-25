@@ -31,6 +31,9 @@ public class RecipeModel {
     @Enumerated(EnumType.STRING)
     private ESeason season;
 
+    @Enumerated(EnumType.STRING)
+    private EType type;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserModel user;

@@ -6,11 +6,8 @@ import com.cookwe.data.repository.interfaces.*;
 import com.cookwe.domain.entity.RecipeDetailEntity;
 import com.cookwe.domain.entity.RecipeEntity;
 import com.cookwe.domain.entity.RecipeStepEntity;
-import com.cookwe.presentation.request.CreateIngredientRequest;
-import com.cookwe.utils.converters.RecipeModelToRecipeDetailEntity;
-import com.cookwe.utils.converters.RecipeModelToRecipeEntity;
-import com.cookwe.utils.converters.RecipeStepModelToRecipeStepEntity;
-import com.cookwe.utils.converters.StringToESeason;
+import com.cookwe.presentation.request.IngredientRequest;
+import com.cookwe.utils.converters.*;
 import com.cookwe.utils.errors.RestError;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,8 +91,8 @@ public class RecipeService {
         return RecipeModelToRecipeEntity.convertList(recipeModels);
     }
 
-    public void addIngredientToModel(List<CreateIngredientRequest> ingredientRequests, RecipeModel recipe, Long userId) {
-        for (CreateIngredientRequest ingredientRequest : ingredientRequests) {
+    public void addIngredientToModel(List<IngredientRequest> ingredientRequests, RecipeModel recipe, Long userId) {
+        for (IngredientRequest ingredientRequest : ingredientRequests) {
             ingredientService.addIngredientToModel(userId, recipe, ingredientRequest.name, ingredientRequest.quantity, ingredientRequest.unit);
         }
     }
@@ -110,7 +107,7 @@ public class RecipeService {
     }
 
     @Transactional
-    public RecipeEntity createRecipe(Long userId, String name, Long time, Long portions, String season, List<String> steps, List<CreateIngredientRequest> ingredientRequests) {
+    public RecipeEntity createRecipe(Long userId, String name, Long time, Long portions, String season, List<String> steps, List<IngredientRequest> ingredientRequests, String type) {
         RecipeModel recipe = new RecipeModel();
         recipe.setName(name);
         recipe.setTime(time);
@@ -118,6 +115,7 @@ public class RecipeService {
         recipe.setCreatedAt(LocalDateTime.now());
         recipe.setUser(new UserModel(userId));
         recipe.setSeason(StringToESeason.convert(season));
+        recipe.setType(StringToEType.convert(type));
 
         RecipeModel savedRecipe = recipeRepository.save(recipe);
 
@@ -140,7 +138,7 @@ public class RecipeService {
     }
 
     @Transactional
-    public RecipeEntity updateRecipe(Long userId, Long recipeId, String name, Long time, Long portions, String season, List<String> steps, List<CreateIngredientRequest> ingredientRequests) {
+    public RecipeEntity updateRecipe(Long userId, Long recipeId, String name, Long time, Long portions, String season, List<String> steps, List<IngredientRequest> ingredientRequests, String type){
         RecipeModel recipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
 
         if (!recipe.getUser().getId().equals(userId)) {
@@ -151,6 +149,7 @@ public class RecipeService {
         recipe.setTime(time);
         recipe.setPortions(portions);
         recipe.setSeason(StringToESeason.convert(season));
+        recipe.setType(StringToEType.convert(type));
 
         Iterable<RecipeStepModel> recipeSteps = recipeStepRepository.findByRecipeId(recipeId);
 

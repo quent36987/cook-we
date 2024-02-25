@@ -16,6 +16,7 @@ public class RecipeDetailEntityToRecipeDetailResponse {
                 .withSeason(recipeDetailEntity.getSeason())
                 .withUser(UserEntityToUserResponse.convert(recipeDetailEntity.getUser()))
                 .withCreatedAt(recipeDetailEntity.getCreatedAt())
+                .withType(recipeDetailEntity.getType())
                 .withIngredients(IngredientEntityToIngredientResponse.convertList(recipeDetailEntity.getIngredients()))
                 .withPictures(RecipePictureEntityToRecipePictureReponse.convertList(recipeDetailEntity.getPictures()))
                 .withComments(CommentEntityToCommentResponse.convertList(recipeDetailEntity.getComments()))

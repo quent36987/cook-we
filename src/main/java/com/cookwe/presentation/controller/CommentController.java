@@ -2,7 +2,7 @@ package com.cookwe.presentation.controller;
 
 import com.cookwe.domain.entity.CommentEntity;
 import com.cookwe.domain.service.CommentService;
-import com.cookwe.presentation.request.CreateCommentRequest;
+import com.cookwe.presentation.request.CommentRequest;
 import com.cookwe.presentation.response.CommentResponse;
 import com.cookwe.utils.converters.CommentEntityToCommentResponse;
 import com.cookwe.utils.errors.RestError;
@@ -51,7 +51,7 @@ public class CommentController {
     @PostMapping("/recipes/{recipeId}")
     public CommentResponse createComment(
             @PathVariable Long recipeId,
-            @RequestBody CreateCommentRequest request) {
+            @RequestBody CommentRequest request) {
         if (request.text == null || request.text.isEmpty()) {
             throw RestError.MISSING_FIELD.get("text");
         }
@@ -75,7 +75,7 @@ public class CommentController {
     @PutMapping("/{commentId}")
     public CommentResponse updateComment(
             @PathVariable Long commentId,
-            @RequestBody CreateCommentRequest request) {
+            @RequestBody CommentRequest request) {
         CommentEntity updatedComment = commentService.updateComment(getUserId(), commentId, request.text);
 
         return CommentEntityToCommentResponse.convert(updatedComment);
