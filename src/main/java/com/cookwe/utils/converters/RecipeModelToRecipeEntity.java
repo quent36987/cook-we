@@ -17,6 +17,7 @@ public class RecipeModelToRecipeEntity {
                 .withType(recipeModel.getType())
                 .withUser(UserModelToUserEntity.convert(recipeModel.getUser()))
                 .withCreatedAt(recipeModel.getCreatedAt())
+                .withPictures(RecipePictureModelToRecipePictureEntity.convertList(recipeModel.getPictures()))
                 .withSteps(RecipeStepModelToRecipeStepEntity.convertList(recipeModel.getSteps()));
     }
 

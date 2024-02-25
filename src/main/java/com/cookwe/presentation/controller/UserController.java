@@ -46,9 +46,12 @@ public class UserController {
     }
 
     @Operation(summary = "Get user favorite recipes")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/favorites-recipes")
     public List<RecipeResponse> getFavoriteRecipes() {
         List<RecipeEntity> recipeEntities = userService.getFavoriteRecipes(getUserId());
+
+
 
         return RecipeEntityToRecipeResponse.convertList(recipeEntities);
     }
@@ -116,6 +119,7 @@ public class UserController {
 
     @Operation(summary = "Update user details (first name, last name)")
     @PutMapping("/details")
+    @PreAuthorize("hasRole('USER')")
     @Parameter(name = "username", description = "The username of the user")
     public UserDetailResponse updateUserDetails(@RequestBody UserDetailResponse request) {
         UserEntity userEntity = userService.updateUserDetails(getUserId(), request.firstName, request.lastName);

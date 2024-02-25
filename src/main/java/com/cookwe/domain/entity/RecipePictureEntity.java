@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @With
 public class RecipePictureEntity {
     private Long id;
-    private RecipeEntity recipe;
     private String imageUrl;
     private UserEntity user;
     private LocalDateTime createdAt;

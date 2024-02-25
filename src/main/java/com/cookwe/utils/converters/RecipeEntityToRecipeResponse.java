@@ -17,6 +17,7 @@ public class RecipeEntityToRecipeResponse {
                 .withType(recipeEntity.getType())
                 .withUser(UserEntityToUserResponse.convert(recipeEntity.getUser()))
                 .withCreatedAt(recipeEntity.getCreatedAt())
+                .withPictures(RecipePictureEntityToRecipePictureReponse.convertList(recipeEntity.getPictures()))
                 .withSteps(RecipeStepEntityToRecipeStepResponse.convertList(recipeEntity.getSteps()));
 
     }

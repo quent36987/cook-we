@@ -20,6 +20,7 @@ public class RecipeModelToRecipeDetailEntity {
                 .user(UserModelToUserEntity.convert(recipeModel.getUser()))
                 .createdAt(recipeModel.getCreatedAt())
                 .steps(RecipeStepModelToRecipeStepEntity.convertList(recipeModel.getSteps()))
+                .pictures(RecipePictureModelToRecipePictureEntity.convertList(recipeModel.getPictures()))
                 .build();
     }
 

@@ -65,7 +65,7 @@ public class RecipeService {
 
         recipe.setComments(commentService.getCommentsByRecipeId(recipeId));
 
-        recipe.setPictures(recipePictureService.getRecipePicturesByRecipeId(recipeId));
+        //recipe.setPictures(recipePictureService.getRecipePicturesByRecipeId(recipeId));
 
         return recipe;
     }

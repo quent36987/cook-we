@@ -10,7 +10,6 @@ public class RecipePictureModelToRecipePictureEntity {
     public static RecipePictureEntity convert(RecipePictureModel recipePictureModel) {
         return new RecipePictureEntity()
                 .withId(recipePictureModel.getId())
-                .withRecipe(RecipeModelToRecipeEntity.convert(recipePictureModel.getRecipe()))
                 .withImageUrl(recipePictureModel.getImageUrl())
                 .withUser(UserModelToUserEntity.convert(recipePictureModel.getUser()))
                 .withCreatedAt(recipePictureModel.getCreatedAt());

@@ -43,6 +43,9 @@ public class RecipeModel {
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RecipeStepModel> steps = new ArrayList<>();
 
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<RecipePictureModel> pictures = new ArrayList<>();
+
     @ManyToMany(mappedBy = "favoriteRecipes", fetch = FetchType.LAZY)
     @JsonIgnore
     public List<UserModel> favoritedBy = new ArrayList<>();
