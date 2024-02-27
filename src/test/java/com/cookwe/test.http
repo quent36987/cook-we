@@ -1,3 +1,9 @@
+### POST test generate image
+POST http://localhost:9001/api/auto/generate-recipe
+Accept: application/json
+
+
+
 ### GET All Posts
 GET http://localhost:9001/api/recipes/1
 Accept: application/json
