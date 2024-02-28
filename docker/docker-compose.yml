@@ -1,4 +1,4 @@
-name: cook-we
+name: cookwe
 
 services:
   bdd:
