@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,7 @@ public class IngredientController {
     @PutMapping("/recipes/{recipeId}")
     @Operation(summary = "Add or update a new ingredient to a recipe")
     @Parameter(name = "recipeId", description = "The id of the recipe")
+    @PreAuthorize("hasRole('USER')")
     public IngredientResponse addIngredient(@PathVariable Long recipeId, @RequestBody IngredientRequest request) {
         if (request.name == null || request.name.isEmpty()) {
             throw RestError.MISSING_FIELD.get("name");
@@ -67,6 +69,7 @@ public class IngredientController {
     @DeleteMapping("/recipes/{recipeId}/{ingredientName}")
     @Operation(summary = "Delete an ingredient from a recipe")
     @Parameter(name = "ingredientName", description = "The name of the ingredient")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteIngredient(@PathVariable String ingredientName, @PathVariable Long recipeId) {
         ingredientService.deleteIngredient(getUserId(), recipeId, ingredientName);
 

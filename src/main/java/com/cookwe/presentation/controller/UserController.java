@@ -57,6 +57,7 @@ public class UserController {
     }
 
     @Operation(summary = "Get my recipes")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/recipes")
     public List<RecipeResponse> getRecipes() {
         List<RecipeEntity> recipeEntities = recipeService.getRecipesByUserId(getUserId());
@@ -75,6 +76,7 @@ public class UserController {
 
     @Operation(summary = "add recipe to user favorites recipes")
     @Parameter(name = "recipeId", description = "The id of the recipe")
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/favorites-recipes/{recipeId}")
     public MessageResponse addRecipeToFavorites(@PathVariable Long recipeId) {
         userService.addFavoriteRecipe(getUserId(), recipeId);
@@ -84,6 +86,7 @@ public class UserController {
 
     @Operation(summary = "delete recipe from user favorites recipes")
     @Parameter(name = "recipeId", description = "The id of the recipe")
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/favorites-recipes/{recipeId}")
     public MessageResponse deleteRecipeFromFavorites(@PathVariable Long recipeId) {
         userService.removeFavoriteRecipe(getUserId(), recipeId);
@@ -101,6 +104,7 @@ public class UserController {
     }
 
     @Operation(summary = "Get my user details")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/details")
     public UserDetailResponse getMyUserDetails() {
         UserEntity userEntity = userService.getUserById(getUserId());
@@ -110,6 +114,7 @@ public class UserController {
 
     @Operation(summary = "Get user details (need ADMIN role)")
     @GetMapping("/{username}/details")
+    @PreAuthorize("hasRole('ADMIN')") // FIXME test ?
     @Parameter(name = "username", description = "The username of the user")
     public UserDetailResponse getUserDetails(@PathVariable String username) {
         UserEntity userEntity = userService.getUserByUsername(username);

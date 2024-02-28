@@ -10,6 +10,7 @@ import com.cookwe.utils.security.services.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +42,7 @@ public class RecipePictureController {
     @PostMapping("/recipes/{recipeId}")
     @Operation(summary = "Upload a picture for a recipe")
     @Parameter(name = "recipeId", description = "Id of the recipe")
+    @PreAuthorize("hasRole('USER')")
     public RecipePictureResponse uploadFile(@RequestParam("file") MultipartFile file, @PathVariable Long recipeId) {
         RecipePictureEntity recipePicture = recipePictureService.save(getUserId(), recipeId, file);
 

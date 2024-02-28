@@ -46,6 +46,7 @@ public class RoleController {
 
     @GetMapping("/users")
     @Operation(summary = "Get my roles")
+    @PreAuthorize("hasRole('USER')")
     public List<RoleResponse> getAllRolesByUserId() {
         List<RoleEntity> roles = roleService.getRolesByUserId(getUserId());
 

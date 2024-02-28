@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -64,6 +65,7 @@ public class CommentController {
     @Operation(summary = "Delete a comment")
     @Parameter(name = "commentId", description = "The id of the comment")
     @DeleteMapping("/{commentId}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
         commentService.deleteComment(getUserId(), commentId);
 
@@ -73,6 +75,7 @@ public class CommentController {
     @Operation(summary = "Update a comment")
     @Parameter(name = "commentId", description = "The id of the comment")
     @PutMapping("/{commentId}")
+    @PreAuthorize("hasRole('USER')")
     public CommentResponse updateComment(
             @PathVariable Long commentId,
             @RequestBody CommentRequest request) {
