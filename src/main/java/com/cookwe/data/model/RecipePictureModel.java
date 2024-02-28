@@ -3,8 +3,9 @@ package com.cookwe.data.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Data
 @Entity
@@ -31,5 +32,6 @@ public class RecipePictureModel {
     @JsonIgnore
     private UserModel user;
 
-    private LocalDateTime createdAt;
+    @CreationTimestamp
+    private Timestamp createdAt;
 }

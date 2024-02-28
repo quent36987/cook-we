@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -51,8 +50,7 @@ public class CommentService {
 
         CommentModel commentModel = new CommentModel().withUser(new UserModel(userId))
                 .withRecipe(recipe)
-                .withText(text)
-                .withCreatedAt(LocalDateTime.now());
+                .withText(text);
 
         return CommentModelToCommentEntity.convert(commentRepository.save(commentModel));
     }

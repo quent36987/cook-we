@@ -2,7 +2,7 @@ package com.cookwe.domain.entity;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -15,5 +15,5 @@ public class CommentEntity {
     private String text;
     private UserEntity user;
     private Long recipeId;
-    private LocalDateTime createdAt;
+    private Timestamp createdAt;
 }

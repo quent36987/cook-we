@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -112,7 +111,6 @@ public class RecipeService {
         recipe.setName(name);
         recipe.setTime(time);
         recipe.setPortions(portions);
-        recipe.setCreatedAt(LocalDateTime.now());
         recipe.setUser(new UserModel(userId));
         recipe.setSeason(StringToESeason.convert(season));
         recipe.setType(StringToEType.convert(type));

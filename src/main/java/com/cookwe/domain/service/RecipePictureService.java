@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -70,7 +69,6 @@ public class RecipePictureService {
             RecipePictureModel recipePictureModel = new RecipePictureModel()
                     .withRecipe(recipeModel)
                     .withImageUrl(fileName)
-                    .withCreatedAt(LocalDateTime.now())
                     .withUser(new UserModel().withId(userId));
 
             recipePictureModel = recipePictureRepository.save(recipePictureModel);

@@ -2,7 +2,7 @@ package com.cookwe.domain.entity;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -13,5 +13,5 @@ public class RecipePictureEntity {
     private Long id;
     private String imageUrl;
     private UserEntity user;
-    private LocalDateTime createdAt;
+    private Timestamp createdAt;
 }

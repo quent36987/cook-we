@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.List;
 
 @AllArgsConstructor
@@ -28,7 +28,7 @@ public class RecipeResponse {
 
     public UserResponse user;
 
-    public LocalDateTime createdAt;
+    public Timestamp createdAt;
 
     public List<RecipeStepResponse> steps;
 

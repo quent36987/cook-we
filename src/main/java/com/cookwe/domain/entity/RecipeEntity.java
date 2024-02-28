@@ -5,7 +5,7 @@ import com.cookwe.data.model.EType;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Getter
@@ -22,7 +22,7 @@ public class RecipeEntity {
     private ESeason season;
     private EType type;
     private UserEntity user;
-    private LocalDateTime createdAt;
+    private Timestamp createdAt;
     private List<RecipeStepEntity> steps;
     private List<RecipePictureEntity> pictures;
 }

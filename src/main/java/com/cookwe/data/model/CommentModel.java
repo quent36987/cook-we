@@ -3,8 +3,9 @@ package com.cookwe.data.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Data
 @Entity
@@ -30,5 +31,6 @@ public class CommentModel {
     @JoinColumn(name = "recipe_id")
     private RecipeModel recipe;
 
-    private LocalDateTime createdAt;
+    @CreationTimestamp
+    private Timestamp createdAt;
 }

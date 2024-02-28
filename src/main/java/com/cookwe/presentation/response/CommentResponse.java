@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.With;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,5 +14,5 @@ public class CommentResponse {
     public Long recipeId;
     public String text;
     public UserResponse user;
-    public LocalDateTime createdAt;
+    public Timestamp createdAt;
 }
