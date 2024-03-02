@@ -66,7 +66,7 @@ class RoleEndpointTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].role").value("ROLE_USER"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("ROLE_USER"));
     }
 
     @Test
@@ -85,8 +85,8 @@ class RoleEndpointTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].role").value("ROLE_USER"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].role").value("ROLE_ADMIN"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("ROLE_USER"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("ROLE_ADMIN"));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/roles/ROLE_MODERATOR/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -97,9 +97,9 @@ class RoleEndpointTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].role").value("ROLE_USER"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].role").value("ROLE_ADMIN"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].role").value("ROLE_MODERATOR"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("ROLE_USER"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("ROLE_ADMIN"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].name").value("ROLE_MODERATOR"));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/roles/ROLE_MODERATOR/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -110,8 +110,8 @@ class RoleEndpointTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].role").value("ROLE_USER"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].role").value("ROLE_ADMIN"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("ROLE_USER"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("ROLE_ADMIN"));
     }
 
     @Test

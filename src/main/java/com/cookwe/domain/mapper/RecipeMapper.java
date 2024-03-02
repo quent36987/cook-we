@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(uses = {RecipePictureMapper.class})
+@Mapper(componentModel = "spring",uses = {RecipePictureMapper.class})
 public interface RecipeMapper {
 
     @Mapping(target = "id", source = "id")

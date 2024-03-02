@@ -43,6 +43,7 @@ public class RecipePictureService {
         this.recipePictureRepository = recipePictureRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<RecipePictureDTO> getRecipePicturesByRecipeId(Long recipeId) {
         List<RecipePictureModel> pictures = recipePictureRepository.findByRecipeId(recipeId);
 

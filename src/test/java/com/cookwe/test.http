@@ -5,7 +5,7 @@ Accept: application/json
 
 
 ### GET All Posts
-GET http://localhost:9001/api/recipes/1
+GET http://localhost:9001/api/recipes/32
 Accept: application/json
 
 ### GET All Posts
@@ -126,6 +126,7 @@ Accept: application/json
   "time": 10,
   "season": "SUMMER",
   "portions": 4,
+  "type": "DESSERT",
   "steps": [
     "step1",
     "step2"

@@ -10,7 +10,7 @@ import org.mapstruct.Named;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(uses = {RoleMapper.class})
+@Mapper(componentModel = "spring", uses = {RoleMapper.class})
 public interface UserMapper {
 
     @Mapping(target = "id", source = "id")
@@ -19,7 +19,7 @@ public interface UserMapper {
     @Mapping(target = "firstName", source = "firstName")
     @Mapping(target = "lastName", source = "lastName")
     @Mapping(target = "roles", source = "roles")
-    @Mapping(target = "favoriteRecipesIds", source = "favoriteRecipes", qualifiedByName = "getFavoriteRecipesIds")
+    @Mapping(target = "favoriteRecipeIds", source = "favoriteRecipes", qualifiedByName = "getFavoriteRecipesIds")
     UserDTO toDTO(UserModel user);
 
     @Named("getFavoriteRecipesIds")

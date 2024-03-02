@@ -41,12 +41,13 @@ public class UserService {
         this.recipeMapper = recipeMapper;
     }
 
-
+    @Transactional(readOnly = true)
     public UserDTO getUserById(Long id) {
         return userMapper.toDTO(userRepositoryCustom.getUserById(id));
     }
 
 
+    @Transactional(readOnly = true)
     public List<RecipeDTO> getFavoriteRecipes(Long userId) {
         List<RecipeModel> favoriteRecipes = userRepository.findFavoriteRecipesByUserId(userId);
 
@@ -58,6 +59,7 @@ public class UserService {
         return userRepository.existsByUsername(username);
     }
 
+    @Transactional(readOnly = true)
     public UserDTO getUserByUsername(String username) {
         Optional<UserModel> user = userRepository.findByUsername(username);
 
@@ -72,6 +74,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<RecipeDTO> getRecipesByUsername(String username) {
         UserDTO user = getUserByUsername(username);
 

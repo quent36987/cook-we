@@ -31,6 +31,7 @@ public class IngredientService {
         this.recipeRepositoryCustom = recipeRepositoryCustom;
     }
 
+    @Transactional(readOnly = true)
     public List<IngredientDTO> getIngredientsByRecipeId(Long recipeId) {
         List<IngredientModel> ingredients = ingredientRepository.findByRecipeId(recipeId);
 

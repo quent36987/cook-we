@@ -27,7 +27,7 @@ public interface RecipeRepository extends CrudRepository<RecipeModel, Long> {
 
     Optional<RecipeModel> findById(Long id);
 
-    @EntityGraph(attributePaths = {"ingredients", "user", "recipePictures", "comments", "steps"})
+    @EntityGraph(attributePaths = {"ingredients", "user"})
     @Query("SELECT r FROM RecipeModel r WHERE r.id = :id")
     Optional<RecipeModel> findDetailById(Long id);
 }

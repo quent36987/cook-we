@@ -32,18 +32,21 @@ public class RoleService {
     }
 
 
+    @Transactional(readOnly = true)
     public List<RoleDTO> getRolesByUserId(Long userId) {
         UserModel user = userRepositoryCustom.getUserById(userId);
 
         return roleMapper.toDTOList(user.getRoles());
     }
 
+    @Transactional(readOnly = true)
     public List<RoleDTO> getAllRoles() {
         List<RoleModel> roles = roleRepository.findAll();
 
         return roleMapper.toDTOList(roles);
     }
 
+    @Transactional(readOnly = true)
     public List<RoleDTO> getRolesByUsername(String username) {
         UserModel userModel = userRepositoryCustom.getUserByUsername(username);
 

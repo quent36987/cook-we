@@ -1,10 +1,15 @@
 package com.cookwe.presentation.controller;
 
+import com.cookwe.domain.entity.IngredientDTO;
 import com.cookwe.domain.entity.RecipeDetailDTO;
 import com.cookwe.domain.entity.RecipeDTO;
+import com.cookwe.domain.entity.RecipeStepDTO;
 import com.cookwe.domain.service.RecipeService;
 import com.cookwe.presentation.request.RecipeRequest;
 import com.cookwe.presentation.response.MessageResponse;
+import com.cookwe.utils.converters.StringToESeason;
+import com.cookwe.utils.converters.StringToEType;
+import com.cookwe.utils.converters.StringToEUnit;
 import com.cookwe.utils.errors.RestError;
 import com.cookwe.utils.security.services.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,6 +64,9 @@ public class RecipeController {
     }
 
     private void verifyCreateRecipeRequest(RecipeRequest request) {
+        if (request == null)
+            throw RestError.MISSING_FIELD.get("request");
+
         if (request.name == null || request.name.isEmpty()) {
             throw RestError.MISSING_FIELD.get("name");
         }
@@ -69,6 +77,14 @@ public class RecipeController {
 
         if (request.portions == null || request.portions <= 0) {
             throw RestError.MISSING_FIELD.get("portions");
+        }
+
+        if (request.season == null || request.season.isEmpty()) {
+            throw RestError.MISSING_FIELD.get("season");
+        }
+
+        if (request.type == null || request.type.isEmpty()) {
+            throw RestError.MISSING_FIELD.get("type");
         }
 
         if (request.ingredients == null) {
@@ -86,16 +102,31 @@ public class RecipeController {
     public RecipeDTO createRecipe(@RequestBody RecipeRequest request) {
         verifyCreateRecipeRequest(request);
 
-        return recipeService.createRecipe(
-                this.getUserId(),
-                request.name,
-                request.time,
-                request.portions,
-                request.season,
-                request.steps,
-                request.ingredients,
-                request.type
-        );
+        RecipeDetailDTO recipe = new RecipeDetailDTO().withName(request.name)
+                .withTime(request.time)
+                .withPortions(request.portions)
+                .withSeason(StringToESeason.convert(request.season))
+                .withSteps(request.steps.stream().map(step -> new RecipeStepDTO().withText(step)).toList())
+                .withType(StringToEType.convert(request.type))
+                .withIngredients(request.ingredients.stream().map(ingredient -> new IngredientDTO()
+                        .withName(ingredient.name)
+                        .withQuantity(ingredient.quantity)
+                        .withUnit(StringToEUnit.convert(ingredient.unit))).toList())
+                .withOwnerId(getUserId())
+                .withName(request.name);
+
+        return recipeService.createRecipe(recipe);
+
+//        return recipeService.createRecipe(
+//                this.getUserId(),
+//                request.name,
+//                request.time,
+//                request.portions,
+//                request.season,
+//                request.steps,
+//                request.ingredients,
+//                request.type
+//        );
     }
 
     @PutMapping("/{recipeId}")

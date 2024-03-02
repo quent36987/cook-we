@@ -32,5 +32,6 @@ public class RecipePictureModel {
     private UserModel user;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     private Timestamp createdAt;
 }

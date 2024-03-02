@@ -4,7 +4,6 @@ import com.cookwe.domain.entity.RecipeDTO;
 import com.cookwe.domain.service.UserService;
 import com.cookwe.presentation.request.RecipeRequest;
 import com.cookwe.presentation.request.UpdateUserRequest;
-import com.cookwe.presentation.response.RecipeResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
@@ -180,8 +179,8 @@ class UserEndpointTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(TestUtils.USERNAME_1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(TestUtils.EMAIL_1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.password").doesNotExist())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.roles").doesNotExist())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").doesNotExist());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.roles").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
 
         UpdateUserRequest updateUserRequest = new UpdateUserRequest().withFirstName("test").withLastName("test2");
         String result = "{\"username\":\"" + TestUtils.USERNAME_1 + "\",\"email\":\"" + TestUtils.EMAIL_1 + "\",\"firstName\":\"test\",\"lastName\":\"test2\"}";

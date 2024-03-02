@@ -31,13 +31,14 @@ public class CommentService {
         this.commentMapper = commentMapper;
     }
 
-
+    @Transactional(readOnly = true)
     public List<CommentDTO> getCommentsByRecipeId(Long recipeId) {
         List<CommentModel> comments = commentRepository.findByRecipeId(recipeId);
 
         return commentMapper.toDTOList(comments);
     }
 
+    @Transactional(readOnly = true)
     public List<CommentDTO> getCommentsByUsername(String username) {
         List<CommentModel> comments = commentRepository.findByUsername(username);
 

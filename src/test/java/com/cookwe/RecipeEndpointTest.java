@@ -193,7 +193,6 @@ class RecipeEndpointTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes/" + recipeResponse.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(recipeRequest))
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(recipeRequest.name))
@@ -208,12 +207,6 @@ class RecipeEndpointTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(STRING_INGREDIENTS));
 
-        //get steps
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes/" + recipeResponse.getId() + "/steps")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(STRING_STEPS));
 
         RecipeRequest updatedRecipe = TestUtils.createRecipeRequestWithIngredientsBis();
         updatedRecipe.setSteps(TestUtils.getRecipeStepsBis());
@@ -226,7 +219,12 @@ class RecipeEndpointTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(updatedRecipe.name))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.time").value(updatedRecipe.time))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.season").value(updatedRecipe.season))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.steps").isArray());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.steps").doesNotExist());
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/recipes/" + recipeResponse.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
         //get ingredient
         mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipeResponse.getId())
@@ -235,24 +233,12 @@ class RecipeEndpointTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(STRING_INGREDIENTS_BIS));
 
-        //get steps
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes/" + recipeResponse.getId() + "/steps")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(STRING_STEPS_BIS));
 
         //delete recipe
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/recipes/" + recipeResponse.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes/" + recipeResponse.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
-
     }
 
     @Test

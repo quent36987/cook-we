@@ -13,7 +13,6 @@ import java.util.List;
 @With
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
 public class RecipeDTO {
     private Long id;
     private String name;

@@ -3,8 +3,6 @@ package com.cookwe.presentation.controller;
 import com.cookwe.domain.entity.RecipePictureDTO;
 import com.cookwe.domain.service.RecipePictureService;
 import com.cookwe.presentation.response.MessageResponse;
-import com.cookwe.presentation.response.RecipePictureResponse;
-import com.cookwe.utils.converters.RecipePictureEntityToRecipePictureReponse;
 import com.cookwe.utils.errors.RestError;
 import com.cookwe.utils.security.services.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;

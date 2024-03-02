@@ -3,6 +3,7 @@ package com.cookwe.data.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -27,7 +28,7 @@ public class RecipeModel {
 
     private Long time;
 
-    @NotBlank
+    @NotNull
     private Long portions;
 
     @Enumerated(EnumType.STRING)
@@ -41,6 +42,7 @@ public class RecipeModel {
     private UserModel user;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     private Timestamp createdAt;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -53,8 +55,8 @@ public class RecipeModel {
     public List<UserModel> favoritedBy = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CommentModel> comments;
+    private List<CommentModel> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<IngredientModel> ingredients;
+    private List<IngredientModel> ingredients = new ArrayList<>();
 }

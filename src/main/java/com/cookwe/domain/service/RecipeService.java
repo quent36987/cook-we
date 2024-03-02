@@ -27,7 +27,7 @@ public class RecipeService {
     private final RecipeMapper recipeMapper;
     private final RecipeDetailMapper recipeDetailMapper;
 
-    public RecipeService(RecipeDetailMapper recipeDetailMapper,RecipeMapper recipeMapper, RecipeRepository recipeRepository, RecipeRepositoryCustom recipeRepositoryCustom, RecipeStepRepository recipeStepRepository, IngredientRepository ingredientRepository, IngredientService ingredientService) {
+    public RecipeService(RecipeDetailMapper recipeDetailMapper, RecipeMapper recipeMapper, RecipeRepository recipeRepository, RecipeRepositoryCustom recipeRepositoryCustom, RecipeStepRepository recipeStepRepository, IngredientRepository ingredientRepository, IngredientService ingredientService) {
         this.recipeRepository = recipeRepository;
         this.recipeRepositoryCustom = recipeRepositoryCustom;
         this.recipeStepRepository = recipeStepRepository;
@@ -37,25 +37,28 @@ public class RecipeService {
         this.recipeDetailMapper = recipeDetailMapper;
     }
 
+    @Transactional(readOnly = true)
     public List<RecipeDTO> getRecipes() {
         List<RecipeModel> recipes = recipeRepository.findAll();
 
         return recipeMapper.toDTOList(recipes);
     }
 
+    @Transactional(readOnly = true)
     public RecipeDetailDTO getRecipeDetailById(Long recipeId) {
         RecipeModel recipeModel = recipeRepositoryCustom.getRecipeDetailById(recipeId);
 
         return recipeDetailMapper.toDTO(recipeModel);
     }
 
-
+    @Transactional(readOnly = true)
     public List<RecipeDTO> getRecipesByUserId(Long userId) {
         List<RecipeModel> recipes = recipeRepository.findByUserId(userId);
 
         return recipeMapper.toDTOList(recipes);
     }
 
+    @Transactional(readOnly = true)
     public List<RecipeDTO> getRecipesByIngredients(List<String> ingredients) {
         List<RecipeModel> recipeModels = recipeRepository.findByRecipeByIngredientsName(ingredients);
 
@@ -77,26 +80,27 @@ public class RecipeService {
         }
     }
 
-    public RecipeDTO createRecipe(Long userId, String name, Long time, Long portions, String season, List<String> steps, List<IngredientRequest> ingredientRequests, String type) {
-        RecipeModel recipe = new RecipeModel();
-        recipe.setName(name);
-        recipe.setTime(time);
-        recipe.setPortions(portions);
-        recipe.setUser(new UserModel(userId));
-        recipe.setSeason(StringToESeason.convert(season));
-        recipe.setType(StringToEType.convert(type));
+    //public RecipeDTO createRecipe(Long userId, String name, Long time, Long portions, String season, List<String> steps, List<IngredientRequest> ingredientRequests, String type) {
+    public RecipeDTO createRecipe(RecipeDetailDTO recipe) {
+//        RecipeModel recipe = new RecipeModel();
+//        recipe.setName(name);
+//        recipe.setTime(time);
+//        recipe.setPortions(portions);
+//        recipe.setUser(new UserModel(userId));
+//        recipe.setSeason(StringToESeason.convert(season));
+//        recipe.setType(StringToEType.convert(type));
 
-        RecipeModel savedRecipe = recipeRepository.save(recipe);
+        RecipeModel savedRecipe = recipeRepository.save(recipeDetailMapper.toModel(recipe));
 
-        addStepToModel(steps, savedRecipe);
-
-        addIngredientToModel(ingredientRequests, savedRecipe, userId);
+//        addStepToModel(steps, savedRecipe);
+//
+//        addIngredientToModel(ingredientRequests, savedRecipe, userId);
 
         return recipeMapper.toDTO(savedRecipe);
     }
 
     public void deleteRecipe(Long userId, Long recipeId) {
-        RecipeModel recipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
+        RecipeModel recipe = recipeRepositoryCustom.getRecipeDetailById(recipeId);
 
         if (!recipe.getUser().getId().equals(userId)) {
             throw RestError.FORBIDDEN_MESSAGE.get("You are not the owner of this recipe");

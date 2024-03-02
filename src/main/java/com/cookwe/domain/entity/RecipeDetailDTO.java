@@ -13,7 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @With
-@SuperBuilder
 public class RecipeDetailDTO {
     private Long id;
     private String name;
@@ -22,6 +21,7 @@ public class RecipeDetailDTO {
     private ESeason season;
     private EType type;
     private String ownerUsername;
+    private Long ownerId;
     private Timestamp createdAt;
     private List<RecipeStepDTO> steps;
     private List<RecipePictureDTO> pictures;

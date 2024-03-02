@@ -25,7 +25,7 @@ public class RecipeRepositoryCustom {
     }
 
     public RecipeModel getRecipeDetailById(Long id) {
-        Optional<RecipeModel> optionalRecipe = recipeRepository.findById(id);
+        Optional<RecipeModel> optionalRecipe = recipeRepository.findDetailById(id);
 
         if (optionalRecipe.isEmpty()) {
             throw RestError.RECIPE_NOT_FOUND.get(id);
