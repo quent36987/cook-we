@@ -9,11 +9,10 @@ import java.sql.Timestamp;
 @With
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentEntity {
-
+public class CommentDTO {
     private Long id;
     private String text;
-    private UserEntity user;
+    private String ownerUsername;
     private Long recipeId;
     private Timestamp createdAt;
 }

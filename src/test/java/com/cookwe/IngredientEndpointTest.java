@@ -1,10 +1,10 @@
 package com.cookwe;
 
+import com.cookwe.domain.entity.RecipeDTO;
 import com.cookwe.domain.service.UserService;
 import com.cookwe.presentation.request.IngredientRequest;
 import com.cookwe.presentation.request.RecipeRequest;
 import com.cookwe.presentation.request.LoginRequest;
-import com.cookwe.presentation.response.RecipeResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
@@ -77,7 +77,7 @@ class IngredientEndpointTest {
         return recipeRequest;
     }
 
-    public RecipeResponse createRecipe(RecipeRequest recipeRequest) throws Exception {
+    public RecipeDTO createRecipe(RecipeRequest recipeRequest) throws Exception {
         return objectMapper.readValue(mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(recipeRequest))
@@ -85,7 +85,7 @@ class IngredientEndpointTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn()
                 .getResponse()
-                .getContentAsString(), RecipeResponse.class);
+                .getContentAsString(), RecipeDTO.class);
     }
 
     @Test
@@ -93,32 +93,32 @@ class IngredientEndpointTest {
         createuser(USERNAME_1, EMAIL_1, PASSWORD_1);
         setUpSecurity(USERNAME_1, PASSWORD_1);
 
-        RecipeResponse recipe = createRecipe(TestUtils.createSimpleRecipeRequest());
+        RecipeDTO recipe = createRecipe(TestUtils.createSimpleRecipeRequest());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("[]"));
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new IngredientRequest("test-ingredient", 10F, "MILLILITER")))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("[{\"name\":\"test-ingredient\",\"quantity\":10.0,\"unit\":\"MILLILITER\"}]"));
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/ingredients/recipes/" + recipe.id + "/test-ingredient")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/ingredients/recipes/" + recipe.getId() + "/test-ingredient")
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -130,9 +130,9 @@ class IngredientEndpointTest {
         createuser(USERNAME_1, EMAIL_1, PASSWORD_1);
         setUpSecurity(USERNAME_1, PASSWORD_1);
 
-        RecipeResponse recipe = createRecipe(createRecipeRequestWithIngredients());
+        RecipeDTO recipe = createRecipe(createRecipeRequestWithIngredients());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -144,29 +144,29 @@ class IngredientEndpointTest {
         createuser(USERNAME_1, EMAIL_1, PASSWORD_1);
         setUpSecurity(USERNAME_1, PASSWORD_1);
 
-        RecipeResponse recipe = createRecipe(createRecipeRequestWithIngredients());
+        RecipeDTO recipe = createRecipe(createRecipeRequestWithIngredients());
 
         createuser(USERNAME_2, EMAIL_2, PASSWORD_2);
         setUpSecurity(USERNAME_2, PASSWORD_2);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new IngredientRequest("test-ingredient", 10F, "MILLILITER")))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(STRING_INGREDIENTS));
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/ingredients/recipes/" + recipe.id + "/test-ingredient")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/ingredients/recipes/" + recipe.getId() + "/test-ingredient")
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -178,45 +178,45 @@ class IngredientEndpointTest {
         createuser(USERNAME_1, EMAIL_1, PASSWORD_1);
         setUpSecurity(USERNAME_1, PASSWORD_1);
 
-        RecipeResponse recipe = createRecipe(TestUtils.createSimpleRecipeRequest());
+        RecipeDTO recipe = createRecipe(TestUtils.createSimpleRecipeRequest());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new IngredientRequest("test-ingredient", 0F, "MILLILITER")))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new IngredientRequest("test-ingredient", 10F, "milliliter")))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new IngredientRequest("test-ingredient", -0.1F, "MILLILITER")))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new IngredientRequest("", 1F, "MILLILITER")))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"quantity\":10.0, \"unit\":\"MILLILITER\"}")
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"test-ingredient\", \"unit\":\"MILLILITER\"}")
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"test-ingredient\", \"quantity\":10.0}")
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
@@ -234,27 +234,27 @@ class IngredientEndpointTest {
         createuser(USERNAME_1, EMAIL_1, PASSWORD_1);
         setUpSecurity(USERNAME_1, PASSWORD_1);
 
-        RecipeResponse recipe = createRecipe(createRecipeRequestWithIngredients());
+        RecipeDTO recipe = createRecipe(createRecipeRequestWithIngredients());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(STRING_INGREDIENTS));
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new IngredientRequest("test-ingredient", 5.0F, "CUP")))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new IngredientRequest("test-ingredient2", 2F, "PIECE")))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/ingredients/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())

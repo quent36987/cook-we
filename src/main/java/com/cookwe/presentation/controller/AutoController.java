@@ -1,14 +1,10 @@
 package com.cookwe.presentation.controller;
 
-import com.cookwe.domain.entity.RecipeDetailEntity;
 import com.cookwe.domain.service.AutoService;
-import com.cookwe.presentation.response.RecipeDetailResponse;
-import com.cookwe.utils.converters.RecipeDetailEntityToRecipeDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

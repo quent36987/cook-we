@@ -3,100 +3,72 @@ package com.cookwe.domain.service;
 import com.cookwe.data.model.*;
 import com.cookwe.data.repository.*;
 import com.cookwe.data.repository.interfaces.*;
-import com.cookwe.domain.entity.RecipeDetailEntity;
-import com.cookwe.domain.entity.RecipeEntity;
-import com.cookwe.domain.entity.RecipeStepEntity;
+import com.cookwe.domain.entity.RecipeDetailDTO;
+import com.cookwe.domain.entity.RecipeDTO;
+import com.cookwe.domain.mapper.RecipeDetailMapper;
+import com.cookwe.domain.mapper.RecipeMapper;
 import com.cookwe.presentation.request.IngredientRequest;
 import com.cookwe.utils.converters.*;
 import com.cookwe.utils.errors.RestError;
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
-@Data
+@Transactional
 public class RecipeService {
 
-    @Autowired
-    private RecipeRepository recipeRepository;
+    private final RecipeRepository recipeRepository;
+    private final RecipeRepositoryCustom recipeRepositoryCustom;
+    private final RecipeStepRepository recipeStepRepository;
+    private final IngredientRepository ingredientRepository;
+    private final IngredientService ingredientService;
+    private final RecipeMapper recipeMapper;
+    private final RecipeDetailMapper recipeDetailMapper;
 
-    @Autowired
-    private RecipeRepositoryCustom recipeRepositoryCustom;
-
-    @Autowired
-    private RecipeStepRepository recipeStepRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private IngredientRepository ingredientRepository;
-
-    @Autowired
-    private IngredientService ingredientService;
-
-    @Autowired
-    private RecipePictureRepository recipePictureRepository;
-
-    @Autowired
-    private CommentService commentService;
-
-    @Autowired
-    private RecipePictureService recipePictureService;
-
-    @Transactional
-    public List<RecipeEntity> getRecipes() {
-        Iterable<RecipeModel> recipes = recipeRepository.findAll();
-
-        return RecipeModelToRecipeEntity.convertList(recipes);
+    public RecipeService(RecipeDetailMapper recipeDetailMapper,RecipeMapper recipeMapper, RecipeRepository recipeRepository, RecipeRepositoryCustom recipeRepositoryCustom, RecipeStepRepository recipeStepRepository, IngredientRepository ingredientRepository, IngredientService ingredientService) {
+        this.recipeRepository = recipeRepository;
+        this.recipeRepositoryCustom = recipeRepositoryCustom;
+        this.recipeStepRepository = recipeStepRepository;
+        this.ingredientRepository = ingredientRepository;
+        this.ingredientService = ingredientService;
+        this.recipeMapper = recipeMapper;
+        this.recipeDetailMapper = recipeDetailMapper;
     }
 
-    @Transactional
-    public RecipeDetailEntity getRecipeDetailById(Long recipeId) {
-        RecipeModel recipeModel = recipeRepositoryCustom.getRecipeModelById(recipeId);
+    public List<RecipeDTO> getRecipes() {
+        List<RecipeModel> recipes = recipeRepository.findAll();
 
-        RecipeDetailEntity recipe = RecipeModelToRecipeDetailEntity.convert(recipeModel);
-
-        recipe.setIngredients(ingredientService.getIngredientsByRecipeId(recipeId));
-
-        recipe.setComments(commentService.getCommentsByRecipeId(recipeId));
-
-        //recipe.setPictures(recipePictureService.getRecipePicturesByRecipeId(recipeId));
-
-        return recipe;
+        return recipeMapper.toDTOList(recipes);
     }
 
-    @Transactional
-    public List<RecipeStepEntity> getStepsByRecipeId(Long recipeId) {
-        Iterable<RecipeStepModel> steps = recipeStepRepository.findByRecipeId(recipeId);
+    public RecipeDetailDTO getRecipeDetailById(Long recipeId) {
+        RecipeModel recipeModel = recipeRepositoryCustom.getRecipeDetailById(recipeId);
 
-        return RecipeStepModelToRecipeStepEntity.convertList(steps);
+        return recipeDetailMapper.toDTO(recipeModel);
     }
 
-    @Transactional
-    public List<RecipeEntity> getRecipesByUserId(Long userId) {
+
+    public List<RecipeDTO> getRecipesByUserId(Long userId) {
         List<RecipeModel> recipes = recipeRepository.findByUserId(userId);
 
-        return RecipeModelToRecipeEntity.convertList(recipes);
+        return recipeMapper.toDTOList(recipes);
     }
 
-    @Transactional
-    public List<RecipeEntity> getRecipesByIngredients(List<String> ingredients) {
-        Iterable<RecipeModel> recipeModels = recipeRepository.findByRecipeByIngredientsName(ingredients);
+    public List<RecipeDTO> getRecipesByIngredients(List<String> ingredients) {
+        List<RecipeModel> recipeModels = recipeRepository.findByRecipeByIngredientsName(ingredients);
 
-        return RecipeModelToRecipeEntity.convertList(recipeModels);
+        return recipeMapper.toDTOList(recipeModels);
     }
 
-    public void addIngredientToModel(List<IngredientRequest> ingredientRequests, RecipeModel recipe, Long userId) {
+    private void addIngredientToModel(List<IngredientRequest> ingredientRequests, RecipeModel recipe, Long userId) {
         for (IngredientRequest ingredientRequest : ingredientRequests) {
             ingredientService.addIngredientToModel(userId, recipe, ingredientRequest.name, ingredientRequest.quantity, ingredientRequest.unit);
         }
     }
 
-    public void addStepToModel(List<String> steps, RecipeModel recipe) {
+    private void addStepToModel(List<String> steps, RecipeModel recipe) {
         Long index = 0L;
         for (String step : steps) {
             RecipeStepModel recipeStep = new RecipeStepModel(recipe, step, index);
@@ -105,8 +77,7 @@ public class RecipeService {
         }
     }
 
-    @Transactional
-    public RecipeEntity createRecipe(Long userId, String name, Long time, Long portions, String season, List<String> steps, List<IngredientRequest> ingredientRequests, String type) {
+    public RecipeDTO createRecipe(Long userId, String name, Long time, Long portions, String season, List<String> steps, List<IngredientRequest> ingredientRequests, String type) {
         RecipeModel recipe = new RecipeModel();
         recipe.setName(name);
         recipe.setTime(time);
@@ -121,10 +92,9 @@ public class RecipeService {
 
         addIngredientToModel(ingredientRequests, savedRecipe, userId);
 
-        return RecipeModelToRecipeEntity.convert(savedRecipe);
+        return recipeMapper.toDTO(savedRecipe);
     }
 
-    @Transactional
     public void deleteRecipe(Long userId, Long recipeId) {
         RecipeModel recipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
 
@@ -135,8 +105,7 @@ public class RecipeService {
         recipeRepository.delete(recipe);
     }
 
-    @Transactional
-    public RecipeEntity updateRecipe(Long userId, Long recipeId, String name, Long time, Long portions, String season, List<String> steps, List<IngredientRequest> ingredientRequests, String type){
+    public RecipeDTO updateRecipe(Long userId, Long recipeId, String name, Long time, Long portions, String season, List<String> steps, List<IngredientRequest> ingredientRequests, String type) {
         RecipeModel recipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
 
         if (!recipe.getUser().getId().equals(userId)) {
@@ -149,7 +118,7 @@ public class RecipeService {
         recipe.setSeason(StringToESeason.convert(season));
         recipe.setType(StringToEType.convert(type));
 
-        Iterable<RecipeStepModel> recipeSteps = recipeStepRepository.findByRecipeId(recipeId);
+        List<RecipeStepModel> recipeSteps = recipeStepRepository.findByRecipeId(recipeId);
 
         recipeStepRepository.deleteAll(recipeSteps);
 
@@ -163,6 +132,6 @@ public class RecipeService {
 
         recipeRepository.save(recipe);
 
-        return RecipeModelToRecipeEntity.convert(recipe);
+        return recipeMapper.toDTO(recipe);
     }
 }

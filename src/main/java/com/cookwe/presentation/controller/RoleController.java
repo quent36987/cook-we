@@ -1,16 +1,13 @@
 package com.cookwe.presentation.controller;
 
-import com.cookwe.domain.entity.RoleEntity;
+import com.cookwe.domain.entity.RoleDTO;
 import com.cookwe.domain.service.RoleService;
 import com.cookwe.presentation.response.MessageResponse;
-import com.cookwe.presentation.response.RoleResponse;
-import com.cookwe.utils.converters.RoleEntityToRoleResponse;
 import com.cookwe.utils.errors.RestError;
 import com.cookwe.utils.security.services.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,10 +21,13 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 public class RoleController {
 
-    @Autowired
-    RoleService roleService;
+    private final RoleService roleService;
 
-    public Long getUserId() {
+    public RoleController(RoleService roleService) {
+        this.roleService = roleService;
+    }
+
+    private Long getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
             return userDetails.getId();
@@ -38,29 +38,23 @@ public class RoleController {
 
     @GetMapping("/all")
     @Operation(summary = "Get all roles")
-    public List<RoleResponse> getAllRoles() {
-        List<RoleEntity> roles = roleService.getAllRoles();
-
-        return RoleEntityToRoleResponse.convertList(roles);
+    public List<RoleDTO> getAllRoles() {
+        return  roleService.getAllRoles();
     }
 
     @GetMapping("/users")
     @Operation(summary = "Get my roles")
     @PreAuthorize("hasRole('USER')")
-    public List<RoleResponse> getAllRolesByUserId() {
-        List<RoleEntity> roles = roleService.getRolesByUserId(getUserId());
-
-        return RoleEntityToRoleResponse.convertList(roles);
+    public List<RoleDTO> getAllRolesByUserId() {
+        return roleService.getRolesByUserId(getUserId());
     }
 
     @GetMapping("/users/{username}")
     @Operation(summary = "Get roles by username (need ADMIN role)")
     @Parameter(name = "username", description = "The username of the user")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<RoleResponse> getRolesByUsername(@PathVariable String username) {
-        List<RoleEntity> roles = roleService.getRolesByUsername(username);
-
-        return RoleEntityToRoleResponse.convertList(roles);
+    public List<RoleDTO> getRolesByUsername(@PathVariable String username) {
+        return roleService.getRolesByUsername(username);
     }
 
     @PostMapping("{roleName}/users/{username}")

@@ -6,12 +6,9 @@ import com.cookwe.data.model.UserModel;
 import com.cookwe.data.repository.UserRepositoryCustom;
 import com.cookwe.data.repository.interfaces.RoleRepository;
 import com.cookwe.data.repository.interfaces.UserRepository;
-import com.cookwe.domain.entity.RoleEntity;
-import com.cookwe.domain.entity.UserEntity;
-import com.cookwe.utils.converters.RoleModelToRoleEntity;
+import com.cookwe.domain.entity.RoleDTO;
+import com.cookwe.domain.mapper.RoleMapper;
 import com.cookwe.utils.errors.RestError;
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,40 +16,41 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Data
+@Transactional
 public class RoleService {
 
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final UserRepositoryCustom userRepositoryCustom;
+    private final RoleMapper roleMapper;
 
-    @Autowired
-    private UserRepository userRepository;
+    RoleService(RoleRepository roleRepository, UserRepository userRepository, UserRepositoryCustom userRepositoryCustom, RoleMapper roleMapper) {
+        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
+        this.userRepositoryCustom = userRepositoryCustom;
+        this.roleMapper = roleMapper;
+    }
 
-    @Autowired
-    private UserRepositoryCustom userRepositoryCustom;
 
-    @Transactional
-    public List<RoleEntity> getRolesByUserId(Long userId) {
+    public List<RoleDTO> getRolesByUserId(Long userId) {
         UserModel user = userRepositoryCustom.getUserById(userId);
 
-        return RoleModelToRoleEntity.convertList(user.getRoles());
+        return roleMapper.toDTOList(user.getRoles());
     }
 
-    @Transactional
-    public List<RoleEntity> getAllRoles() {
+    public List<RoleDTO> getAllRoles() {
         List<RoleModel> roles = roleRepository.findAll();
 
-        return RoleModelToRoleEntity.convertList(roles);
+        return roleMapper.toDTOList(roles);
     }
 
-    @Transactional
-    public List<RoleEntity> getRolesByUsername(String username) {
+    public List<RoleDTO> getRolesByUsername(String username) {
         UserModel userModel = userRepositoryCustom.getUserByUsername(username);
 
-        return RoleModelToRoleEntity.convertList(userModel.getRoles());
+        return roleMapper.toDTOList(userModel.getRoles());
     }
 
-    public ERole getRoleByName(String name) {
+    private ERole getRoleByName(String name) {
         try {
             return ERole.valueOf(name);
         } catch (IllegalArgumentException e) {
@@ -60,7 +58,7 @@ public class RoleService {
         }
     }
 
-    public RoleModel getRoleModelByName(String name) {
+    private RoleModel getRoleModelByName(String name) {
         Optional<RoleModel> roleModel = roleRepository.findByName(getRoleByName(name));
 
         if (roleModel.isEmpty()) {
@@ -70,7 +68,6 @@ public class RoleService {
         return roleModel.get();
     }
 
-    @Transactional
     public void addRoleToUser(String username, String role) {
         UserModel user = userRepositoryCustom.getUserByUsername(username);
         RoleModel roleModel = getRoleModelByName(role);
@@ -87,7 +84,6 @@ public class RoleService {
         userRepository.save(user);
     }
 
-    @Transactional
     public void removeRoleFromUser(String username, String role) {
         UserModel user = userRepositoryCustom.getUserByUsername(username);
         RoleModel roleModel = getRoleModelByName(role);

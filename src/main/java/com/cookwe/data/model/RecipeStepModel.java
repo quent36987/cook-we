@@ -2,6 +2,7 @@ package com.cookwe.data.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,9 +22,10 @@ public class RecipeStepModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id")
-    @JsonIgnore
     private RecipeModel recipe;
 
+    @NotBlank
+    @Column(name = "text")
     private String text;
 
     @Column(name = "step_number")

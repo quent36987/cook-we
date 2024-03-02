@@ -1,10 +1,8 @@
 package com.cookwe.presentation.controller;
 
-import com.cookwe.domain.entity.CommentEntity;
+import com.cookwe.domain.entity.CommentDTO;
 import com.cookwe.domain.service.CommentService;
 import com.cookwe.presentation.request.CommentRequest;
-import com.cookwe.presentation.response.CommentResponse;
-import com.cookwe.utils.converters.CommentEntityToCommentResponse;
 import com.cookwe.utils.errors.RestError;
 import com.cookwe.utils.security.services.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,10 +24,14 @@ import java.util.List;
 @Tag(name = "Comment", description = "Comment operations")
 public class CommentController {
 
-    @Autowired
-    private CommentService commentService;
 
-    public Long getUserId() {
+    private final CommentService commentService;
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
+
+    private Long getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
             return userDetails.getId();
@@ -41,25 +43,21 @@ public class CommentController {
     @Operation(summary = "Get all comments of a recipe")
     @Parameter(name = "recipeId", description = "The id of the recipe")
     @GetMapping("/recipes/{recipeId}")
-    public List<CommentResponse> getCommentsByRecipeId(@PathVariable Long recipeId) {
-        List<CommentEntity> comments = commentService.getCommentsByRecipeId(recipeId);
-
-        return CommentEntityToCommentResponse.convertList(comments);
+    public List<CommentDTO> getCommentsByRecipeId(@PathVariable Long recipeId) {
+        return commentService.getCommentsByRecipeId(recipeId);
     }
 
     @Operation(summary = "Create a comment for a recipe")
     @Parameter(name = "recipeId", description = "The id of the recipe")
     @PostMapping("/recipes/{recipeId}")
-    public CommentResponse createComment(
+    public CommentDTO createComment(
             @PathVariable Long recipeId,
             @RequestBody CommentRequest request) {
         if (request.text == null || request.text.isEmpty()) {
             throw RestError.MISSING_FIELD.get("text");
         }
 
-        CommentEntity createdComment = commentService.createComment(getUserId(), recipeId, request.text);
-
-        return CommentEntityToCommentResponse.convert(createdComment);
+        return commentService.createComment(getUserId(), recipeId, request.text);
     }
 
     @Operation(summary = "Delete a comment")
@@ -76,20 +74,16 @@ public class CommentController {
     @Parameter(name = "commentId", description = "The id of the comment")
     @PutMapping("/{commentId}")
     @PreAuthorize("hasRole('USER')")
-    public CommentResponse updateComment(
+    public CommentDTO updateComment(
             @PathVariable Long commentId,
             @RequestBody CommentRequest request) {
-        CommentEntity updatedComment = commentService.updateComment(getUserId(), commentId, request.text);
-
-        return CommentEntityToCommentResponse.convert(updatedComment);
+        return commentService.updateComment(getUserId(), commentId, request.text);
     }
 
     @Operation(summary = "Get all comments by user")
     @Parameter(name = "username", description = "The username of the user")
     @GetMapping("/users/{username}")
-    public List<CommentResponse> getCommentsByUserId(@PathVariable String username) {
-        List<CommentEntity> comments = commentService.getCommentsByUsername(username);
-
-        return CommentEntityToCommentResponse.convertList(comments);
+    public List<CommentDTO> getCommentsByUserId(@PathVariable String username) {
+        return commentService.getCommentsByUsername(username);
     }
 }

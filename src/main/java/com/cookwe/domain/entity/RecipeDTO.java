@@ -14,15 +14,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class RecipeEntity {
+public class RecipeDTO {
     private Long id;
     private String name;
     private Long time;
     private Long portions;
     private ESeason season;
     private EType type;
-    private UserEntity user;
     private Timestamp createdAt;
-    private List<RecipeStepEntity> steps;
-    private List<RecipePictureEntity> pictures;
+    private List<RecipePictureDTO> pictures;
 }

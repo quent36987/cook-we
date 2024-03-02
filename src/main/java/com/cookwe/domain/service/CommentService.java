@@ -6,11 +6,9 @@ import com.cookwe.data.model.UserModel;
 import com.cookwe.data.repository.CommentRepositoryCustom;
 import com.cookwe.data.repository.interfaces.CommentRepository;
 import com.cookwe.data.repository.RecipeRepositoryCustom;
-import com.cookwe.domain.entity.CommentEntity;
-import com.cookwe.utils.converters.CommentModelToCommentEntity;
+import com.cookwe.domain.entity.CommentDTO;
+import com.cookwe.domain.mapper.CommentMapper;
 import com.cookwe.utils.errors.RestError;
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,44 +16,46 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@Data
+@Transactional
 public class CommentService {
 
-    @Autowired
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
+    private final CommentRepositoryCustom commentRepositoryCustom;
+    private final RecipeRepositoryCustom recipeRepositoryCustom;
+    private final CommentMapper commentMapper;
 
-    @Autowired
-    private CommentRepositoryCustom commentRepositoryCustom;
-
-    @Autowired
-    private RecipeRepositoryCustom recipeRepositoryCustom;
-
-    @Transactional
-    public List<CommentEntity> getCommentsByRecipeId(Long recipeId) {
-        Iterable<CommentModel> comments = commentRepository.findByRecipeId(recipeId);
-
-        return CommentModelToCommentEntity.convertList(comments);
+    public CommentService(CommentRepository commentRepository, CommentRepositoryCustom commentRepositoryCustom, RecipeRepositoryCustom recipeRepositoryCustom, CommentMapper commentMapper) {
+        this.commentRepository = commentRepository;
+        this.commentRepositoryCustom = commentRepositoryCustom;
+        this.recipeRepositoryCustom = recipeRepositoryCustom;
+        this.commentMapper = commentMapper;
     }
 
-    @Transactional
-    public List<CommentEntity> getCommentsByUsername(String username) {
-        Iterable<CommentModel> comments = commentRepository.findByUsername(username);
 
-        return CommentModelToCommentEntity.convertList(comments);
+    public List<CommentDTO> getCommentsByRecipeId(Long recipeId) {
+        List<CommentModel> comments = commentRepository.findByRecipeId(recipeId);
+
+        return commentMapper.toDTOList(comments);
     }
 
-    @Transactional
-    public CommentEntity createComment(Long userId, Long recipeId, String text) {
+    public List<CommentDTO> getCommentsByUsername(String username) {
+        List<CommentModel> comments = commentRepository.findByUsername(username);
+
+        return commentMapper.toDTOList(comments);
+    }
+
+    public CommentDTO createComment(Long userId, Long recipeId, String text) {
         RecipeModel recipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
 
         CommentModel commentModel = new CommentModel().withUser(new UserModel(userId))
                 .withRecipe(recipe)
                 .withText(text);
 
-        return CommentModelToCommentEntity.convert(commentRepository.save(commentModel));
+        CommentModel comment = commentRepository.save(commentModel);
+
+        return commentMapper.toDTO(comment);
     }
 
-    @Transactional
     public void deleteComment(Long userId, Long commentId) {
         CommentModel comment = commentRepositoryCustom.getCommentById(commentId);
 
@@ -66,8 +66,7 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
-    @Transactional
-    public CommentEntity updateComment(Long userId, Long commentId, String text) {
+    public CommentDTO updateComment(Long userId, Long commentId, String text) {
         CommentModel comment = commentRepositoryCustom.getCommentById(commentId);
 
         if (!Objects.equals(comment.getUser().getId(), userId)) {
@@ -76,6 +75,6 @@ public class CommentService {
 
         comment.setText(text);
 
-        return CommentModelToCommentEntity.convert(commentRepository.save(comment));
+        return commentMapper.toDTO(commentRepository.save(comment));
     }
 }

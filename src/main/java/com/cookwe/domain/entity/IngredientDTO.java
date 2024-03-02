@@ -1,4 +1,4 @@
-package com.cookwe.presentation.response;
+package com.cookwe.domain.entity;
 
 import com.cookwe.data.model.EUnit;
 import lombok.*;
@@ -8,10 +8,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @With
-public class IngredientResponse {
+public class IngredientDTO {
+    private Long id;
     private String name;
-
     private Float quantity;
-
     private EUnit unit;
 }

@@ -23,4 +23,14 @@ public class RecipeRepositoryCustom {
 
         return optionalRecipe.get();
     }
+
+    public RecipeModel getRecipeDetailById(Long id) {
+        Optional<RecipeModel> optionalRecipe = recipeRepository.findById(id);
+
+        if (optionalRecipe.isEmpty()) {
+            throw RestError.RECIPE_NOT_FOUND.get(id);
+        }
+
+        return optionalRecipe.get();
+    }
 }

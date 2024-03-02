@@ -1,6 +1,5 @@
 package com.cookwe.utils;
 
-import com.cookwe.domain.entity.RoleEntity;
 import com.cookwe.domain.service.RoleService;
 import com.cookwe.domain.service.UserService;
 
@@ -10,8 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class MyInitialization implements CommandLineRunner {

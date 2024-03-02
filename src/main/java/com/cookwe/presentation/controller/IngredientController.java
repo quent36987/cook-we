@@ -1,16 +1,13 @@
 package com.cookwe.presentation.controller;
 
-import com.cookwe.domain.entity.IngredientEntity;
+import com.cookwe.domain.entity.IngredientDTO;
 import com.cookwe.domain.service.IngredientService;
 import com.cookwe.presentation.request.IngredientRequest;
-import com.cookwe.presentation.response.IngredientResponse;
-import com.cookwe.utils.converters.IngredientEntityToIngredientResponse;
 import com.cookwe.utils.errors.RestError;
 import com.cookwe.utils.security.services.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -25,10 +22,13 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 public class IngredientController {
 
-    @Autowired
-    private IngredientService ingredientService;
+    private final IngredientService ingredientService;
 
-    public Long getUserId() {
+    public IngredientController(IngredientService ingredientService) {
+        this.ingredientService = ingredientService;
+    }
+
+    private Long getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
             return userDetails.getId();
@@ -40,17 +40,15 @@ public class IngredientController {
     @GetMapping("/recipes/{recipeId}")
     @Operation(summary = "Get all ingredients")
     @Parameter(name = "recipeId", description = "The id of the recipe")
-    public List<IngredientResponse> getIngredientsByRecipeId(@PathVariable Long recipeId) {
-        List<IngredientEntity> ingredients = ingredientService.getIngredientsByRecipeId(recipeId);
-
-        return IngredientEntityToIngredientResponse.convertList(ingredients);
+    public List<IngredientDTO> getIngredientsByRecipeId(@PathVariable Long recipeId) {
+        return ingredientService.getIngredientsByRecipeId(recipeId);
     }
 
     @PutMapping("/recipes/{recipeId}")
     @Operation(summary = "Add or update a new ingredient to a recipe")
     @Parameter(name = "recipeId", description = "The id of the recipe")
     @PreAuthorize("hasRole('USER')")
-    public IngredientResponse addIngredient(@PathVariable Long recipeId, @RequestBody IngredientRequest request) {
+    public IngredientDTO addIngredient(@PathVariable Long recipeId, @RequestBody IngredientRequest request) {
         if (request.name == null || request.name.isEmpty()) {
             throw RestError.MISSING_FIELD.get("name");
         }
@@ -63,7 +61,7 @@ public class IngredientController {
             throw RestError.MISSING_FIELD.get("unit");
         }
 
-        return IngredientEntityToIngredientResponse.convert(ingredientService.addIngredient(getUserId(), recipeId, request.name, request.quantity, request.unit));
+        return ingredientService.addIngredient(getUserId(), recipeId, request.name, request.quantity, request.unit);
     }
 
     @DeleteMapping("/recipes/{recipeId}/{ingredientName}")

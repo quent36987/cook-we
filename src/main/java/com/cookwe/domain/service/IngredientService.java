@@ -4,13 +4,10 @@ import com.cookwe.data.model.EUnit;
 import com.cookwe.data.model.IngredientModel;
 import com.cookwe.data.model.RecipeModel;
 import com.cookwe.data.repository.interfaces.IngredientRepository;
-import com.cookwe.data.repository.interfaces.RecipeRepository;
 import com.cookwe.data.repository.RecipeRepositoryCustom;
-import com.cookwe.domain.entity.IngredientEntity;
-import com.cookwe.utils.converters.IngredientModelToIngredientEntity;
+import com.cookwe.domain.entity.IngredientDTO;
+import com.cookwe.domain.mapper.IngredientMapper;
 import com.cookwe.utils.errors.RestError;
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,33 +16,34 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-@Data
+@Transactional
 public class IngredientService {
 
-    @Autowired
-    private IngredientRepository ingredientRepository;
+    private final IngredientRepository ingredientRepository;
 
-    @Autowired
-    private RecipeRepository recipeRepository;
+    private final IngredientMapper ingredientMapper;
 
-    @Autowired
-    private RecipeRepositoryCustom recipeRepositoryCustom;
+    private final RecipeRepositoryCustom recipeRepositoryCustom;
 
-    @Transactional
-    public List<IngredientEntity> getIngredientsByRecipeId(Long recipeId) {
-        Iterable<IngredientModel> ingredients = ingredientRepository.findByRecipeId(recipeId);
-
-        return IngredientModelToIngredientEntity.convertList(ingredients);
+    public IngredientService(IngredientRepository ingredientRepository, IngredientMapper ingredientMapper, RecipeRepositoryCustom recipeRepositoryCustom) {
+        this.ingredientRepository = ingredientRepository;
+        this.ingredientMapper = ingredientMapper;
+        this.recipeRepositoryCustom = recipeRepositoryCustom;
     }
 
-    @Transactional
-    public IngredientEntity addIngredient(Long userId, Long recipeId, String name, Float quantity, String unit) {
+    public List<IngredientDTO> getIngredientsByRecipeId(Long recipeId) {
+        List<IngredientModel> ingredients = ingredientRepository.findByRecipeId(recipeId);
+
+        return ingredientMapper.toDTOList(ingredients);
+    }
+
+    public IngredientDTO addIngredient(Long userId, Long recipeId, String name, Float quantity, String unit) {
         RecipeModel recipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
 
         return addIngredientToModel(userId, recipe, name, quantity, unit);
     }
 
-    public IngredientEntity addIngredientToModel(Long userId, RecipeModel recipe, String name, Float quantity, String unit) {
+    public IngredientDTO addIngredientToModel(Long userId, RecipeModel recipe, String name, Float quantity, String unit) {
         try {
             EUnit.valueOf(unit);
         } catch (IllegalArgumentException e) {
@@ -63,7 +61,7 @@ public class IngredientService {
             ingredient.get().setQuantity(quantity);
             ingredient.get().setUnit(EUnit.valueOf(unit));
 
-            return IngredientModelToIngredientEntity.convert(ingredientRepository.save(ingredient.get()));
+            return ingredientMapper.toDTO(ingredientRepository.save(ingredient.get()));
         }
 
         IngredientModel ingredientModel = new IngredientModel()
@@ -72,10 +70,9 @@ public class IngredientService {
                 .withRecipe(recipe)
                 .withUnit(EUnit.valueOf(unit));
 
-        return IngredientModelToIngredientEntity.convert(ingredientRepository.save(ingredientModel));
+        return ingredientMapper.toDTO(ingredientRepository.save(ingredientModel));
     }
 
-    @Transactional
     public void deleteIngredient(Long userId, Long recipeId, String ingredientName) {
         RecipeModel recipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
 

@@ -1,6 +1,5 @@
 package com.cookwe.domain.entity;
 
-import com.cookwe.data.model.EUnit;
 import lombok.*;
 
 @Getter
@@ -8,9 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @With
-public class IngredientEntity {
-    private Long id;
+public class RoleDTO {
+    private Integer id;
     private String name;
-    private Float quantity;
-    private EUnit unit;
 }

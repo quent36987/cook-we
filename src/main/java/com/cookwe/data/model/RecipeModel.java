@@ -27,6 +27,7 @@ public class RecipeModel {
 
     private Long time;
 
+    @NotBlank
     private Long portions;
 
     @Enumerated(EnumType.STRING)
@@ -35,7 +36,7 @@ public class RecipeModel {
     @Enumerated(EnumType.STRING)
     private EType type;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserModel user;
 
@@ -49,6 +50,11 @@ public class RecipeModel {
     private List<RecipePictureModel> pictures = new ArrayList<>();
 
     @ManyToMany(mappedBy = "favoriteRecipes", fetch = FetchType.LAZY)
-    @JsonIgnore
     public List<UserModel> favoritedBy = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<CommentModel> comments;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<IngredientModel> ingredients;
 }

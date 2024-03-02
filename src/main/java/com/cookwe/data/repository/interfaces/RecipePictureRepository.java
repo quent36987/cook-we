@@ -12,10 +12,10 @@ import java.util.Optional;
 public interface RecipePictureRepository extends CrudRepository<RecipePictureModel, Long> {
 
     @Query("SELECT p FROM RecipePictureModel p WHERE p.recipe.id = :recipeId")
-    public Iterable<RecipePictureModel> findByRecipeId(Long recipeId);
+    public List<RecipePictureModel> findByRecipeId(Long recipeId);
 
     @Query("SELECT p FROM RecipePictureModel p WHERE p.recipe.id IN :recipeIds")
-    public Iterable<RecipePictureModel> findByRecipesId(List<Long> recipeIds);
+    public List<RecipePictureModel> findByRecipesId(List<Long> recipeIds);
 
     @Query("SELECT p FROM RecipePictureModel p WHERE p.imageUrl = :imageUrl")
     public Optional<RecipePictureModel> findByImageUrl(String imageUrl);

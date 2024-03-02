@@ -1,10 +1,10 @@
 package com.cookwe;
 
+import com.cookwe.domain.entity.RecipeDTO;
 import com.cookwe.domain.service.UserService;
 import com.cookwe.presentation.request.IngredientRequest;
 import com.cookwe.presentation.request.RecipeRequest;
 import com.cookwe.presentation.request.LoginRequest;
-import com.cookwe.presentation.response.RecipeResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import org.springframework.http.MediaType;
@@ -121,7 +121,7 @@ class TestUtils {
     }
 
 
-    public static RecipeResponse createRecipe(MockMvc mockMvc, ObjectMapper objectMapper, String cookie, RecipeRequest recipe) throws Exception {
+    public static RecipeDTO createRecipe(MockMvc mockMvc, ObjectMapper objectMapper, String cookie, RecipeRequest recipe) throws Exception {
         return objectMapper.readValue(mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(recipe))
@@ -129,6 +129,6 @@ class TestUtils {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn()
                 .getResponse()
-                .getContentAsString(), RecipeResponse.class);
+                .getContentAsString(), RecipeDTO.class);
     }
 }

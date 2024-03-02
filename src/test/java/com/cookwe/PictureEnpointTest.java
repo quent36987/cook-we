@@ -1,8 +1,8 @@
 package com.cookwe;
 
+import com.cookwe.domain.entity.RecipeDTO;
+import com.cookwe.domain.entity.RecipePictureDTO;
 import com.cookwe.domain.service.UserService;
-import com.cookwe.presentation.response.RecipePictureResponse;
-import com.cookwe.presentation.response.RecipeResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
@@ -41,17 +41,17 @@ class PictureEnpointTest {
         TestUtils.createuser(userService, TestUtils.USERNAME_1, TestUtils.EMAIL_1, TestUtils.PASSWORD_1);
         cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
-        RecipeResponse recipe = TestUtils.createRecipe(mockMvc, objectMapper, cookie, TestUtils.createSimpleRecipeRequest());
+        RecipeDTO recipe = TestUtils.createRecipe(mockMvc, objectMapper, cookie, TestUtils.createSimpleRecipeRequest());
 
-        RecipePictureResponse reponse = objectMapper.readValue(mockMvc.perform(MockMvcRequestBuilders.multipart("/api/pictures/recipes/" + recipe.id)
+        RecipePictureDTO reponse = objectMapper.readValue(mockMvc.perform(MockMvcRequestBuilders.multipart("/api/pictures/recipes/" + recipe.getId())
                         .file(TestUtils.createMockMultipartFile())
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn()
                 .getResponse()
-                .getContentAsString(), RecipePictureResponse.class);
+                .getContentAsString(), RecipePictureDTO.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/pictures/" + reponse.imageUrl)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/pictures/" + reponse.getImageUrl())
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().bytes("test".getBytes()));
@@ -60,20 +60,20 @@ class PictureEnpointTest {
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/pictures/recipes/" + recipe.id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/pictures/recipes/" + recipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$[0].imageUrl").value(reponse.imageUrl));
+                .andExpect(jsonPath("$[0].imageUrl").value(reponse.getImageUrl()));
 
         //delete picture
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/pictures/" + reponse.imageUrl)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/pictures/" + reponse.getImageUrl())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/pictures/" + reponse.imageUrl)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/pictures/" + reponse.getImageUrl())
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
 

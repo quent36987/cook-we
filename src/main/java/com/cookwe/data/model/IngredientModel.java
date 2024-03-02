@@ -30,6 +30,5 @@ public class IngredientModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id", referencedColumnName = "id")
-    @JsonIgnore
     private RecipeModel recipe;
 }

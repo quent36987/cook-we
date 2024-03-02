@@ -1,5 +1,6 @@
 package com.cookwe;
 
+import com.cookwe.domain.entity.RecipeDTO;
 import com.cookwe.domain.service.UserService;
 import com.cookwe.presentation.request.RecipeRequest;
 import com.cookwe.presentation.request.UpdateUserRequest;
@@ -48,9 +49,9 @@ class UserEndpointTest {
         cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
         RecipeRequest recipeRequest = TestUtils.createSimpleRecipeRequest();
-        RecipeResponse recipeResponse = TestUtils.createRecipe(mockMvc, objectMapper, cookie, recipeRequest);
+        RecipeDTO recipeResponse = TestUtils.createRecipe(mockMvc, objectMapper, cookie, recipeRequest);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/favorites-recipes/" + recipeResponse.id)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/favorites-recipes/" + recipeResponse.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -59,10 +60,10 @@ class UserEndpointTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(recipeResponse.id))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(recipeResponse.name));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(recipeResponse.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(recipeResponse.getName()));
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/favorites-recipes/" + recipeResponse.id)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/favorites-recipes/" + recipeResponse.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -80,24 +81,24 @@ class UserEndpointTest {
         cookie = TestUtils.setUpSecurity(mockMvc, objectMapper, TestUtils.USERNAME_1, TestUtils.PASSWORD_1);
 
         RecipeRequest recipeRequest = TestUtils.createSimpleRecipeRequest();
-        RecipeResponse recipeResponse = TestUtils.createRecipe(mockMvc, objectMapper, cookie, recipeRequest);
+        RecipeDTO recipeResponse = TestUtils.createRecipe(mockMvc, objectMapper, cookie, recipeRequest);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/favorites-recipes/" + recipeResponse.id)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/favorites-recipes/" + recipeResponse.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/favorites-recipes/" + recipeResponse.id)
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/favorites-recipes/" + recipeResponse.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/favorites-recipes/" + recipeResponse.id)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/favorites-recipes/" + recipeResponse.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/favorites-recipes/" + recipeResponse.id)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/users/favorites-recipes/" + recipeResponse.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());

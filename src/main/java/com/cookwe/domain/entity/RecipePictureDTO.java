@@ -9,9 +9,9 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @With
-public class RecipePictureEntity {
+public class RecipePictureDTO {
     private Long id;
     private String imageUrl;
-    private UserEntity user;
+    private String ownerUsername;
     private Timestamp createdAt;
 }

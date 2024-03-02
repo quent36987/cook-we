@@ -2,6 +2,7 @@ package com.cookwe.data.repository.interfaces;
 
 
 import com.cookwe.data.model.RecipeModel;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -20,5 +21,13 @@ public interface RecipeRepository extends CrudRepository<RecipeModel, Long> {
     List<RecipeModel> findByUserId(@Param("userId") Long userId);
 
     @Query("SELECT r FROM RecipeModel r JOIN IngredientModel i ON r.id = i.recipe.id WHERE i.name IN :names")
-    Iterable<RecipeModel> findByRecipeByIngredientsName(List<String> names);
+    List<RecipeModel> findByRecipeByIngredientsName(List<String> names);
+
+    List<RecipeModel> findAll();
+
+    Optional<RecipeModel> findById(Long id);
+
+    @EntityGraph(attributePaths = {"ingredients", "user", "recipePictures", "comments", "steps"})
+    @Query("SELECT r FROM RecipeModel r WHERE r.id = :id")
+    Optional<RecipeModel> findDetailById(Long id);
 }

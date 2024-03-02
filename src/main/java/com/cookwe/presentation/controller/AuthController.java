@@ -6,21 +6,18 @@ import com.cookwe.data.model.RoleModel;
 import com.cookwe.data.model.UserModel;
 import com.cookwe.data.repository.interfaces.RoleRepository;
 import com.cookwe.data.repository.interfaces.UserRepository;
-import com.cookwe.domain.entity.UserEntity;
+import com.cookwe.domain.entity.UserDTO;
+import com.cookwe.domain.mapper.UserMapper;
 import com.cookwe.domain.service.UserService;
 import com.cookwe.presentation.request.LoginRequest;
 import com.cookwe.presentation.request.SignupRequest;
 import com.cookwe.presentation.response.MessageResponse;
-import com.cookwe.presentation.response.UserDetailResponse;
-import com.cookwe.presentation.response.UserResponse;
-import com.cookwe.utils.converters.UserEntityToUserDetailResponse;
 import com.cookwe.utils.errors.RestError;
 import com.cookwe.utils.security.jwt.JwtUtils;
 import com.cookwe.utils.security.services.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -34,33 +31,35 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-//@CrossOrigin(origins = "*", maxAge = 3600)
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("/api/auth")
 @Tag(name = "Auth", description = "Authentication operations")
 public class AuthController {
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private UserRepository userRepository;
 
-    @Autowired
-    private UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final UserService userService;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder encoder;
+    private final JwtUtils jwtUtils;
+    private final UserMapper userMapper;
 
-    @Autowired
-    private RoleRepository roleRepository;
+    public AuthController(UserMapper userMapper, AuthenticationManager authenticationManager, UserRepository userRepository, UserService userService, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+        this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
+        this.userService = userService;
+        this.roleRepository = roleRepository;
+        this.encoder = encoder;
+        this.jwtUtils = jwtUtils;
+        this.userMapper = userMapper;
+    }
 
-    @Autowired
-    private PasswordEncoder encoder;
-
-    @Autowired
-    private JwtUtils jwtUtils;
 
     @PostMapping("/signin")
     @Operation(summary = "Authenticate a user")
-    public ResponseEntity<UserResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<UserDTO> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -71,12 +70,12 @@ public class AuthController {
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                .body(new UserResponse(userDetails.getUsername()));
+                .body(new UserDTO().withUsername(userDetails.getUsername()));
     }
 
     @PostMapping("/signup")
     @Operation(summary = "Register a new user")
-    public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (signUpRequest.getUsername().isEmpty() || signUpRequest.getEmail().isEmpty() || signUpRequest.getPassword().isEmpty()) {
             throw RestError.BAD_REQUEST.get();
         }
@@ -116,12 +115,10 @@ public class AuthController {
 
     @GetMapping("/me")
     @Operation(summary = "Get the current user")
-    public UserDetailResponse getCurrentUser() {
+    public UserDTO getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        UserEntity userEntity = userService.getUserByUsername(userDetails.getUsername());
-
-        return UserEntityToUserDetailResponse.convert(userEntity);
+        return userService.getUserByUsername(userDetails.getUsername());
     }
 }

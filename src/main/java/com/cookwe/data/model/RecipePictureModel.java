@@ -22,14 +22,13 @@ public class RecipePictureModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id")
-    @JsonIgnore
     private RecipeModel recipe;
 
+    @Column(name = "image_url")
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private UserModel user;
 
     @CreationTimestamp

@@ -9,13 +9,13 @@ import java.util.List;
 @AllArgsConstructor
 @With
 @NoArgsConstructor
-public class UserEntity {
+public class UserDTO {
     private Long id;
     private String firstName;
     private String lastName;
     private String username;
     private String email;
-    private List<RoleEntity> roles;
-    private List<RecipeEntity> favoriteRecipes = new ArrayList<>();
+    private List<RoleDTO> roles;
+    private List<Long> favoriteRecipeIds;
 }
 

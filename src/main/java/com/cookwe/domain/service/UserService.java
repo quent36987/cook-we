@@ -6,13 +6,11 @@ import com.cookwe.data.repository.UserRepositoryCustom;
 import com.cookwe.data.repository.interfaces.RecipeRepository;
 import com.cookwe.data.repository.interfaces.RoleRepository;
 import com.cookwe.data.repository.interfaces.UserRepository;
-import com.cookwe.domain.entity.RecipeEntity;
-import com.cookwe.domain.entity.UserEntity;
-import com.cookwe.utils.converters.RecipeModelToRecipeEntity;
-import com.cookwe.utils.converters.UserModelToUserEntity;
+import com.cookwe.domain.entity.RecipeDTO;
+import com.cookwe.domain.entity.UserDTO;
+import com.cookwe.domain.mapper.RecipeMapper;
+import com.cookwe.domain.mapper.UserMapper;
 import com.cookwe.utils.errors.RestError;
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,71 +18,68 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service
-@Data
+@Transactional
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserRepositoryCustom userRepositoryCustom;
+    private final RecipeRepositoryCustom recipeRepositoryCustom;
+    private final RecipeRepository recipeRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder encoder;
+    private final UserMapper userMapper;
+    private final RecipeMapper recipeMapper;
 
-    @Autowired
-    private UserRepositoryCustom userRepositoryCustom;
-
-    @Autowired
-    private RecipeRepositoryCustom recipeRepositoryCustom;
-
-    @Autowired
-    private RecipeRepository recipeRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private PasswordEncoder encoder;
-
-
-    @Transactional
-    public UserEntity getUserById(Long id) {
-        return UserModelToUserEntity.convert(userRepositoryCustom.getUserById(id));
+    public UserService(RecipeMapper recipeMapper, UserMapper userMapper, UserRepository userRepository, UserRepositoryCustom userRepositoryCustom, RecipeRepositoryCustom recipeRepositoryCustom, RecipeRepository recipeRepository, RoleRepository roleRepository, PasswordEncoder encoder) {
+        this.userRepository = userRepository;
+        this.userRepositoryCustom = userRepositoryCustom;
+        this.recipeRepositoryCustom = recipeRepositoryCustom;
+        this.recipeRepository = recipeRepository;
+        this.roleRepository = roleRepository;
+        this.encoder = encoder;
+        this.userMapper = userMapper;
+        this.recipeMapper = recipeMapper;
     }
 
-    @Transactional
-    public List<RecipeEntity> getFavoriteRecipes(Long userId) {
+
+    public UserDTO getUserById(Long id) {
+        return userMapper.toDTO(userRepositoryCustom.getUserById(id));
+    }
+
+
+    public List<RecipeDTO> getFavoriteRecipes(Long userId) {
         List<RecipeModel> favoriteRecipes = userRepository.findFavoriteRecipesByUserId(userId);
 
-        return RecipeModelToRecipeEntity.convertList(favoriteRecipes);
+        return recipeMapper.toDTOList(favoriteRecipes);
     }
 
-    @Transactional
+
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
 
-    @Transactional
-    public UserEntity getUserByUsername(String username) {
+    public UserDTO getUserByUsername(String username) {
         Optional<UserModel> user = userRepository.findByUsername(username);
 
         if (user.isEmpty()) {
             throw RestError.USER_NOT_FOUND.get();
         }
 
-        return UserModelToUserEntity.convert(user.get());
+        return userMapper.toDTO(user.get());
     }
 
-    @Transactional
-    public Iterable<UserModel> getAllUsers() {
+    private Iterable<UserModel> getAllUsers() {
         return userRepository.findAll();
     }
 
-    @Transactional
-    public List<RecipeEntity> getRecipesByUsername(String username) {
-        UserEntity user = getUserByUsername(username);
+    public List<RecipeDTO> getRecipesByUsername(String username) {
+        UserDTO user = getUserByUsername(username);
 
         List<RecipeModel> recipes = recipeRepository.findByUserId(user.getId());
 
-        return RecipeModelToRecipeEntity.convertList(recipes);
+        return recipeMapper.toDTOList(recipes);
     }
 
-    @Transactional
     public void createUser(String username, String email, String password) {
         UserModel user = new UserModel(username, email, encoder.encode(password));
         List<RoleModel> roles = new ArrayList<>();
@@ -97,9 +92,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-
-    @Transactional
-    public UserEntity updateUserDetails(Long id, String firstName, String lastName) {
+    public UserDTO updateUserDetails(Long id, String firstName, String lastName) {
         UserModel user = userRepositoryCustom.getUserById(id);
 
         user.setFirstName(firstName);
@@ -107,10 +100,9 @@ public class UserService {
 
         userRepository.save(user);
 
-        return UserModelToUserEntity.convert(user);
+        return userMapper.toDTO(user);
     }
 
-    @Transactional
     public void addFavoriteRecipe(Long userId, Long recipeId) {
         UserModel user = userRepositoryCustom.getUserById(userId);
         RecipeModel favoriteRecipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
@@ -125,7 +117,6 @@ public class UserService {
         user.setFavoriteRecipes(favoriteRecipes);
     }
 
-    @Transactional
     public void removeFavoriteRecipe(Long userId, Long recipeId) {
         UserModel user = userRepositoryCustom.getUserById(userId);
         RecipeModel favoriteRecipe = recipeRepositoryCustom.getRecipeModelById(recipeId);

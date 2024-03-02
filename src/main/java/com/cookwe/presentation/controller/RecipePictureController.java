@@ -1,6 +1,6 @@
 package com.cookwe.presentation.controller;
 
-import com.cookwe.domain.entity.RecipePictureEntity;
+import com.cookwe.domain.entity.RecipePictureDTO;
 import com.cookwe.domain.service.RecipePictureService;
 import com.cookwe.presentation.response.MessageResponse;
 import com.cookwe.presentation.response.RecipePictureResponse;
@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -27,10 +28,14 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Recipe Picture", description = "Recipe Picture operations")
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 public class RecipePictureController {
-    @Autowired
-    private RecipePictureService recipePictureService;
 
-    public Long getUserId() {
+    private final RecipePictureService recipePictureService;
+
+    public RecipePictureController(RecipePictureService recipePictureService) {
+        this.recipePictureService = recipePictureService;
+    }
+
+    private Long getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetailsImpl userDetails) {
             return userDetails.getId();
@@ -43,19 +48,15 @@ public class RecipePictureController {
     @Operation(summary = "Upload a picture for a recipe")
     @Parameter(name = "recipeId", description = "Id of the recipe")
     @PreAuthorize("hasRole('USER')")
-    public RecipePictureResponse uploadFile(@RequestParam("file") MultipartFile file, @PathVariable Long recipeId) {
-        RecipePictureEntity recipePicture = recipePictureService.save(getUserId(), recipeId, file);
-
-        return RecipePictureEntityToRecipePictureReponse.convert(recipePicture);
+    public RecipePictureDTO uploadFile(@RequestParam("file") MultipartFile file, @PathVariable Long recipeId) {
+        return recipePictureService.save(getUserId(), recipeId, file);
     }
 
     @GetMapping("/recipes/{recipeId}")
     @Operation(summary = "Get pictures for a recipe")
     @Parameter(name = "recipeId", description = "Id of the recipe")
-    public List<RecipePictureResponse> getRecipePictures(@PathVariable Long recipeId) {
-        List<RecipePictureEntity> recipePictures = recipePictureService.getRecipePicturesByRecipeId(recipeId);
-
-        return RecipePictureEntityToRecipePictureReponse.convertList(recipePictures);
+    public List<RecipePictureDTO> getRecipePictures(@PathVariable Long recipeId) {
+        return recipePictureService.getRecipePicturesByRecipeId(recipeId);
     }
 
     @GetMapping("/{filename:.+}")

@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @With
-public class RecipeStepEntity {
+public class RecipeStepDTO {
     private Long id;
     private Long recipeId;
     private Long stepNumber;

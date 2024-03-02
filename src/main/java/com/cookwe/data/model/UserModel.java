@@ -52,16 +52,23 @@ public class UserModel {
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    @JsonIgnore
     private List<RoleModel> roles = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_favorite_recipes",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "recipe_id"))
-    @JsonIgnore
     private List<RecipeModel> favoriteRecipes = new ArrayList<>();
 
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<CommentModel> comments;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<RecipeModel> recipes;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<RecipePictureModel> pictures;
 
     public UserModel(String username, String email, String password) {
         this.username = username;
