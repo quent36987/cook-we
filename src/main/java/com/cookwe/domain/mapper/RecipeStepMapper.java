@@ -13,7 +13,6 @@ import java.util.List;
 public interface RecipeStepMapper {
 
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "recipeId", source = "recipe.id")
     @Mapping(target = "stepNumber", source = "stepNumber")
     @Mapping(target = "text", source = "text")
     RecipeStepDTO toDTO(RecipeStepModel step);
@@ -21,7 +20,6 @@ public interface RecipeStepMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "stepNumber", source = "stepNumber")
     @Mapping(target = "text", source = "text")
-    @Mapping(target = "recipe.id", source = "recipeId")
     RecipeStepModel toModel(RecipeStepDTO step);
 
 //    @Mapping(target = "id", source = "id")

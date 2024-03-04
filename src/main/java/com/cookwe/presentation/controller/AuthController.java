@@ -69,8 +69,11 @@ public class AuthController {
 
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
+        UserDTO user = new UserDTO();
+        user.setUsername(userDetails.getUsername());
+
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                .body(new UserDTO().withUsername(userDetails.getUsername()));
+                .body(user);
     }
 
     @PostMapping("/signup")

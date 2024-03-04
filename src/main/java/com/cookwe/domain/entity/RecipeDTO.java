@@ -10,7 +10,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@With
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecipeDTO {

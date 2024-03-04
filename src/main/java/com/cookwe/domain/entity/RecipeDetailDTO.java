@@ -12,7 +12,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@With
 public class RecipeDetailDTO {
     private Long id;
     private String name;

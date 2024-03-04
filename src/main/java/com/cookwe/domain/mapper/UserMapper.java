@@ -36,6 +36,10 @@ public interface UserMapper {
     @Mapping(target = "lastName", source = "lastName")
     @Mapping(target = "roles", source = "roles")
     @Mapping(target = "favoriteRecipes", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "comments", ignore = true)
+    @Mapping(target = "recipes", ignore = true)
+    @Mapping(target = "pictures", ignore = true)
     UserModel toModel(UserDTO user);
 
     List<UserDTO> toDTOList(List<UserModel> users);

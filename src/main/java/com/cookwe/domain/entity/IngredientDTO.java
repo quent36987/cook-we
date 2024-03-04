@@ -7,7 +7,6 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@With
 public class IngredientDTO {
     private Long id;
     private String name;

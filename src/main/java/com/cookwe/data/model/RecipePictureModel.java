@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
-@With
+@Builder
 @Table(name = "recipe_pictures")
 public class RecipePictureModel {
 

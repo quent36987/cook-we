@@ -102,31 +102,28 @@ public class RecipeController {
     public RecipeDTO createRecipe(@RequestBody RecipeRequest request) {
         verifyCreateRecipeRequest(request);
 
-        RecipeDetailDTO recipe = new RecipeDetailDTO().withName(request.name)
-                .withTime(request.time)
-                .withPortions(request.portions)
-                .withSeason(StringToESeason.convert(request.season))
-                .withSteps(request.steps.stream().map(step -> new RecipeStepDTO().withText(step)).toList())
-                .withType(StringToEType.convert(request.type))
-                .withIngredients(request.ingredients.stream().map(ingredient -> new IngredientDTO()
-                        .withName(ingredient.name)
-                        .withQuantity(ingredient.quantity)
-                        .withUnit(StringToEUnit.convert(ingredient.unit))).toList())
-                .withOwnerId(getUserId())
-                .withName(request.name);
+        RecipeDetailDTO recipe = new RecipeDetailDTO();
+        recipe.setName(request.name);
+        recipe.setTime(request.time);
+        recipe.setPortions(request.portions);
+        recipe.setSeason(StringToESeason.convert(request.season));
+        recipe.setSteps(request.steps.stream().map(step -> {
+            RecipeStepDTO stepDTO = new RecipeStepDTO();
+            stepDTO.setText(step);
+            return stepDTO;
+        }).toList());
+        recipe.setType(StringToEType.convert(request.type));
+//        recipe.setIngredients(request.ingredients.stream().map(ingredient -> {
+//            IngredientDTO ingredredient = new IngredientDTO();
+//            ingredredient.setName(ingredient.name);
+//            ingredredient.setQuantity(ingredient.quantity);
+//            ingredredient.setUnit(StringToEUnit.convert(ingredient.unit));
+//            return ingredredient;
+//        }).toList());
+        recipe.setOwnerId(getUserId());
+        recipe.setName(request.name);
 
         return recipeService.createRecipe(recipe);
-
-//        return recipeService.createRecipe(
-//                this.getUserId(),
-//                request.name,
-//                request.time,
-//                request.portions,
-//                request.season,
-//                request.steps,
-//                request.ingredients,
-//                request.type
-//        );
     }
 
     @PutMapping("/{recipeId}")

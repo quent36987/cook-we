@@ -9,6 +9,7 @@ import com.cookwe.data.repository.RecipeRepositoryCustom;
 import com.cookwe.domain.entity.CommentDTO;
 import com.cookwe.domain.mapper.CommentMapper;
 import com.cookwe.utils.errors.RestError;
+import lombok.Builder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,9 +49,7 @@ public class CommentService {
     public CommentDTO createComment(Long userId, Long recipeId, String text) {
         RecipeModel recipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
 
-        CommentModel commentModel = new CommentModel().withUser(new UserModel(userId))
-                .withRecipe(recipe)
-                .withText(text);
+        CommentModel commentModel = CommentModel.builder().recipe(recipe).text(text).user(new UserModel(userId)).build();
 
         CommentModel comment = commentRepository.save(commentModel);
 

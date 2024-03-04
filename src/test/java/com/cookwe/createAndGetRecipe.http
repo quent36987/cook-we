@@ -1,0 +1,42 @@
+### Login to app
+POST http://localhost:9001/api/auth/signin
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "password"
+}
+
+### Create a new recipe
+POST http://localhost:9001/api/recipes
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "New Recipe",
+  "time": 10,
+  "season": "SUMMER",
+  "portions": 4,
+  "type": "DESSERT",
+  "steps": [
+    "step1",
+    "step2"
+  ],
+  "ingredients": [
+    {
+      "name": "ingredient1",
+      "quantity": 1,
+      "unit": "MILLILITER"
+    },
+    {
+      "name": "ingredient2",
+      "quantity": 2.5,
+      "unit": "GRAM"
+    }
+  ]
+}
+
+### GET the recipe
+GET http://localhost:9001/api/recipes/1
+Accept: application/json

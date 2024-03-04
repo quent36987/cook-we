@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@With
 public class RecipePictureDTO {
     private Long id;
     private String imageUrl;

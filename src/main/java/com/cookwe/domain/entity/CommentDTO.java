@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 
 @Getter
 @Setter
-@With
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentDTO {

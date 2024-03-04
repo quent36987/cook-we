@@ -10,8 +10,8 @@ import lombok.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@With
 @Setter
+@Builder
 @Table(name = "ingredients")
 public class IngredientModel {
 

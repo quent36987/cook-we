@@ -65,11 +65,11 @@ public class IngredientService {
             return ingredientMapper.toDTO(ingredientRepository.save(ingredient.get()));
         }
 
-        IngredientModel ingredientModel = new IngredientModel()
-                .withName(name)
-                .withQuantity(quantity)
-                .withRecipe(recipe)
-                .withUnit(EUnit.valueOf(unit));
+        IngredientModel ingredientModel = IngredientModel.builder()
+                .name(name)
+                .quantity(quantity)
+                .recipe(recipe)
+                .unit(EUnit.valueOf(unit)).build();
 
         return ingredientMapper.toDTO(ingredientRepository.save(ingredientModel));
     }

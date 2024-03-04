@@ -10,8 +10,8 @@ import java.sql.Timestamp;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@With
 @Setter
+@Builder
 @Table(name = "comments")
 public class CommentModel {
 

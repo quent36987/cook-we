@@ -21,6 +21,7 @@ public interface CommentMapper {
     @Mapping(target = "text", source = "text")
     @Mapping(target = "recipe.id", source = "recipeId")
     @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "user", ignore = true)
     CommentModel toModel(CommentDTO comment);
 
     List<CommentDTO> toDTOList(List<CommentModel> comments);

@@ -6,10 +6,8 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@With
 public class RecipeStepDTO {
     private Long id;
-    private Long recipeId;
     private Long stepNumber;
     private String text;
 }

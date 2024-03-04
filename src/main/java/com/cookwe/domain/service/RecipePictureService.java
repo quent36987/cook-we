@@ -63,10 +63,10 @@ public class RecipePictureService {
             String fileName = "i" + UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
             Files.copy(file.getInputStream(), root.resolve(fileName));
 
-            RecipePictureModel recipePictureModel = new RecipePictureModel()
-                    .withRecipe(recipeModel)
-                    .withImageUrl(fileName)
-                    .withUser(new UserModel().withId(userId));
+            RecipePictureModel recipePictureModel = RecipePictureModel.builder()
+                    .recipe(recipeModel)
+                    .imageUrl(fileName)
+                    .user(new UserModel(userId)).build();
 
             recipePictureModel = recipePictureRepository.save(recipePictureModel);
 

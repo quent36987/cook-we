@@ -31,7 +31,6 @@ import static com.cookwe.TestUtils.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
-@Transactional
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 class RecipeEndpointTest {

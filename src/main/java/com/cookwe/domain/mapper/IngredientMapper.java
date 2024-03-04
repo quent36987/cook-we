@@ -20,6 +20,7 @@ public interface IngredientMapper {
     @Mapping(target = "name", source = "name")
     @Mapping(target = "quantity", source = "quantity")
     @Mapping(target = "unit", source = "unit")
+    @Mapping(target = "recipe", ignore = true)
     IngredientModel toModel(IngredientDTO ingredient);
 
     List<IngredientDTO> toDTOList(List<IngredientModel> ingredients);

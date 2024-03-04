@@ -22,6 +22,7 @@ public interface RecipeDetailMapper {
     @Mapping(target = "pictures", source = "pictures")
     @Mapping(target = "ingredients", source = "ingredients")
     @Mapping(target = "comments", source = "comments")
+    @Mapping(target = "ownerId", source = "user.id")
     RecipeDetailDTO toDTO(RecipeModel recipe);
 
     @Mapping(target = "id", source = "id")
@@ -36,6 +37,7 @@ public interface RecipeDetailMapper {
     @Mapping(target = "pictures", ignore = true)
     @Mapping(target = "ingredients", source = "ingredients")
     @Mapping(target = "comments", ignore = true)
+    @Mapping(target = "favoritedBy", ignore = true)
     RecipeModel toModel(RecipeDetailDTO recipe);
 
 
