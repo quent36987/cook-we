@@ -6,6 +6,7 @@ import com.cookwe.domain.entity.RecipeStepDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -20,20 +21,8 @@ public interface RecipeStepMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "stepNumber", source = "stepNumber")
     @Mapping(target = "text", source = "text")
+    @Mapping(target = "recipe", ignore = true)
     RecipeStepModel toModel(RecipeStepDTO step);
-
-//    @Mapping(target = "id", source = "id")
-//    @Mapping(target = "recipeId", source = "recipeId")
-//    @Mapping(target = "stepNumber", source = "stepNumber")
-//    @Mapping(target = "text", source = "text")
-//    void updateFromDTO(RecipeStepDTO step, @MappingTarget RecipeStepModel model);
-//
-//    default RecipeStepModel toModel(RecipeStepDTO step, Long recipeId) {
-//        RecipeStepModel model = new RecipeStepModel();
-//        updateFromDTO(step, model);
-//        model.setRecipe(new RecipeModel().withId(recipeId));
-//        return model;
-//    }
 
     List<RecipeStepDTO> toDTOList(List<RecipeStepModel> steps);
 

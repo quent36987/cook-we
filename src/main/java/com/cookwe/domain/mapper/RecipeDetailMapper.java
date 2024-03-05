@@ -1,9 +1,10 @@
 package com.cookwe.domain.mapper;
 
 import com.cookwe.data.model.RecipeModel;
+import com.cookwe.data.model.RecipeStepModel;
 import com.cookwe.domain.entity.RecipeDetailDTO;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import com.cookwe.domain.entity.RecipeStepDTO;
+import org.mapstruct.*;
 
 import java.util.List;
 

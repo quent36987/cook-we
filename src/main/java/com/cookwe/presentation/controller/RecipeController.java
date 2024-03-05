@@ -102,6 +102,8 @@ public class RecipeController {
     public RecipeDTO createRecipe(@RequestBody RecipeRequest request) {
         verifyCreateRecipeRequest(request);
 
+        // FIXME ? maybe 3 sub function ?
+
         RecipeDetailDTO recipe = new RecipeDetailDTO();
         recipe.setName(request.name);
         recipe.setTime(request.time);
@@ -113,13 +115,13 @@ public class RecipeController {
             return stepDTO;
         }).toList());
         recipe.setType(StringToEType.convert(request.type));
-//        recipe.setIngredients(request.ingredients.stream().map(ingredient -> {
-//            IngredientDTO ingredredient = new IngredientDTO();
-//            ingredredient.setName(ingredient.name);
-//            ingredredient.setQuantity(ingredient.quantity);
-//            ingredredient.setUnit(StringToEUnit.convert(ingredient.unit));
-//            return ingredredient;
-//        }).toList());
+        recipe.setIngredients(request.ingredients.stream().map(ingredient -> {
+            IngredientDTO ingredredient = new IngredientDTO();
+            ingredredient.setName(ingredient.name);
+            ingredredient.setQuantity(ingredient.quantity);
+            ingredredient.setUnit(StringToEUnit.convert(ingredient.unit));
+            return ingredredient;
+        }).toList());
         recipe.setOwnerId(getUserId());
         recipe.setName(request.name);
 

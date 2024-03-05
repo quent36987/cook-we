@@ -80,21 +80,18 @@ public class RecipeService {
         }
     }
 
-    //public RecipeDTO createRecipe(Long userId, String name, Long time, Long portions, String season, List<String> steps, List<IngredientRequest> ingredientRequests, String type) {
     public RecipeDTO createRecipe(RecipeDetailDTO recipe) {
-//        RecipeModel recipe = new RecipeModel();
-//        recipe.setName(name);
-//        recipe.setTime(time);
-//        recipe.setPortions(portions);
-//        recipe.setUser(new UserModel(userId));
-//        recipe.setSeason(StringToESeason.convert(season));
-//        recipe.setType(StringToEType.convert(type));
+        RecipeModel recipeModel = recipeDetailMapper.toModel(recipe);
 
-        RecipeModel savedRecipe = recipeRepository.save(recipeDetailMapper.toModel(recipe));
+        for (RecipeStepModel step : recipeModel.getSteps()) {
+            step.setRecipe(recipeModel);
+        }
 
-//        addStepToModel(steps, savedRecipe);
-//
-//        addIngredientToModel(ingredientRequests, savedRecipe, userId);
+        for (IngredientModel ingredient : recipeModel.getIngredients()) {
+            ingredient.setRecipe(recipeModel);
+        }
+
+        RecipeModel savedRecipe = recipeRepository.save(recipeModel);
 
         return recipeMapper.toDTO(savedRecipe);
     }

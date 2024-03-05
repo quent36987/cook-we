@@ -38,5 +38,34 @@ Accept: application/json
 }
 
 ### GET the recipe
-GET http://localhost:9001/api/recipes/1
+GET http://localhost:9001/api/recipes/20
 Accept: application/json
+
+### UPDATE the recipe
+PUT http://localhost:9001/api/recipes/20
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "New Recipe2",
+  "time": 102,
+  "season": "SUMMER",
+  "portions": 42,
+  "type": "DESSERT",
+  "steps": [
+    "step12",
+    "step22"
+  ],
+  "ingredients": [
+    {
+      "name": "ingredient2",
+      "quantity": 2,
+      "unit": "MILLILITER"
+    },
+    {
+      "name": "ingredient24",
+      "quantity": 2.52,
+      "unit": "GRAM"
+    }
+  ]
+}
