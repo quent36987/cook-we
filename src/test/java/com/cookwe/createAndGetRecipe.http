@@ -38,7 +38,7 @@ Accept: application/json
 }
 
 ### GET the recipe
-GET http://localhost:9001/api/recipes/20
+GET http://localhost:9001/api/recipes?type=DESSERT&type=PLAT&season=SPRING&season=WINTER
 Accept: application/json
 
 ### UPDATE the recipe

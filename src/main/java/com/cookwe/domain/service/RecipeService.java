@@ -3,6 +3,7 @@ package com.cookwe.domain.service;
 import com.cookwe.data.model.*;
 import com.cookwe.data.repository.*;
 import com.cookwe.data.repository.interfaces.*;
+import com.cookwe.domain.entity.PageDTO;
 import com.cookwe.domain.entity.RecipeDetailDTO;
 import com.cookwe.domain.entity.RecipeDTO;
 import com.cookwe.domain.mapper.RecipeDetailMapper;
@@ -10,6 +11,11 @@ import com.cookwe.domain.mapper.RecipeMapper;
 import com.cookwe.presentation.request.IngredientRequest;
 import com.cookwe.utils.converters.*;
 import com.cookwe.utils.errors.RestError;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,10 +44,21 @@ public class RecipeService {
     }
 
     @Transactional(readOnly = true)
-    public List<RecipeDTO> getRecipes() {
-        List<RecipeModel> recipes = recipeRepository.findAll();
+    public PageDTO<RecipeDTO> getRecipes(Specification specification, Pageable pageable) {
+        PageDTO<RecipeDTO> page = new PageDTO<>();
+        page.setPage(pageable.getPageNumber());
+        page.setSize(pageable.getPageSize());
+        page.setTotalElements(recipeRepository.count());
 
-        return recipeMapper.toDTOList(recipes);
+        Page<RecipeModel> recipePage = recipeRepository.findAll(specification, pageable);
+
+        List<RecipeDTO> recipeDTOs = recipePage.getContent().stream()
+                .map(recipeMapper::toDTO)
+                .toList();
+
+        page.setContent(recipeDTOs);
+
+        return page;
     }
 
     @Transactional(readOnly = true)

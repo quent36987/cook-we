@@ -1,9 +1,8 @@
 package com.cookwe.presentation.controller;
 
-import com.cookwe.domain.entity.IngredientDTO;
-import com.cookwe.domain.entity.RecipeDetailDTO;
-import com.cookwe.domain.entity.RecipeDTO;
-import com.cookwe.domain.entity.RecipeStepDTO;
+import com.cookwe.data.model.RecipeModel;
+import com.cookwe.domain.entity.*;
+import com.cookwe.domain.mapper.RecipeMapper;
 import com.cookwe.domain.service.RecipeService;
 import com.cookwe.presentation.request.RecipeRequest;
 import com.cookwe.presentation.response.MessageResponse;
@@ -15,12 +14,21 @@ import com.cookwe.utils.security.services.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/recipes")
@@ -43,10 +51,48 @@ public class RecipeController {
         throw RestError.USER_NOT_FOUND.get();
     }
 
+    private Specification<RecipeModel> buildTypeSpecification(String[] types) {
+        return (root, query, criteriaBuilder) -> root.get("type").in(StringToEType.convertList(Arrays.asList(types)));
+    }
+
+    private Specification<RecipeModel> buildSeasonSpecification(String[] seasons) {
+        return (root, query, criteriaBuilder) -> root.get("season").in(StringToESeason.convertList(Arrays.asList(seasons)));
+    }
+
     @GetMapping("")
     @Operation(summary = "Get all recipes")
-    public List<RecipeDTO> getRecipes() {
-        return recipeService.getRecipes();
+    public PageDTO<RecipeDTO> getRecipes(
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "10", name = "size") int size,
+            @RequestParam(defaultValue = "id;desc", name = "sort") String[] sort,
+            @RequestParam(required = false, name = "type") String[] types,
+            @RequestParam(required = false, name = "season") String[] seasons
+    ) {
+        Sort sorting = Sort.by(Arrays.stream(sort)
+                .map(s -> {
+                    String[] parts = s.split(";");
+                    return parts[1].equalsIgnoreCase("desc") ? Sort.Order.desc(parts[0]) : Sort.Order.asc(parts[0]);
+                })
+                .toList());
+
+        Pageable pageable = PageRequest.of(page, size, sorting);
+
+        if (size > 50) {
+            throw RestError.INVALID_FIELD.get("size > 50");
+        }
+
+        Specification<RecipeModel> specification = Specification.where(null);
+
+        if (types != null && types.length > 0) {
+            specification = specification.and(buildTypeSpecification(types));
+        }
+
+        if (seasons != null && seasons.length > 0) {
+            specification = specification.and(buildSeasonSpecification(seasons));
+        }
+
+
+        return recipeService.getRecipes(specification, pageable);
     }
 
     @GetMapping("/{id}")

@@ -2,6 +2,9 @@ package com.cookwe.data.repository.interfaces;
 
 
 import com.cookwe.data.model.RecipeModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -23,7 +26,7 @@ public interface RecipeRepository extends CrudRepository<RecipeModel, Long> {
     @Query("SELECT r FROM RecipeModel r JOIN IngredientModel i ON r.id = i.recipe.id WHERE i.name IN :names")
     List<RecipeModel> findByRecipeByIngredientsName(List<String> names);
 
-    List<RecipeModel> findAll();
+    Page<RecipeModel> findAll(Specification specification, Pageable pageable);
 
     Optional<RecipeModel> findById(Long id);
 

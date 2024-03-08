@@ -19,6 +19,7 @@ public enum RestError {
 
     // MISSING FIELD AND BAD REQUEST
     BAD_REQUEST(400, "Invalid request"),
+    INVALID_FIELD(400, "Invalid field: %s"),
     RECIPE_ALREADY_FAVORITE(400, "Recipe %s is already in your favorites"),
     RECIPE_NOT_FAVORITE(400, "Recipe %s is not in your favorites"),
     MISSING_FIELD(400, "missing field: %s"),
