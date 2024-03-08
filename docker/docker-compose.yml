@@ -3,13 +3,25 @@ name: cookwe
 services:
   bdd:
     image: postgres:12.1-alpine
-    container_name: postgres
+    container_name: cook-we-bdd
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: cook-we-bdd
     ports:
       - 5432:5432
+    volumes:
+      - bdd-data:/var/lib/postgresql/data
+
+  bdd-test:
+    image: postgres:12.1-alpine
+    container_name: cook-we-bdd-test
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: cook-we-bdd-test
+    ports:
+      - 5431:5432
     volumes:
       - bdd-data:/var/lib/postgresql/data
 

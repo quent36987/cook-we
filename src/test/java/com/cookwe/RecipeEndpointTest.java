@@ -11,6 +11,7 @@ import com.cookwe.presentation.request.LoginRequest;
 import com.cookwe.presentation.request.SignupRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +101,7 @@ class RecipeEndpointTest {
     }
 
     @AfterEach
-    public void clean(){
+    public void clean() {
         userRepository.deleteAll();
     }
 
@@ -148,8 +149,29 @@ class RecipeEndpointTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$").isArray());
+                .andExpect(jsonPath("$.content").isArray());
+    }
 
+    @Test
+    void testGetRecipesByType() throws Exception {
+        RecipeRequest recipe = createSimpleRecipeRequest();
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(recipe))
+                        .cookie(new Cookie(COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.name").value(recipe.name))
+                .andExpect(jsonPath("$.time").value(recipe.time))
+                .andExpect(jsonPath("$.type").value(recipe.type))
+                .andExpect(jsonPath("$.season").value(recipe.season));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes?type=DESSERT")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie(COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(1));
     }
 
     @Test
