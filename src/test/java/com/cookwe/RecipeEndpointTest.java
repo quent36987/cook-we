@@ -11,7 +11,6 @@ import com.cookwe.presentation.request.LoginRequest;
 import com.cookwe.presentation.request.SignupRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +19,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import static com.cookwe.TestUtils.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -46,18 +42,6 @@ class RecipeEndpointTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private RecipeRepository recipeRepository;
-
-    @Autowired
-    private RecipeStepRepository recipeStepRepository;
-
-    @Autowired
-    private CommentRepository commentRepository;
-
-    @Autowired
-    private UserService userService;
-
     private static final String USERNAME_1 = "test-username";
     private static final String PASSWORD_1 = "test-password";
     private static final String EMAIL_1 = "test@test.fr";
@@ -68,10 +52,6 @@ class RecipeEndpointTest {
 
     private static String cookie = "";
 
-
-    public void createuser() {
-        userService.createUser(USERNAME_1, EMAIL_1, PASSWORD_1);
-    }
 
     @BeforeEach
     public void SetUpSecurity() throws Exception {
@@ -175,32 +155,130 @@ class RecipeEndpointTest {
     }
 
     @Test
-    void testGetRecipeWithId() throws Exception {
+    void testGetBySeason() throws Exception {
         RecipeRequest recipe = createSimpleRecipeRequest();
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(recipe))
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(jsonPath("$.name").value(recipe.name))
                 .andExpect(jsonPath("$.time").value(recipe.time))
-                .andExpect(jsonPath("$.season").value(recipe.season))
-                .andReturn();
+                .andExpect(jsonPath("$.type").value(recipe.type))
+                .andExpect(jsonPath("$.season").value(recipe.season));
 
-        String contentAsString = result.getResponse().getContentAsString();
-
-        RecipeDTO response = objectMapper.readValue(contentAsString, RecipeDTO.class);
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes/" + response.getId())
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes?season=SUMMER")
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(COOKIE_NAME, cookie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.name").value(recipe.name))
-                .andExpect(jsonPath("$.time").value(recipe.time))
-                .andExpect(jsonPath("$.season").value(recipe.season))
-                .andExpect(jsonPath("$.steps").isArray());
-        // .andExpect(jsonPath("$.user.username").value(USERNAME_1));
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(1));
+    }
+
+    @Test
+    void testGetRecipeWithId() throws Exception {
+        TestUtils.createRecipe(mockMvc, objectMapper, cookie, createSimpleRecipeRequest());
+        TestUtils.createRecipe(mockMvc, objectMapper, cookie, createSimpleRecipeRequestBis());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes?type=DESSERT")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie(COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content.length()").value(1));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes?type=ENTRE")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie(COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes?type=PLAT")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie(COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(0));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes?type=DESSERT&season=SUMMER")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie(COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content.length()").value(1));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes?type=DESSERT&season=WINTER")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie(COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(0));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes?name=récIpE")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie(COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(1));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes?name=té")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie(COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(2));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes?name=té&size=1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie(COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.totalElements").value(2))
+                .andExpect(jsonPath("$.content.length()").value(1));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes?name=té&size=1&page=1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie(COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.totalElements").value(2))
+                .andExpect(jsonPath("$.content.length()").value(1));
+    }
+
+    @Test
+    void testSortRecipes() throws Exception {
+        RecipeRequest recipe = createSimpleRecipeRequest();
+        recipe.name = "recipe1";
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(recipe))
+                        .cookie(new Cookie(COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        recipe.name = "recipe2";
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(recipe))
+                        .cookie(new Cookie(COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes?sort=name.desc")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie(COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content[0].name").value("recipe2"))
+                .andExpect(jsonPath("$.content[1].name").value("recipe1"));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/recipes?sort=name.asc")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie(COOKIE_NAME, cookie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content[0].name").value("recipe1"))
+                .andExpect(jsonPath("$.content[1].name").value("recipe2"));
     }
 
     @Test

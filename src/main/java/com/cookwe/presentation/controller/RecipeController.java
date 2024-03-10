@@ -2,7 +2,6 @@ package com.cookwe.presentation.controller;
 
 import com.cookwe.data.model.RecipeModel;
 import com.cookwe.domain.entity.*;
-import com.cookwe.domain.mapper.RecipeMapper;
 import com.cookwe.domain.service.RecipeService;
 import com.cookwe.presentation.request.RecipeRequest;
 import com.cookwe.presentation.response.MessageResponse;
@@ -14,13 +13,11 @@ import com.cookwe.utils.security.services.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,19 +56,31 @@ public class RecipeController {
         return (root, query, criteriaBuilder) -> root.get("season").in(StringToESeason.convertList(Arrays.asList(seasons)));
     }
 
+    private Specification<RecipeModel> buildNameSpecification(String name) {
+        return (root, query, criteriaBuilder) -> {
+            String normalizedSearch = StringUtils.stripAccents(name.toLowerCase());
+            return criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + normalizedSearch + "%");
+        };
+    }
+
     @GetMapping("")
     @Operation(summary = "Get all recipes")
     public PageDTO<RecipeDTO> getRecipes(
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "10", name = "size") int size,
-            @RequestParam(defaultValue = "id;desc", name = "sort") String[] sort,
+            @RequestParam(defaultValue = "id.desc", name = "sort") String[] sort,
             @RequestParam(required = false, name = "type") String[] types,
-            @RequestParam(required = false, name = "season") String[] seasons
+            @RequestParam(required = false, name = "season") String[] seasons,
+            @RequestParam(required = false) String name
     ) {
         Sort sorting = Sort.by(Arrays.stream(sort)
                 .map(s -> {
-                    String[] parts = s.split(";");
-                    return parts[1].equalsIgnoreCase("desc") ? Sort.Order.desc(parts[0]) : Sort.Order.asc(parts[0]);
+                    try {
+                        String[] parts = s.split("\\.");
+                        return parts[1].equalsIgnoreCase("desc") ? Sort.Order.desc(parts[0]) : Sort.Order.asc(parts[0]);
+                    } catch (Exception e) {
+                        throw RestError.INVALID_FIELD.get("sort");
+                    }
                 })
                 .toList());
 
@@ -91,6 +100,9 @@ public class RecipeController {
             specification = specification.and(buildSeasonSpecification(seasons));
         }
 
+        if (name != null && !name.isEmpty()) {
+            specification = specification.and(buildNameSpecification(name));
+        }
 
         return recipeService.getRecipes(specification, pageable);
     }

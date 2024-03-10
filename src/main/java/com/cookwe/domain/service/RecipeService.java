@@ -48,7 +48,7 @@ public class RecipeService {
         PageDTO<RecipeDTO> page = new PageDTO<>();
         page.setPage(pageable.getPageNumber());
         page.setSize(pageable.getPageSize());
-        page.setTotalElements(recipeRepository.count());
+        page.setTotalElements(recipeRepository.count(specification));
 
         Page<RecipeModel> recipePage = recipeRepository.findAll(specification, pageable);
 

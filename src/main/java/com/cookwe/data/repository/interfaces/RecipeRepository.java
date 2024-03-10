@@ -28,6 +28,8 @@ public interface RecipeRepository extends CrudRepository<RecipeModel, Long> {
 
     Page<RecipeModel> findAll(Specification specification, Pageable pageable);
 
+    Long count(Specification specification);
+
     Optional<RecipeModel> findById(Long id);
 
     @EntityGraph(attributePaths = {"ingredients", "user"})
