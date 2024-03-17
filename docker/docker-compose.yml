@@ -22,8 +22,6 @@ services:
       POSTGRES_DB: cook-we-bdd-test
     ports:
       - 5431:5432
-    volumes:
-      - bdd-data:/var/lib/postgresql/data
 
 volumes:
   bdd-data:
