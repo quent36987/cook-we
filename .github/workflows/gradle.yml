@@ -64,15 +64,23 @@ jobs:
         run: |
           ./gradlew build -x test -x check
 
+      - name: Get Version
+        id: get_version
+        run: |
+            VERSION=$(grep 'version =' build.gradle | sed -E "s/.*'([0-9]+\.[0-9]+\.[0-9]+)'.*/\1/")
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
+
       - name: Build Docker Image
         run: |
-          docker build -t ghcr.io/${{ github.repository }}:latest  .
+          docker build -t ghcr.io/${{ github.repository }}:${{ env.VERSION }} .
+          docker tag ghcr.io/${{ github.repository }}:${{ env.VERSION }} ghcr.io/${{ github.repository }}:latest
 
       - name: Login to GitHub Container Registry
         run: echo "${{ secrets.CR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: push Docker image
+      - name: Push Docker Image
         run: |
+          docker push ghcr.io/${{ github.repository }}:${{ env.VERSION }}
           docker push ghcr.io/${{ github.repository }}:latest
 
   deploy:
@@ -89,7 +97,7 @@ jobs:
 
       - name: Run Docker Compose
         run: |
-          docker-compose -f docker/docker-compose.all.yml up -d
+          docker compose -f docker/docker-compose.all.yml up -d
           sleep 10
           curl -X GET "http://localhost:9001/v3/api-docs" -H "accept: application/json" -o openapi.yaml
 

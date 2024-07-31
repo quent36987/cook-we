@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/pictures")
 @Tag(name = "Recipe Picture", description = "Recipe Picture operations")
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 public class RecipePictureController {
 
     private final RecipePictureService recipePictureService;

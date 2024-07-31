@@ -1,4 +1,4 @@
-#name: cook_we_all
+#name: cook_we_local
 
 services:
   postgres:
@@ -26,15 +26,19 @@ services:
       - bdd-network
     environment:
       PORT: 9001
-      BD_URL: jdbc:postgresql://postgres:5432/cook-we-bdd
-      BD_USER: admin
-      BD_PASSWORD: admin
+      DB_URL: jdbc:postgresql://postgres:5432/cook-we-bdd
+      DB_USER: admin
+      DB_PASSWORD: admin
       JWT_SECRET: "======================BezKoder=Spring==========================="
       JWT_EXPIRATION_MS: 86400000
       JWT_COOKIE_NAME: bezkoder-jwt
+      PICTURE_PATH: /var/lib/uploads
+    volumes:
+      - upload-data:/var/lib/uploads
 
 volumes:
   postgres-data:
+  upload-data:
 
 networks:
   bdd-network:

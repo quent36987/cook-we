@@ -18,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/roles")
 @Tag(name = "Role", description = "Role operations")
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 public class RoleController {
 
     private final RoleService roleService;

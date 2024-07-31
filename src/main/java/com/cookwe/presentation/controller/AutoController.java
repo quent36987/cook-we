@@ -13,7 +13,6 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/auto")
 @Tag(name = "Auto", description = "Auto IA controller (beta)")
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 public class AutoController {
 
     @Autowired

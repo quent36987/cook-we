@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="204030800-1" author="QGN">
+        <createTable tableName="roles">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(20)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="users">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="first_name" type="varchar(255)"/>
+            <column name="last_name" type="varchar(255)"/>
+            <column name="username" type="varchar(20)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="email" type="varchar(50)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="password" type="varchar(120)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="recipes">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time" type="bigint"/>
+            <column name="portions" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="season" type="varchar(20)"/>
+            <column name="type" type="varchar(20)"/>
+            <column name="user_id" type="bigint"/>
+            <column name="created_at" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+
+        <createTable tableName="ingredients">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="float">
+                <constraints nullable="false"/>
+            </column>
+            <column name="unit" type="varchar(20)"/>
+            <column name="recipe_id" type="bigint"/>
+        </createTable>
+
+        <createTable tableName="recipe_pictures">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="recipe_id" type="bigint"/>
+            <column name="image_url" type="varchar(255)"/>
+            <column name="user_id" type="bigint"/>
+            <column name="created_at" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+
+        <createTable tableName="recipe_steps">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="recipe_id" type="bigint"/>
+            <column name="text" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="step_number" type="bigint"/>
+        </createTable>
+
+        <createTable tableName="comments">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="text" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint"/>
+            <column name="recipe_id" type="bigint"/>
+            <column name="created_at" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+
+        <createTable tableName="users_roles">
+            <column name="user_id" type="bigint"/>
+            <column name="role_id" type="int"/>
+        </createTable>
+
+        <addPrimaryKey tableName="users_roles" columnNames="user_id, role_id" constraintName="pk_users_roles"/>
+
+        <createTable tableName="user_favorite_recipes">
+            <column name="user_id" type="bigint"/>
+            <column name="recipe_id" type="bigint"/>
+        </createTable>
+
+        <addPrimaryKey tableName="user_favorite_recipes" columnNames="user_id, recipe_id" constraintName="pk_user_favorite_recipes"/>
+    </changeSet>
+
+    <changeSet id="204030800-2" author="QGN">
+        <addForeignKeyConstraint constraintName="fk_comments_user"
+                                 baseTableName="comments"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint constraintName="fk_comments_recipe"
+                                 baseTableName="comments"
+                                 baseColumnNames="recipe_id"
+                                 referencedTableName="recipes"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint constraintName="fk_ingredients_recipe"
+                                 baseTableName="ingredients"
+                                 baseColumnNames="recipe_id"
+                                 referencedTableName="recipes"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint constraintName="fk_recipe_pictures_recipe"
+                                 baseTableName="recipe_pictures"
+                                 baseColumnNames="recipe_id"
+                                 referencedTableName="recipes"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint constraintName="fk_recipe_pictures_user"
+                                 baseTableName="recipe_pictures"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint constraintName="fk_recipe_steps_recipe"
+                                 baseTableName="recipe_steps"
+                                 baseColumnNames="recipe_id"
+                                 referencedTableName="recipes"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint constraintName="fk_recipes_user"
+                                 baseTableName="recipes"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint constraintName="fk_users_roles_user"
+                                 baseTableName="users_roles"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint constraintName="fk_users_roles_role"
+                                 baseTableName="users_roles"
+                                 baseColumnNames="role_id"
+                                 referencedTableName="roles"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint constraintName="fk_user_favorite_recipes_user"
+                                 baseTableName="user_favorite_recipes"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint constraintName="fk_user_favorite_recipes_recipe"
+                                 baseTableName="user_favorite_recipes"
+                                 baseColumnNames="recipe_id"
+                                 referencedTableName="recipes"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="204030800-3" author="QGN">
+        <loadData tableName="roles" file="../data/roles.csv" separator="," relativeToChangelogFile="true" />
+    </changeSet>
+</databaseChangeLog>

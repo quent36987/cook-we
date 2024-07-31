@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 
 java {
 	sourceCompatibility = '17'
@@ -38,10 +38,7 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 	testImplementation 'org.springframework.security:spring-security-test'
 
-
 	implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.2'
-
-
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
@@ -56,6 +53,9 @@ dependencies {
 
 	implementation 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// Liquibase dependency
+	implementation 'org.liquibase:liquibase-core:4.19.0'
 }
 
 tasks.named('test') {
@@ -63,7 +63,3 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-//tasks.named('asciidoctor') {
-//	inputs.dir snippetsDir
-//	dependsOn test
-//}

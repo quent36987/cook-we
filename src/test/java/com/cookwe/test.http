@@ -146,14 +146,11 @@ Accept: application/json
 }
 
 
-### POST Create a comment
-POST http://localhost:9001/api/comments/recipe/1
-Content-Type: application/json
+### POST laike
+POST http://localhost:9001/api/users/favorites-recipes/20
 Accept: application/json
 
-{
-  "text": "New Comment"
-}
+
 
 
 ###

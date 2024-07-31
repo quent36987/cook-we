@@ -21,7 +21,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 @Tag(name = "User", description = "User operations")
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 public class UserController {
 
     private final UserService userService;

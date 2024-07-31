@@ -2,6 +2,9 @@
 GET http://localhost:9001/api/ingredients/recipes/12345
 Accept: application/json
 
+### Get user by username
+GET http://localhost:9001/api/users/admin
+Accept: application/json
 
 
 
