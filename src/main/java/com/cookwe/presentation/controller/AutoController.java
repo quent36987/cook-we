@@ -1,5 +1,6 @@
 package com.cookwe.presentation.controller;
 
+import com.cookwe.domain.entity.RecipeDetailDTO;
 import com.cookwe.domain.service.AutoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,11 +23,9 @@ public class AutoController {
     @Operation(summary = "Upload a picture of a recipe and get the RecipeResponse")
     @Parameter(name = "file", description = "picture of ")
     //@PreAuthorize("hasRole('ADMIN')")
-    public Object generateRecipeEntityWithPicture(@RequestParam("file") MultipartFile file) throws IOException {
+    public RecipeDetailDTO generateRecipeEntityWithPicture(@RequestParam("file") MultipartFile file) throws IOException {
+        RecipeDetailDTO recipe = autoService.generateRecipeEntityWithPicture(file);
 
-        return autoService.generateRecipeEntityWithPicture(file);
-//        RecipeDetailEntity recipe = autoService.generateRecipeEntityWithPicture(file);
-//
-//        return RecipeDetailEntityToRecipeDetailResponse.convert(recipe);
+        return recipe;
     }
 }

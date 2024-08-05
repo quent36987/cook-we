@@ -6,5 +6,6 @@ public enum EUnit {
     TEASPOON,
     TABLESPOON,
     CUP,
-    PIECE
+    PIECE,
+    POT,
 }

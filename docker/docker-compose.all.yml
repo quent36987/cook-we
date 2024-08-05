@@ -1,9 +1,9 @@
 #name: cook_we_local
 
 services:
-  postgres:
+  postgres-cook-we:
     image: postgres:12.1-alpine
-    container_name: postgres
+    container_name: postgres-cook-we
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
@@ -21,12 +21,12 @@ services:
     ports:
       - 9001:9001
     depends_on:
-      - postgres
+      - postgres-cook-we
     networks:
       - bdd-network
     environment:
       PORT: 9001
-      DB_URL: jdbc:postgresql://postgres:5432/cook-we-bdd
+      DB_URL: jdbc:postgresql://postgres-cook-we:5432/cook-we-bdd
       DB_USER: admin
       DB_PASSWORD: admin
       JWT_SECRET: "======================BezKoder=Spring==========================="
