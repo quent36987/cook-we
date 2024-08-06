@@ -54,6 +54,7 @@ dependencies {
 
 	implementation 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'net.coobird:thumbnailator:0.4.14'
 
 	// Liquibase dependency
 	implementation 'org.liquibase:liquibase-core:4.19.0'
