@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="2024060800-1" author="QGN">
+        <createTable tableName="log_auto_service">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="userid" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+            </column>
+            <column name="picture_size" type="decimal">
+                <constraints nullable="true"/>
+            </column>
+            <column name="api_response" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <column name="exit_code" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="token_count" type="text">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

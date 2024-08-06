@@ -1,15 +1,15 @@
 package com.cookwe.domain.service;
 
+import com.cookwe.data.model.LogAutoServiceModel;
+import com.cookwe.data.repository.interfaces.LogAutoServiceRepository;
 import com.cookwe.domain.entity.RecipeDetailDTO;
+import com.cookwe.utils.errors.RestError;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,67 +21,57 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.security.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.cookwe.utils.sting.UnitNormalizer.processRecipeJsonString;
+
 @Service
 @Data
 @Slf4j
 public class AutoService {
-
-    // TODO : get the image and reduce the size ?
-    // send the script to gtp4 image
-    // get the json that we get
-    // verify the enum and find the closest
-    // send the recipe response to the user
-    // TODO V2 - limite the number of request per user with a table and credit ^^ ?
-
     private final RestTemplate restTemplate;
 
     private final ObjectMapper objectMapper;
-
+    private final LogAutoServiceRepository logAutoServiceRepository;
 
     private static final double MAX_SIZE_MB = 4.0;
-    public AutoService(RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public AutoService(RestTemplate restTemplate, ObjectMapper objectMapper, LogAutoServiceRepository logAutoServiceRepository) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
+        this.logAutoServiceRepository = logAutoServiceRepository;
     }
 
     public String encodeImage(byte[] bytes) throws IOException {
         return Base64.encodeBase64String(bytes);
     }
 
-    public String processJsonString(String jsonString) {
-        // Define the pattern for fractions (e.g., 1/3)
+    public String processEquationJsonString(String jsonString) {
         Pattern fractionPattern = Pattern.compile("(\\d+)/(\\d+)");
         Matcher matcher = fractionPattern.matcher(jsonString);
 
-        // Create a StringBuilder to build the new string
         StringBuilder result = new StringBuilder();
 
         int lastMatchEnd = 0;
         while (matcher.find()) {
-            // Append the text before the current match
             result.append(jsonString, lastMatchEnd, matcher.start());
 
-            // Extract the fraction components
             String numerator = matcher.group(1);
             String denominator = matcher.group(2);
             double fractionValue = Double.parseDouble(numerator) / Double.parseDouble(denominator);
 
-            // Append the calculated decimal value to the result
             result.append(fractionValue);
-
-            // Update the end position of the last match
             lastMatchEnd = matcher.end();
         }
 
-        // Append the remaining part of the string
         result.append(jsonString, lastMatchEnd, jsonString.length());
-
         return result.toString();
     }
 
@@ -112,7 +102,7 @@ public class AutoService {
                     "  {\n" +
                     "    \"name\": \"Nom de l'ingrédient\",\n" +
                     "    \"quantity\": \"Quantité (nombre valide, decimal avec virgule)\",\n" +
-                    "    \"unit\": \"GRAM | MILLILITER | TEASPOON | TABLESPOON | CUP | PIECE \"\n" +
+                    "    \"unit\": \"GRAM | MILLILITER | TEASPOON | TABLESPOON | CUP | PIECE | POT | PINCH \"\n" +
                     "  }\n" +
                     "]\n" +
                     "}";
@@ -209,12 +199,8 @@ public class AutoService {
         log.info("Image size: {} Mbit", fileSizeInMbit);
     }
 
-    public RecipeDetailDTO generateRecipeEntityWithPicture(MultipartFile file) throws IOException {
-        printImageSizeInMbOrKb(file.getBytes());
-
+    public RecipeDetailDTO generateRecipeEntityWithPicture(MultipartFile file, Long userId) throws IOException {
         byte[] compressedImageBytes = compressImageIfNecessary(file);
-
-        printImageSizeInMbOrKb(compressedImageBytes);
 
         RequestVision request = new RequestVision(
             "gpt-4o-mini",
@@ -239,10 +225,24 @@ public class AutoService {
 
         Optional<JsonNode> recipeDetailNode = Optional.ofNullable(responseBody.findValue("content"));
         if (recipeDetailNode.isPresent()) {
+
+            logAutoServiceRepository.save(
+                LogAutoServiceModel.builder()
+                    .userId(userId)
+                    .timestamp(LocalDateTime.now())
+                    .pictureSize(BigDecimal.valueOf(compressedImageBytes.length * 8.0 / 1_000_000.0))
+                    .apiResponse(recipeDetailNode.get().asText())
+                    .exitCode(responseEntity.getStatusCode().toString())
+                    .tokenCount(responseBody.findValue("total_tokens").asText())
+                    .build()
+            );
+
             log.info("Recipe detail node: {}", recipeDetailNode.get().asText());
-            String jsonString = processJsonString(recipeDetailNode.get().asText());
+
+            String jsonString = processEquationJsonString(recipeDetailNode.get().asText());
+
             try {
-                return objectMapper.readValue(jsonString, RecipeDetailDTO.class);
+                return objectMapper.readValue(processRecipeJsonString(jsonString), RecipeDetailDTO.class);
             } catch (Exception e) {
                 log.warn("Direct mapping failed, attempting to extract JSON from text.", e);
             }
@@ -253,7 +253,12 @@ public class AutoService {
             if (matcher.find()) {
                 String jsonStringMatch = matcher.group(1);
                 log.info("Extracted JSON: {}", jsonStringMatch);
-                return objectMapper.readValue(jsonStringMatch, RecipeDetailDTO.class);
+                try {
+                    return objectMapper.readValue(processRecipeJsonString(jsonStringMatch), RecipeDetailDTO.class);
+                } catch (Exception e) {
+                    log.warn("Direct mapping failed, attempting to extract JSON from text.", e);
+                    throw RestError.INTERNAL_SERVER_ERROR.get();
+                }
             } else {
                 throw new RuntimeException("No JSON found in the response content.");
             }

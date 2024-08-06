@@ -8,4 +8,5 @@ public enum EUnit {
     CUP,
     PIECE,
     POT,
+    PINCH,
 }
