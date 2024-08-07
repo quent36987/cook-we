@@ -1,9 +1,5 @@
 package com.cookwe.domain.service;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -23,7 +19,6 @@ import com.cookwe.domain.entity.RecipePictureDTO;
 import com.cookwe.domain.mapper.RecipePictureMapper;
 import com.cookwe.utils.errors.RestError;
 import lombok.extern.slf4j.Slf4j;
-import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -32,7 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileSystemUtils;
 
-import javax.imageio.ImageIO;
+
+import static com.cookwe.utils.image.CompressionUtils.compressByteImage;
 
 @Service
 @Slf4j
@@ -59,24 +55,6 @@ public class RecipePictureService {
         return pictureMapper.toDTOList(pictures);
     }
 
-    private byte[] compressImage(byte[] imageBytes) throws IOException {
-        ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
-        BufferedImage originalImage = ImageIO.read(bais);
-
-        BufferedImage compressedImage = new BufferedImage(
-            originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-
-        Graphics2D graphics = compressedImage.createGraphics();
-        graphics.drawImage(originalImage, 0, 0, null);
-        graphics.dispose();
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(compressedImage, "jpeg", baos);
-
-        return baos.toByteArray();
-    }
-
-
     public RecipePictureDTO save(Long userId, Long recipeId, MultipartFile file) {
         if (file == null || file.isEmpty() || file.getOriginalFilename() == null) {
             throw RestError.MISSING_FIELD.get("file");
@@ -87,7 +65,7 @@ public class RecipePictureService {
         Path root = Paths.get(picturePath);
 
         try {
-            byte[] compressedBytes = compressImage(file.getBytes());
+            byte[] compressedBytes = compressByteImage(file.getBytes());
 
             String fileName = "i" + UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
             Path filePath = root.resolve(fileName);

@@ -9,28 +9,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.security.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.cookwe.utils.image.CompressionUtils.compressByteImage;
+import static com.cookwe.utils.image.CompressionUtils.encodeBase64Image;
+import static com.cookwe.utils.sting.JsonUtilsProcessor.processEquationJsonString;
 import static com.cookwe.utils.sting.UnitNormalizer.processRecipeJsonString;
 
 @Service
@@ -42,37 +37,12 @@ public class AutoService {
     private final ObjectMapper objectMapper;
     private final LogAutoServiceRepository logAutoServiceRepository;
 
-    private static final double MAX_SIZE_MB = 4.0;
+    private static final double MAX_SIZE_MB = 2.0;
+
     public AutoService(RestTemplate restTemplate, ObjectMapper objectMapper, LogAutoServiceRepository logAutoServiceRepository) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
         this.logAutoServiceRepository = logAutoServiceRepository;
-    }
-
-    public String encodeImage(byte[] bytes) throws IOException {
-        return Base64.encodeBase64String(bytes);
-    }
-
-    public String processEquationJsonString(String jsonString) {
-        Pattern fractionPattern = Pattern.compile("(\\d+)/(\\d+)");
-        Matcher matcher = fractionPattern.matcher(jsonString);
-
-        StringBuilder result = new StringBuilder();
-
-        int lastMatchEnd = 0;
-        while (matcher.find()) {
-            result.append(jsonString, lastMatchEnd, matcher.start());
-
-            String numerator = matcher.group(1);
-            String denominator = matcher.group(2);
-            double fractionValue = Double.parseDouble(numerator) / Double.parseDouble(denominator);
-
-            result.append(fractionValue);
-            lastMatchEnd = matcher.end();
-        }
-
-        result.append(jsonString, lastMatchEnd, jsonString.length());
-        return result.toString();
     }
 
     public class RequestVision {
@@ -111,8 +81,6 @@ public class AutoService {
             Content2 content_2 = new Content2(
                 "image_url",
                 new ContentImage(image)
-                //                    "data:image/jpeg;base64," +
-
             );
 
             List<Object> contents = new ArrayList<>();
@@ -153,50 +121,16 @@ public class AutoService {
         public String role;
     }
 
-    @AllArgsConstructor
-    public class ChoicesResponse {
-        public MessageResponse message;
-        public Integer index;
-        public String finish_reason;
-    }
 
     private byte[] compressImageIfNecessary(MultipartFile file) throws IOException {
         byte[] imageBytes = file.getBytes();
         double fileSizeInMbit = imageBytes.length * 8.0 / 1_000_000.0;
 
         if (fileSizeInMbit > MAX_SIZE_MB) {
-            return compressImage(imageBytes);
+            return compressByteImage(imageBytes);
         }
 
         return imageBytes;
-    }
-
-    private byte[] compressImage(byte[] imageBytes) throws IOException {
-        ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
-        BufferedImage originalImage = ImageIO.read(bais);
-
-        // Create a new compressed image
-        BufferedImage compressedImage = new BufferedImage(
-            originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-
-        Graphics2D graphics = compressedImage.createGraphics();
-        graphics.drawImage(originalImage, 0, 0, null);
-        graphics.dispose();
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(compressedImage, "jpeg", baos);
-
-        return baos.toByteArray();
-    }
-
-
-    public void printImageSizeInMbOrKb(byte[] imageBytes) throws IOException {
-        int fileSizeInBytes = imageBytes.length;
-        double fileSizeInKB = fileSizeInBytes / 1024.0;
-        double fileSizeInMbit = fileSizeInBytes * 8.0 / 1_000_000.0;
-
-        log.info("Image size: {} KB", fileSizeInKB);
-        log.info("Image size: {} Mbit", fileSizeInMbit);
     }
 
     public RecipeDetailDTO generateRecipeEntityWithPicture(MultipartFile file, Long userId) throws IOException {
@@ -204,7 +138,7 @@ public class AutoService {
 
         RequestVision request = new RequestVision(
             "gpt-4o-mini",
-            "data:image/jpeg;base64," + encodeImage(compressedImageBytes),
+            "data:image/jpeg;base64," + encodeBase64Image(compressedImageBytes),
             800
         );
 
