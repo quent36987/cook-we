@@ -66,7 +66,6 @@ public class RecipePictureService {
 
         try {
             byte[] compressedBytes = compressByteImage(file.getBytes());
-
             String fileName = "i" + UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
             Path filePath = root.resolve(fileName);
             Files.write(filePath, compressedBytes);
