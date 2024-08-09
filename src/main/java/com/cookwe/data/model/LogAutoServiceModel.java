@@ -36,4 +36,7 @@ public class LogAutoServiceModel {
 
     @Column(name = "token_count")
     private String tokenCount;
+
+    @Column(name = "is_parse_success")
+    private Boolean isParseSuccess;
 }
