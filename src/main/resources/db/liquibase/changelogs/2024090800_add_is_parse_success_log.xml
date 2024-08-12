@@ -6,7 +6,7 @@
 
     <changeSet id="2024090800-1" author="QGN">
         <addColumn tableName="log_auto_service">
-            <column name="is_parse_success" defaultValue="true" />
+            <column name="is_parse_success" defaultValue="true" type="boolean" />
         </addColumn>
     </changeSet>
 
