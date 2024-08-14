@@ -83,6 +83,29 @@ public class UserService {
         return recipeMapper.toDTOList(recipes);
     }
 
+    @Transactional
+    public String resetPassword(String email) {
+        UserModel user = userRepository.findByEmail(email)
+                .orElseThrow(RestError.USER_NOT_FOUND::get);
+
+        String newPassword = UUID.randomUUID().toString().substring(0, 8);
+        user.setPassword(encoder.encode(newPassword));
+
+        userRepository.save(user);
+
+        return newPassword;
+    }
+
+    @Transactional
+    public void changePassword(String username, String password) {
+        UserModel user = userRepository.findByUsername(username)
+                .orElseThrow(RestError.USER_NOT_FOUND::get);
+
+        user.setPassword(encoder.encode(password));
+
+        userRepository.save(user);
+    }
+
     public void createUser(String username, String email, String password) {
         UserModel user = new UserModel(username, email, encoder.encode(password));
         List<RoleModel> roles = new ArrayList<>();

@@ -7,8 +7,9 @@ import com.cookwe.data.model.UserModel;
 import com.cookwe.data.repository.interfaces.RoleRepository;
 import com.cookwe.data.repository.interfaces.UserRepository;
 import com.cookwe.domain.entity.UserDTO;
-import com.cookwe.domain.mapper.UserMapper;
+import com.cookwe.domain.service.EmailService;
 import com.cookwe.domain.service.UserService;
+import com.cookwe.presentation.request.ChangePasswordRequest;
 import com.cookwe.presentation.request.LoginRequest;
 import com.cookwe.presentation.request.SignupRequest;
 import com.cookwe.presentation.response.MessageResponse;
@@ -21,6 +22,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -43,16 +45,17 @@ public class AuthController {
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
-    private final UserMapper userMapper;
 
-    public AuthController(UserMapper userMapper, AuthenticationManager authenticationManager, UserRepository userRepository, UserService userService, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+    private final EmailService emailService;
+
+    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, UserService userService, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, EmailService emailService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.userService = userService;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
-        this.userMapper = userMapper;
+        this.emailService = emailService;
     }
 
 
@@ -122,5 +125,31 @@ public class AuthController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         return userService.getUserByUsername(userDetails.getUsername());
+    }
+
+    @PostMapping("/new-password")
+    @Operation(summary = "Change the password of the current user")
+    public ResponseEntity<MessageResponse> newPassword(@RequestBody String email) {
+        String newPassword = userService.resetPassword(email);
+
+        String subject = "New Password Request";
+        String message = "Your new password is: " + newPassword + "\n\n" +
+                "Please change it as soon as possible.";
+
+        emailService.sendEmail(email, subject, message);
+
+        return ResponseEntity.ok(new MessageResponse("New password sent to your email!"));
+    }
+
+    @PostMapping("/change-password")
+    @PreAuthorize("hasRole('USER')")
+    @Operation(summary = "Change the password of the current user")
+    public ResponseEntity<MessageResponse> changePassword(@Valid @RequestBody ChangePasswordRequest password) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        userService.changePassword(userDetails.getUsername(), password.getPassword());
+
+        return ResponseEntity.ok(new MessageResponse("Password changed successfully!"));
     }
 }
