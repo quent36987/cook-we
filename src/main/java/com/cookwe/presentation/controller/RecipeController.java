@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api/recipes")
 @Tag(name = "Recipe", description = "Recipe operations")
@@ -65,23 +64,23 @@ public class RecipeController {
     @GetMapping("")
     @Operation(summary = "Get all recipes")
     public PageDTO<RecipeDTO> getRecipes(
-            @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "10", name = "size") int size,
-            @RequestParam(defaultValue = "id.desc", name = "sort") String[] sort,
-            @RequestParam(required = false, name = "type") String[] types,
-            @RequestParam(required = false, name = "season") String[] seasons,
-            @RequestParam(required = false) String name
+        @RequestParam(defaultValue = "0", name = "page") int page,
+        @RequestParam(defaultValue = "10", name = "size") int size,
+        @RequestParam(defaultValue = "id.desc", name = "sort") String[] sort,
+        @RequestParam(required = false, name = "type") String[] types,
+        @RequestParam(required = false, name = "season") String[] seasons,
+        @RequestParam(required = false) String name
     ) {
         Sort sorting = Sort.by(Arrays.stream(sort)
-                .map(s -> {
-                    try {
-                        String[] parts = s.split("\\.");
-                        return parts[1].equalsIgnoreCase("desc") ? Sort.Order.desc(parts[0]) : Sort.Order.asc(parts[0]);
-                    } catch (Exception e) {
-                        throw RestError.INVALID_FIELD.get("sort");
-                    }
-                })
-                .toList());
+            .map(s -> {
+                try {
+                    String[] parts = s.split("\\.");
+                    return parts[1].equalsIgnoreCase("desc") ? Sort.Order.desc(parts[0]) : Sort.Order.asc(parts[0]);
+                } catch (Exception e) {
+                    throw RestError.INVALID_FIELD.get("sort");
+                }
+            })
+            .toList());
 
         Pageable pageable = PageRequest.of(page, size, sorting);
 
@@ -194,15 +193,15 @@ public class RecipeController {
 
         //FIXME: send a different props to updateRecipe (to many arguments)
         return recipeService.updateRecipe(
-                getUserId(),
-                recipeId,
-                request.name,
-                request.time,
-                request.portions,
-                request.season,
-                request.steps,
-                request.ingredients,
-                request.type
+            getUserId(),
+            recipeId,
+            request.name,
+            request.time,
+            request.portions,
+            request.season,
+            request.steps,
+            request.ingredients,
+            request.type
         );
     }
 

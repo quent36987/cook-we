@@ -121,7 +121,6 @@ public class AutoService {
         public String role;
     }
 
-
     private byte[] compressImageIfNecessary(MultipartFile file) throws IOException {
         byte[] imageBytes = file.getBytes();
         double fileSizeInMbit = imageBytes.length * 8.0 / 1_000_000.0;
@@ -160,16 +159,17 @@ public class AutoService {
         Optional<JsonNode> recipeDetailNode = Optional.ofNullable(responseBody.findValue("content"));
         if (recipeDetailNode.isPresent()) {
 
-            logAutoServiceRepository.save(
-                LogAutoServiceModel.builder()
-                    .userId(userId)
-                    .timestamp(LocalDateTime.now())
-                    .pictureSize(BigDecimal.valueOf(compressedImageBytes.length * 8.0 / 1_000_000.0))
-                    .apiResponse(recipeDetailNode.get().asText())
-                    .exitCode(responseEntity.getStatusCode().toString())
-                    .tokenCount(responseBody.findValue("total_tokens").asText())
-                    .build()
-            );
+            LogAutoServiceModel logAutoServiceModel = LogAutoServiceModel.builder()
+                .userId(userId)
+                .timestamp(LocalDateTime.now())
+                .pictureSize(BigDecimal.valueOf(compressedImageBytes.length * 8.0 / 1_000_000.0))
+                .apiResponse(recipeDetailNode.get().asText())
+                .exitCode(responseEntity.getStatusCode().toString())
+                .tokenCount(responseBody.findValue("total_tokens").asText())
+                .isParseSuccess(true)
+                .build();
+
+            logAutoServiceRepository.save(logAutoServiceModel);
 
             log.info("Recipe detail node: {}", recipeDetailNode.get().asText());
 
@@ -191,9 +191,13 @@ public class AutoService {
                     return objectMapper.readValue(processRecipeJsonString(jsonStringMatch), RecipeDetailDTO.class);
                 } catch (Exception e) {
                     log.warn("Direct mapping failed, attempting to extract JSON from text.", e);
+                    logAutoServiceModel.setIsParseSuccess(false);
+                    logAutoServiceRepository.save(logAutoServiceModel);
                     throw RestError.INTERNAL_SERVER_ERROR.get();
                 }
             } else {
+                logAutoServiceModel.setIsParseSuccess(false);
+                logAutoServiceRepository.save(logAutoServiceModel);
                 throw new RuntimeException("No JSON found in the response content.");
             }
         } else {
