@@ -16,4 +16,5 @@ public class ShoppingListDetailDTO {
     private String createdAt;
     private List<RecipeShoppingListDTO> recipes;
     private List<IngredientShoppingListDTO> ingredients;
+    private List<String> sharedUsers;
 }

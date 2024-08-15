@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<String> handleThrowable(Throwable exception) {
         if (exception instanceof ErrorCode errorCode) {
-            return ResponseEntity.status(errorCode.getCode()).body(exception.getMessage());
+            return ResponseEntity.status(errorCode.getCode()).body(errorCode.getMessage());
         }
 
         if (exception instanceof AccessDeniedException) {
