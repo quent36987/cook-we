@@ -5,6 +5,8 @@ import com.cookwe.data.model.ShoppingListIngredientModel;
 import com.cookwe.data.model.ShoppingListModel;
 import com.cookwe.data.model.ShoppingListRecipeModel;
 import com.cookwe.data.repository.interfaces.*;
+import com.cookwe.domain.entity.RecipeShoppingListDTO;
+import com.cookwe.domain.mapper.RecipeShoppingListMapper;
 import com.cookwe.utils.errors.RestError;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,8 +21,9 @@ public class ShoppingListRecipeService {
     private final RecipeRepository recipeRepository;
     private final ShoppingListRecipeRepository shoppingListRecipeRepository;
     private final ShoppingListIngredientRepository shoppingListIngredientRepository;
+    private final RecipeShoppingListMapper recipeShoppingListMapper;
 
-    public void addOrUpdateRecipe(Long userId, Long recipeId, int portion, List<String> ingredients, Long shoppingListId) {
+    public RecipeShoppingListDTO addOrUpdateRecipe(Long userId, Long recipeId, int portion, List<String> ingredients, Long shoppingListId) {
         ShoppingListModel shoppingList = shoppingListRepository.findById(shoppingListId)
                 .orElseThrow(() -> RestError.NOT_FOUND_MESSAGE.get("Shopping list not found"));
 
@@ -47,6 +50,8 @@ public class ShoppingListRecipeService {
         }
 
         addIngredientsToRecipe(existingRecipe, ingredients, shoppingList);
+
+        return recipeShoppingListMapper.toDTO(existingRecipe);
     }
 
     private void addIngredientsToRecipe(ShoppingListRecipeModel shoppingListRecipe, List<String> ingredients, ShoppingListModel shoppingList) {

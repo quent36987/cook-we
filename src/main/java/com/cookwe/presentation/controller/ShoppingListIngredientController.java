@@ -1,5 +1,6 @@
 package com.cookwe.presentation.controller;
 
+import com.cookwe.domain.entity.IngredientShoppingListDTO;
 import com.cookwe.domain.service.IngredientShoppingListService;
 import com.cookwe.presentation.request.ShoppingListIngredientRequest;
 import com.cookwe.presentation.response.MessageResponse;
@@ -34,16 +35,15 @@ public class ShoppingListIngredientController {
 
     @Operation(summary = "Add or update an ingredient in a shopping list")
     @PostMapping("/{shoppingListId}/ingredients")
-    public MessageResponse addOrUpdateIngredient(
+    public IngredientShoppingListDTO addOrUpdateIngredient(
             @PathVariable Long shoppingListId,
             @RequestBody ShoppingListIngredientRequest request) {
-        ingredientShoppingListService.addOrUpdateIngredient(
+        return ingredientShoppingListService.addOrUpdateIngredient(
                 getUserId(),
                 request.getId(),
                 request.getName(),
                 shoppingListId
         );
-        return new MessageResponse("Ingredient added or updated successfully");
     }
 
     @Operation(summary = "Check or uncheck an ingredient")

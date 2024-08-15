@@ -6,6 +6,8 @@ import com.cookwe.data.repository.interfaces.RecipeRepository;
 import com.cookwe.data.repository.interfaces.ShoppingListIngredientRepository;
 import com.cookwe.data.repository.interfaces.ShoppingListRepository;
 import com.cookwe.data.repository.interfaces.UserRepository;
+import com.cookwe.domain.entity.IngredientShoppingListDTO;
+import com.cookwe.domain.mapper.IngredientShoppingListMapper;
 import com.cookwe.utils.errors.RestError;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,9 +21,10 @@ public class IngredientShoppingListService {
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
     private final ShoppingListIngredientRepository shoppingListIngredientRepository;
+    private final IngredientShoppingListMapper shoppingListIngredientMapper;
 
     @Transactional
-    public void addOrUpdateIngredient(Long userId, Long ingredientId, String name, Long shoppingListId) {
+    public IngredientShoppingListDTO addOrUpdateIngredient(Long userId, Long ingredientId, String name, Long shoppingListId) {
         ShoppingListModel shoppingList = shoppingListRepository.findById(shoppingListId)
                 .orElseThrow(() -> RestError.SHOPPING_LIST_NOT_FOUND.get(shoppingListId));
 
@@ -38,14 +41,16 @@ public class IngredientShoppingListService {
             }
 
             existingIngredient.setName(name);
-            shoppingListIngredientRepository.save(existingIngredient);
+            ShoppingListIngredientModel shoppingListIngredientModel = shoppingListIngredientRepository.save(existingIngredient);
+            return shoppingListIngredientMapper.toDTO(shoppingListIngredientModel);
         } else {
             ShoppingListIngredientModel newIngredient = new ShoppingListIngredientModel();
             newIngredient.setShoppingList(shoppingList);
             newIngredient.setShoppingListRecipe(null);
             newIngredient.setName(name);
             newIngredient.setChecked(false);
-            shoppingListIngredientRepository.save(newIngredient);
+            ShoppingListIngredientModel shoppingListIngredientModel = shoppingListIngredientRepository.save(newIngredient);
+            return shoppingListIngredientMapper.toDTO(shoppingListIngredientModel);
         }
     }
 

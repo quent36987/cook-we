@@ -1,5 +1,6 @@
 package com.cookwe.presentation.controller;
 
+import com.cookwe.domain.entity.RecipeShoppingListDTO;
 import com.cookwe.domain.service.ShoppingListRecipeService;
 import com.cookwe.presentation.request.ShoppingListRecipeRequest;
 import com.cookwe.presentation.response.MessageResponse;
@@ -34,17 +35,16 @@ public class ShoppingListRecipeController {
 
     @Operation(summary = "Add or update a recipe in a shopping list")
     @PostMapping("/{shoppingListId}/recipes")
-    public MessageResponse addOrUpdateRecipe(
+    public RecipeShoppingListDTO addOrUpdateRecipe(
             @PathVariable Long shoppingListId,
             @RequestBody ShoppingListRecipeRequest request) {
-        shoppingListRecipeService.addOrUpdateRecipe(
+        return shoppingListRecipeService.addOrUpdateRecipe(
                 getUserId(),
                 request.getRecipeId(),
                 request.getPortion(),
                 request.getIngredients(),
                 shoppingListId
         );
-        return new MessageResponse("Recipe added or updated successfully");
     }
 
     @Operation(summary = "Remove a recipe from a shopping list")
