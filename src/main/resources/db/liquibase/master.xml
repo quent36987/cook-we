@@ -9,5 +9,7 @@
     <include file="changelogs/204030800_create_table.xml" relativeToChangelogFile="true" />
     <include file="changelogs/2024060800_create_table_auto_service.xml" relativeToChangelogFile="true" />
     <include file="changelogs/2024090800_add_is_parse_success_log.xml" relativeToChangelogFile="true" />
+    <include file="changelogs/2024150800_create_table_shopping_list.xml" relativeToChangelogFile="true" />
+    <include file="changelogs/2024150801_create_index_shoping_list.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>

@@ -131,18 +131,18 @@ Accept: application/json
     "step1",
     "step2"
   ],
-    "ingredients": [
-        {
-        "name": "ingredient1",
-        "quantity": 1,
-        "unit": "MILLILITER"
-        },
-        {
-        "name": "ingredient2",
-        "quantity": 2.5,
-        "unit": "GRAM"
-        }
-    ]
+  "ingredients": [
+    {
+      "name": "ingredient1",
+      "quantity": 1,
+      "unit": "MILLILITER"
+    },
+    {
+      "name": "ingredient2",
+      "quantity": 2.5,
+      "unit": "GRAM"
+    }
+  ]
 }
 
 
@@ -162,7 +162,9 @@ Content-Type: application/json
   "username": "quentin2",
   "email": "quentin2@quentin.fr",
   "password": "quentin2",
-  "role": ["ROLE_USER"]
+  "role": [
+    "ROLE_USER"
+  ]
 }
 
 
@@ -194,5 +196,30 @@ Accept: application/json
 
 ### GET My roles
 GET http://localhost:9001/api/auth/me
+Accept: application/json
+
+
+### GET My roles
+POST http://localhost:9001/api/shopping-list
+Content-Type: application/plain
+
+eezded
+
+### GET My roles
+POST http://localhost:9001/api/shopping-list/1/recipes
+Accept: application/json
+Content-Type: application/json
+
+{
+   "recipeId": 1,
+   "portion": 4,
+   "ingredients": [
+      "ingredient1",
+       "ingredient2"
+   ]
+}
+
+### GET My roles
+GET http://localhost:9001/api/shopping-list/1
 Accept: application/json
 

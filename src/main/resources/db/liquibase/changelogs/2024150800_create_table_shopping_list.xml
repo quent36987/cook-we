@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="2024150800-1" author="QGJ">
+        <createTable tableName="shopping_list">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="owner_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="shopping_list"
+                baseColumnNames="owner_id"
+                constraintName="fk_shopping_list_users"
+                referencedTableName="users"
+                referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="2024150800-2" author="QGJ">
+        <createTable tableName="shopping_list_shared">
+            <column name="shopping_list_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="shopping_list_id, user_id" constraintName="pk_shopping_list_shared"
+                       tableName="shopping_list_shared"/>
+
+        <addForeignKeyConstraint
+                baseTableName="shopping_list_shared"
+                baseColumnNames="shopping_list_id"
+                constraintName="fk_shopping_list_shared_list"
+                referencedTableName="shopping_list"
+                referencedColumnNames="id"/>
+        <addForeignKeyConstraint
+                baseTableName="shopping_list_shared"
+                baseColumnNames="user_id"
+                constraintName="fk_shopping_list_shared_users"
+                referencedTableName="users"
+                referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="2024150800-3" author="QGJ">
+        <createTable tableName="shopping_list_recipe">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="recipe_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="shopping_list_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="portion" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="shopping_list_recipe"
+                baseColumnNames="recipe_id"
+                constraintName="fk_shopping_list_recipe_recipes"
+                referencedTableName="recipes"
+                referencedColumnNames="id"/>
+        <addForeignKeyConstraint
+                baseTableName="shopping_list_recipe"
+                baseColumnNames="shopping_list_id"
+                constraintName="fk_shopping_list_recipe_list"
+                referencedTableName="shopping_list"
+                referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="2024150800-4" author="QGJ">
+        <createTable tableName="shopping_list_ingredient">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="shopping_list_recipe_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="shopping_list_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="checked" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="shopping_list_ingredient"
+                baseColumnNames="shopping_list_recipe_id"
+                constraintName="fk_shopping_list_ingredient_recipes"
+                referencedTableName="shopping_list_recipe"
+                referencedColumnNames="id"/>
+        <addForeignKeyConstraint
+                baseTableName="shopping_list_ingredient"
+                baseColumnNames="shopping_list_id"
+                constraintName="fk_shopping_list_ingredient_list"
+                referencedTableName="shopping_list"
+                referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

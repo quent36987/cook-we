@@ -12,6 +12,7 @@ public enum RestError {
     SEASON_NOT_FOUND(404, "Season %s not found"),
     TYPE_NOT_FOUND(404, "Type %s not found"),
     PICTURE_NOT_FOUND(404, "Picture  not found"),
+    SHOPPING_LIST_NOT_FOUND(404, "Shopping list with ID %d not found"),
 
     // UNAUTHORIZED
     FORBIDDEN(403, "Forbidden"),
@@ -19,6 +20,7 @@ public enum RestError {
 
     // MISSING FIELD AND BAD REQUEST
     BAD_REQUEST(400, "Invalid request"),
+    BAD_REQUEST_MESSAGE(400, "Invalid request: %s"),
     INVALID_FIELD(400, "Invalid field: %s"),
     RECIPE_ALREADY_FAVORITE(400, "Recipe %s is already in your favorites"),
     RECIPE_NOT_FAVORITE(400, "Recipe %s is not in your favorites"),

@@ -75,6 +75,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/pictures/**").permitAll()
                                 .requestMatchers("/api/auto/**").permitAll()
                                 .requestMatchers("/api/version/**").permitAll()
+                                .requestMatchers("/api/shopping-list/**").permitAll()
                                 .anyRequest().authenticated()
 
                 )
