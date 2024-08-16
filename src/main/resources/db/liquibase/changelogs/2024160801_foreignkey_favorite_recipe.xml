@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="2024150801-1" author="QGJ">
+        <dropForeignKeyConstraint baseTableName="user_favorite_recipes" constraintName="fk_user_favorite_recipes_recipe"/>
+        <addForeignKeyConstraint constraintName="fk_user_favorite_recipes_recipe"
+                                 baseTableName="user_favorite_recipes"
+                                 baseColumnNames="recipe_id"
+                                 referencedTableName="recipes"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>

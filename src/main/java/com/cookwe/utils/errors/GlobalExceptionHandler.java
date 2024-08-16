@@ -10,37 +10,46 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.WebRequest;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Throwable.class)
-    public ResponseEntity<String> handleThrowable(Throwable exception) {
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> handleThrowable(Throwable exception, WebRequest request) {
+        HttpStatus status;
+        String message;
+
         if (exception instanceof ErrorCode errorCode) {
-            return ResponseEntity.status(errorCode.getCode()).body(errorCode.getMessage());
-        }
-
-        if (exception instanceof AccessDeniedException) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception.getMessage());
-        }
-
-        if (exception instanceof AuthenticationException) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
-        }
-
-        if (exception instanceof MethodArgumentNotValidException) {
+            status = HttpStatus.valueOf(errorCode.getCode());
+            message = errorCode.getMessage();
+        } else if (exception instanceof AccessDeniedException) {
+            status = HttpStatus.FORBIDDEN;
+            message = exception.getMessage();
+        } else if (exception instanceof AuthenticationException) {
+            status = HttpStatus.BAD_REQUEST;
+            message = exception.getMessage();
+        } else if (exception instanceof MethodArgumentNotValidException) {
             FieldError error = ((MethodArgumentNotValidException) exception).getBindingResult().getFieldError();
-            String message = error != null ? error.getDefaultMessage() : "Invalid input";
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+            status = HttpStatus.BAD_REQUEST;
+            message = error != null ? error.getDefaultMessage() : "Invalid input";
+        } else if (exception instanceof HttpMessageConversionException) {
+            status = HttpStatus.BAD_REQUEST;
+            message = "Invalid input";
+        } else {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            message = "Internal Server Error";
         }
 
-        if (exception instanceof HttpMessageConversionException) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input");
-        }
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("status", status.value());
+        responseBody.put("message", message);
 
-        System.out.println(exception.toString());
-        System.out.println(exception.getMessage());
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        return new ResponseEntity<>(responseBody, status);
     }
 }

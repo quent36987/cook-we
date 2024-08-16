@@ -57,4 +57,7 @@ public class RecipeModel {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<IngredientModel> ingredients = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ShoppingListRecipeModel> shoppingListRecipes = new ArrayList<>();
 }
