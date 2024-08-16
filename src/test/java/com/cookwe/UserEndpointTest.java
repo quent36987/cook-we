@@ -39,7 +39,7 @@ class UserEndpointTest {
     void testGetWitoutAuth() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/users/favorites-recipes")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
     @Test

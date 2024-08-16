@@ -93,7 +93,7 @@ class RecipeEndpointTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(recipe)))
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
     @Test

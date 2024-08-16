@@ -43,7 +43,7 @@ class RoleEndpointTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/roles/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
     @Test
@@ -77,7 +77,7 @@ class RoleEndpointTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/roles/ROLE_ADMIN/users/" + TestUtils.USERNAME_1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie(TestUtils.COOKIE_NAME, cookie)))
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
 
         roleService.addRoleToUser(TestUtils.USERNAME_1, "ROLE_ADMIN");
 
