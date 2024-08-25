@@ -29,14 +29,14 @@ public class ShoppingListRecipeService {
     @Transactional
     public RecipeShoppingListDTO addOrUpdateRecipe(Long userId, Long recipeId, int portion, List<String> ingredients, Long shoppingListId) {
         ShoppingListModel shoppingList = shoppingListRepository.findById(shoppingListId)
-                .orElseThrow(() -> RestError.NOT_FOUND_MESSAGE.get("Shopping list not found"));
+                .orElseThrow(() -> RestError.NOT_FOUND_MESSAGE.get("Liste de courses non trouvée"));
 
         if (!isUserAllowed(userId, shoppingList)) {
-            throw RestError.FORBIDDEN_MESSAGE.get("You are not allowed to modify this shopping list");
+            throw RestError.FORBIDDEN_MESSAGE.get("Vous n'êtes pas autorisé à modifier cette liste de courses");
         }
 
         RecipeModel recipe = recipeRepository.findById(recipeId)
-                .orElseThrow(() -> RestError.NOT_FOUND_MESSAGE.get("Recipe not found"));
+                .orElseThrow(() -> RestError.NOT_FOUND_MESSAGE.get("Recette non trouvée"));
 
         ShoppingListRecipeModel existingRecipe = shoppingListRecipeRepository.findByShoppingListAndRecipe(shoppingList, recipe);
 
@@ -71,19 +71,19 @@ public class ShoppingListRecipeService {
 
     public void removeRecipe(Long userId, Long recipeId, Long shoppingListId) {
         ShoppingListModel shoppingList = shoppingListRepository.findById(shoppingListId)
-                .orElseThrow(() -> RestError.NOT_FOUND_MESSAGE.get("Shopping list not found"));
+                .orElseThrow(() -> RestError.NOT_FOUND_MESSAGE.get("Liste de courses non trouvée"));
 
         if (!isUserAllowed(userId, shoppingList)) {
-            throw RestError.FORBIDDEN_MESSAGE.get("You are not allowed to modify this shopping list");
+            throw RestError.FORBIDDEN_MESSAGE.get("Vous n'êtes pas autorisé à modifier cette liste de courses");
         }
 
         ShoppingListRecipeModel existingRecipe = shoppingListRecipeRepository.findByShoppingListAndRecipe(shoppingList, recipeRepository.findById(recipeId)
-                .orElseThrow(() -> RestError.NOT_FOUND_MESSAGE.get("Recipe not found")));
+                .orElseThrow(() -> RestError.NOT_FOUND_MESSAGE.get("Recette non trouvée")));
 
         if (existingRecipe != null) {
             shoppingListRecipeRepository.delete(existingRecipe);
         } else {
-            throw RestError.NOT_FOUND_MESSAGE.get("Recipe not found in this shopping list");
+            throw RestError.NOT_FOUND_MESSAGE.get("Recette non trouvée");
         }
     }
 

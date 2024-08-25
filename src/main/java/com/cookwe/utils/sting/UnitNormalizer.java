@@ -27,6 +27,7 @@ public class UnitNormalizer {
         unitMap.put("MILLILITRE", "MILLILITER");
         unitMap.put("MILLILITRES", "MILLILITER");
         unitMap.put("ML", "MILLILITER");
+        unitMap.put("PACKET", "SACHET");
     }
 
     public static String normalizeUnit(String unit) {

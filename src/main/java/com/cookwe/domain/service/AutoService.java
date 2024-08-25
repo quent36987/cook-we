@@ -72,7 +72,7 @@ public class AutoService {
                     "  {\n" +
                     "    \"name\": \"Nom de l'ingrédient\",\n" +
                     "    \"quantity\": \"Quantité (nombre valide, decimal avec virgule)\",\n" +
-                    "    \"unit\": \"GRAM | MILLILITER | TEASPOON | TABLESPOON | CUP | PIECE | POT | PINCH \"\n" +
+                    "    \"unit\": \"GRAM | MILLILITER | TEASPOON | TABLESPOON | CUP | PIECE | POT | PINCH | SACHET \"\n" +
                     "  }\n" +
                     "]\n" +
                     "}";

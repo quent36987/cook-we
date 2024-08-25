@@ -111,7 +111,7 @@ public class UserService {
         List<RoleModel> roles = new ArrayList<>();
 
         RoleModel userRole = roleRepository.findByName(ERole.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                .orElseThrow(() -> new RuntimeException("Role non trouvé."));
         roles.add(userRole);
 
         user.setRoles(roles);

@@ -122,7 +122,7 @@ public class RecipePictureService {
         }
 
         if (!recipePictureModel.get().getUser().getId().equals(userId)) {
-            throw RestError.FORBIDDEN_MESSAGE.get("You are not the owner of this picture");
+            throw RestError.FORBIDDEN_MESSAGE.get("Vous n'êtes pas autorisé à supprimer cette image");
         }
 
         try {

@@ -52,7 +52,7 @@ public class IngredientService {
         }
 
         if (!Objects.equals(recipe.getUser().getId(), userId)) {
-            throw RestError.FORBIDDEN_MESSAGE.get("You are not the owner of the recipe");
+            throw RestError.FORBIDDEN_MESSAGE.get("Vous n'êtes pas autorisé à modifier cette recette");
         }
 
         // find if name already exists in the recipe
@@ -78,7 +78,7 @@ public class IngredientService {
         RecipeModel recipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
 
         if (!Objects.equals(recipe.getUser().getId(), userId)) {
-            throw RestError.FORBIDDEN_MESSAGE.get("You are not the owner of the recipe");
+            throw RestError.FORBIDDEN_MESSAGE.get("Vous n'êtes pas autorisé à modifier cette recette");
         }
 
         Optional<IngredientModel> ingredient = ingredientRepository.findByRecipeIdAndName(recipeId, ingredientName);

@@ -12,6 +12,6 @@ public class IngredientRequest {
     public String name;
     public Float quantity;
 
-    @Schema(type = "string", allowableValues = {"GRAM", "MILLILITER", "TEASPOON", "TABLESPOON", "CUP", "PIECE", "POT", "PINCH"})
+    @Schema(type = "string", allowableValues = {"GRAM", "MILLILITER", "TEASPOON", "TABLESPOON", "CUP", "PIECE", "POT", "PINCH", "SACHET"})
     public String unit;
 }

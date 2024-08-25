@@ -18,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class IngredientShoppingListService {
 
     private final ShoppingListRepository shoppingListRepository;
-    private final UserRepository userRepository;
-    private final RecipeRepository recipeRepository;
     private final ShoppingListIngredientRepository shoppingListIngredientRepository;
     private final IngredientShoppingListMapper shoppingListIngredientMapper;
 
@@ -29,15 +27,15 @@ public class IngredientShoppingListService {
                 .orElseThrow(() -> RestError.SHOPPING_LIST_NOT_FOUND.get(shoppingListId));
 
         if (isUserNotAllowed(userId, shoppingList)) {
-            throw RestError.FORBIDDEN_MESSAGE.get("You are not allowed to modify this shopping list");
+            throw RestError.FORBIDDEN_MESSAGE.get("Vous n'êtes pas autorisé à modifier cette liste de courses");
         }
 
         if (ingredientId != null) {
             ShoppingListIngredientModel existingIngredient = shoppingListIngredientRepository.findById(ingredientId)
-                    .orElseThrow(() -> RestError.NOT_FOUND_MESSAGE.get("Ingredient not found"));
+                    .orElseThrow(() -> RestError.NOT_FOUND_MESSAGE.get("Ingrédient non trouvé"));
 
             if (!existingIngredient.getShoppingList().getId().equals(shoppingListId)) {
-                throw RestError.BAD_REQUEST_MESSAGE.get("Ingredient does not belong to this shopping list");
+                throw RestError.BAD_REQUEST_MESSAGE.get("L'ingrédient n'appartient pas à cette liste de courses");
             }
 
             existingIngredient.setName(name);
@@ -57,10 +55,10 @@ public class IngredientShoppingListService {
     @Transactional
     public void checkOrUncheckIngredient(Long userId, Long ingredientId, boolean checked) {
         ShoppingListIngredientModel ingredient = shoppingListIngredientRepository.findById(ingredientId)
-                .orElseThrow(() -> RestError.NOT_FOUND_MESSAGE.get("Ingredient not found"));
+                .orElseThrow(() -> RestError.NOT_FOUND_MESSAGE.get("Ingrédient non trouvé"));
 
         if (isUserNotAllowed(userId, ingredient.getShoppingList())) {
-            throw RestError.FORBIDDEN_MESSAGE.get("You are not allowed to modify this shopping list");
+            throw RestError.FORBIDDEN_MESSAGE.get("Vous n'êtes pas autorisé à modifier cette liste de courses");
         }
 
         ingredient.setChecked(checked);
@@ -70,10 +68,10 @@ public class IngredientShoppingListService {
     @Transactional
     public void deleteIngredient(Long userId, Long ingredientId) {
         ShoppingListIngredientModel ingredient = shoppingListIngredientRepository.findById(ingredientId)
-                .orElseThrow(() -> RestError.NOT_FOUND_MESSAGE.get("Ingredient not found"));
+                .orElseThrow(() -> RestError.NOT_FOUND_MESSAGE.get("Ingrédient non trouvé"));
 
         if (isUserNotAllowed(userId, ingredient.getShoppingList())) {
-            throw RestError.FORBIDDEN_MESSAGE.get("You are not allowed to modify this shopping list");
+            throw RestError.FORBIDDEN_MESSAGE.get("Vous n'êtes pas autorisé à modifier cette liste de courses");
         }
 
         shoppingListIngredientRepository.delete(ingredient);

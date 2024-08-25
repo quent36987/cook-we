@@ -60,7 +60,7 @@ public class CommentService {
         CommentModel comment = commentRepositoryCustom.getCommentById(commentId);
 
         if (!Objects.equals(comment.getUser().getId(), userId)) {
-            throw RestError.FORBIDDEN_MESSAGE.get("You can't delete this comment(not the owner)");
+            throw RestError.FORBIDDEN_MESSAGE.get("Vous ne pouvez pas supprimer ce commentaire (pas le propriétaire)");
         }
 
         commentRepository.deleteById(commentId);
@@ -70,7 +70,7 @@ public class CommentService {
         CommentModel comment = commentRepositoryCustom.getCommentById(commentId);
 
         if (!Objects.equals(comment.getUser().getId(), userId)) {
-            throw RestError.FORBIDDEN_MESSAGE.get("You can't update this comment(not the owner)");
+            throw RestError.FORBIDDEN_MESSAGE.get("Vous ne pouvez pas modifier ce commentaire (pas le propriétaire)");
         }
 
         comment.setText(text);

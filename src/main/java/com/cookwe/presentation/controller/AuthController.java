@@ -132,13 +132,13 @@ public class AuthController {
     public ResponseEntity<MessageResponse> newPassword(@RequestBody String email) {
         String newPassword = userService.resetPassword(email);
 
-        String subject = "New Password Request";
-        String message = "Your new password is: " + newPassword + "\n\n" +
-                "Please change it as soon as possible.";
+        String subject = "Nouveau mot de passe";
+        String message = "Votre nouveau mot de passe est: " + newPassword + "\n\n" +
+                "Veuillez le changer dès que possible.";
 
         emailService.sendEmail(email, subject, message);
 
-        return ResponseEntity.ok(new MessageResponse("New password sent to your email!"));
+        return ResponseEntity.ok(new MessageResponse("Un email a été envoyé à " + email + " avec votre nouveau mot de passe."));
     }
 
     @PostMapping("/change-password")

@@ -21,6 +21,6 @@ public class EmailService {
         email.setFrom("noreply@cook-we.fr");
 
         mailSender.send(email);
-        log.info("Email sent to: " + to);
+        log.info("Email sent to: {}", to);
     }
 }

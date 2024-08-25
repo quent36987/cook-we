@@ -39,7 +39,7 @@ public class ShoppingListService {
                 .orElseThrow(() -> RestError.SHOPPING_LIST_NOT_FOUND.get(shoppingListId));
 
         if (!isUserAllowed(userId, shoppingList)) {
-            throw RestError.FORBIDDEN_MESSAGE.get("You are not allowed to view this shopping list");
+            throw RestError.FORBIDDEN_MESSAGE.get("Vous n'êtes pas autorisé à voir cette liste de courses");
         }
 
         return shoppingListDetailMapper.toDTO(shoppingList);
@@ -65,7 +65,7 @@ public class ShoppingListService {
                 .orElseThrow(() -> RestError.SHOPPING_LIST_NOT_FOUND.get(listId));
 
         if (!isUserAllowed(userId, shoppingList)) {
-            throw RestError.FORBIDDEN_MESSAGE.get("You are not allowed to delete this shopping list");
+            throw RestError.FORBIDDEN_MESSAGE.get("Vous n'êtes pas autorisé à supprimer cette liste de courses");
         }
 
         shoppingListRepository.delete(shoppingList);

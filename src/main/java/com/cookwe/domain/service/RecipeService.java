@@ -117,7 +117,7 @@ public class RecipeService {
         RecipeModel recipe = recipeRepositoryCustom.getRecipeDetailById(recipeId);
 
         if (!recipe.getUser().getId().equals(userId)) {
-            throw RestError.FORBIDDEN_MESSAGE.get("You are not the owner of this recipe");
+            throw RestError.FORBIDDEN_MESSAGE.get("Vous n'êtes pas autorisé à supprimer cette recette");
         }
 
         recipeRepository.delete(recipe);
@@ -127,7 +127,7 @@ public class RecipeService {
         RecipeModel recipe = recipeRepositoryCustom.getRecipeModelById(recipeId);
 
         if (!recipe.getUser().getId().equals(userId)) {
-            throw RestError.FORBIDDEN_MESSAGE.get("You are not the owner of this recipe");
+            throw RestError.FORBIDDEN_MESSAGE.get("Vous n'êtes pas autorisé à modifier cette recette");
         }
 
         recipe.setName(name);

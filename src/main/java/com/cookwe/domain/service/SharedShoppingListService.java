@@ -24,7 +24,7 @@ public class SharedShoppingListService {
         UserModel userToAdd = getUserIfExists(usernameToAdd);
 
         if (isUserAlreadyShared(shoppingList, userToAdd.getId())) {
-            throw RestError.BAD_REQUEST_MESSAGE.get("User is already in the shopping list");
+            throw RestError.BAD_REQUEST_MESSAGE.get("Utilisateur déjà partagé");
         }
 
         shoppingList.getSharedWithUsers().add(userToAdd);
@@ -36,13 +36,13 @@ public class SharedShoppingListService {
                 .orElseThrow(() -> RestError.SHOPPING_LIST_NOT_FOUND.get(shoppingListId));
 
         if (!shoppingList.getOwner().getId().equals(requesterId)) {
-            throw RestError.FORBIDDEN_MESSAGE.get("You are not the owner of the shopping list");
+            throw RestError.FORBIDDEN_MESSAGE.get("Vous n'êtes pas le propriétaire de la liste de courses");
         }
 
         UserModel userToRemove = getUserIfExists(usernameToRemove);
 
         if (!isUserAlreadyShared(shoppingList, userToRemove.getId())) {
-            throw RestError.BAD_REQUEST_MESSAGE.get("User is not in the shopping list");
+            throw RestError.BAD_REQUEST_MESSAGE.get("Utilisateur non partagé");
         }
 
         shoppingList.getSharedWithUsers().remove(userToRemove);
@@ -54,7 +54,7 @@ public class SharedShoppingListService {
                 .orElseThrow(() -> RestError.SHOPPING_LIST_NOT_FOUND.get(shoppingListId));
 
         if (!shoppingList.getOwner().getId().equals(requesterId)) {
-            throw RestError.FORBIDDEN_MESSAGE.get("You are not the owner of the shopping list");
+            throw RestError.FORBIDDEN_MESSAGE.get("Vous n'êtes pas le propriétaire de la liste de courses");
         }
 
         return shoppingList;
