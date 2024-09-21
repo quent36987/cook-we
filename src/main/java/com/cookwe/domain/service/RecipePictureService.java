@@ -1,5 +1,6 @@
 package com.cookwe.domain.service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -19,6 +20,7 @@ import com.cookwe.domain.entity.RecipePictureDTO;
 import com.cookwe.domain.mapper.RecipePictureMapper;
 import com.cookwe.utils.errors.RestError;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -61,13 +63,20 @@ public class RecipePictureService {
         }
 
         RecipeModel recipeModel = recipeRepositoryCustom.getRecipeModelById(recipeId);
-
         Path root = Paths.get(picturePath);
 
         try {
-            byte[] compressedBytes = compressByteImage(file.getBytes());
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            Thumbnails.of(file.getInputStream())
+                    .size(1024, 1024)
+                    .outputFormat("jpg")
+                    .toOutputStream(baos);
+
+            byte[] compressedBytes = compressByteImage(baos.toByteArray());
+
             String fileName = "i" + UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
             Path filePath = root.resolve(fileName);
+
             Files.write(filePath, compressedBytes);
 
             RecipePictureModel recipePictureModel = RecipePictureModel.builder()
