@@ -20,7 +20,7 @@ public interface RecipeRepository extends CrudRepository<RecipeModel, Long> {
     @Query("SELECT r FROM RecipeModel r WHERE r.name = :name")
     public Optional<RecipeModel> findByName(@Param("name") String name);
 
-    @Query("SELECT r FROM RecipeModel r WHERE r.user.id = :userId")
+    @Query("SELECT r FROM RecipeModel r WHERE r.user.id = :userId ORDER BY r.id DESC")
     List<RecipeModel> findByUserId(@Param("userId") Long userId);
 
     @Query("SELECT r FROM RecipeModel r JOIN IngredientModel i ON r.id = i.recipe.id WHERE i.name IN :names")
