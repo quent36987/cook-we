@@ -192,12 +192,16 @@ public class AutoService {
                 } catch (Exception e) {
                     log.warn("Direct mapping failed, attempting to extract JSON from text.", e);
                     logAutoServiceModel.setIsParseSuccess(false);
+                    logAutoServiceModel.setException(e.getMessage());
                     logAutoServiceRepository.save(logAutoServiceModel);
+
                     throw RestError.INTERNAL_SERVER_ERROR.get();
                 }
             } else {
                 logAutoServiceModel.setIsParseSuccess(false);
+                logAutoServiceModel.setException("No JSON found in the response content.");
                 logAutoServiceRepository.save(logAutoServiceModel);
+
                 throw new RuntimeException("No JSON found in the response content.");
             }
         } else {

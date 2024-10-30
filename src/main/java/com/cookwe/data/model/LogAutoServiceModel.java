@@ -39,4 +39,7 @@ public class LogAutoServiceModel {
 
     @Column(name = "is_parse_success")
     private Boolean isParseSuccess;
+
+    @Column(name = "exception")
+    private String exception;
 }

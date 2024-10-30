@@ -25,4 +25,6 @@ public class LogAutoServiceDTO {
     private String tokenCount;
 
     private Boolean isParseSuccess;
+
+    private String exception;
 }

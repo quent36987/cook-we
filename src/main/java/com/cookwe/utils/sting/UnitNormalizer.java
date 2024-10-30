@@ -26,8 +26,13 @@ public class UnitNormalizer {
         unitMap.put("L", "LITER");
         unitMap.put("MILLILITRE", "MILLILITER");
         unitMap.put("MILLILITRES", "MILLILITER");
+        unitMap.put("DECILITER", "MILLILITER");
+        unitMap.put("CL", "MILLILITER");
         unitMap.put("ML", "MILLILITER");
         unitMap.put("PACKET", "SACHET");
+        unitMap.put("PORTION", "PIECE");
+        unitMap.put("CUBE", "PIECE");
+        unitMap.put("c. à soupe", "TABLESPOON");
     }
 
     public static String normalizeUnit(String unit) {
