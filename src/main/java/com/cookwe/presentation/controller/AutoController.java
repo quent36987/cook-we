@@ -4,6 +4,7 @@ import com.cookwe.domain.entity.RecipeDetailDTO;
 import com.cookwe.domain.service.AutoService;
 import com.cookwe.utils.errors.RestError;
 import com.cookwe.utils.security.services.UserDetailsImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,6 +39,14 @@ public class AutoController {
     //@PreAuthorize("hasRole('ADMIN')")
     public RecipeDetailDTO generateRecipeEntityWithPicture(@RequestParam("file") MultipartFile file) throws IOException {
         RecipeDetailDTO recipe = autoService.generateRecipeEntityWithPicture(file, getUserId());
+
+        return recipe;
+    }
+
+    @PostMapping("/generate-recipe-url")
+    @Operation(summary = "Upload a url of a recipe and get the RecipeResponse")
+    public RecipeDetailDTO generateRecipeEntityWithUrl(@RequestBody String url) throws JsonProcessingException {
+        RecipeDetailDTO recipe = autoService.generateRecipeEntityWithUrl(url, getUserId());
 
         return recipe;
     }
