@@ -138,7 +138,7 @@ public class AutoService {
         RequestVision request = new RequestVision(
             "gpt-4o-mini",
             "data:image/jpeg;base64," + encodeBase64Image(compressedImageBytes),
-            800
+            2000
         );
 
         log.info("Request: {}", request);
